@@ -1,0 +1,2 @@
+C:/winntus/winntus_one_suite/android/app/.cxx/RelWithDebInfo/213i3f21/x86/CMakeFiles/edit_cache.dir
+C:/winntus/winntus_one_suite/android/app/.cxx/RelWithDebInfo/213i3f21/x86/CMakeFiles/rebuild_cache.dir
