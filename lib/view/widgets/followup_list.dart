@@ -16,14 +16,20 @@ import 'package:task_management/view/screen/follow_ups.dart';
 import 'package:task_management/viewmodel/followups_view_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class FollowUpList extends StatelessWidget {
+class FollowUpList extends StatefulWidget {
   final RxList<FollowUpsListData> followUpsListData;
+  final LeadController leadController;
   final LeadDetailsData? leadData;
   final dynamic leadId;
-  final LeadController leadController;
-  FollowUpList(
+  const FollowUpList(
       this.followUpsListData, this.leadData, this.leadId, this.leadController,
       {super.key});
+
+  @override
+  State<FollowUpList> createState() => _FollowUpListState();
+}
+
+class _FollowUpListState extends State<FollowUpList> {
   final followupsVM = Get.put(FollowupsViewModel());
 
   String _formatDate(String? rawDate) {
@@ -56,17 +62,23 @@ class FollowUpList extends StatelessWidget {
   }
 
   @override
+  dispose() {
+    super.dispose();
+    widget.leadController.selectdePersonIds.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Obx(
-        () => followUpsListData.isEmpty
+        () => widget.followUpsListData.isEmpty
             ? Center(child: Text("No follow-ups found"))
             : ListView.builder(
-                itemCount: followUpsListData.length,
+                itemCount: widget.followUpsListData.length,
                 padding: EdgeInsets.all(12.w),
                 itemBuilder: (context, index) {
-                  final item = followUpsListData[index];
+                  final item = widget.followUpsListData[index];
                   followupsVM.selectedStatusTypeList
                       .add(item.status.toString());
                   return Stack(
@@ -171,11 +183,12 @@ class FollowUpList extends StatelessWidget {
                                                   showAlertDialog(
                                                     context,
                                                     value,
-                                                    leadController
+                                                    widget
+                                                        .leadController
                                                         .followUpsListData[
                                                             index]
                                                         .id,
-                                                    leadController
+                                                    widget.leadController
                                                             .followUpsListData[
                                                         index],
                                                   );
@@ -235,10 +248,10 @@ class FollowUpList extends StatelessWidget {
                                   ),
                                 ),
                                 const Spacer(),
-                                if (leadData?.phone != null) ...[
+                                if (widget.leadData?.phone != null) ...[
                                   GestureDetector(
-                                    onTap: () =>
-                                        callWhatsApp(mobileNo: leadData?.phone),
+                                    onTap: () => callWhatsApp(
+                                        mobileNo: widget.leadData?.phone),
                                     child: Image.asset(
                                       'assets/image/png/whatsapp (2).png',
                                       height: 20.h,
@@ -247,8 +260,8 @@ class FollowUpList extends StatelessWidget {
                                   SizedBox(width: 12.w),
                                   GestureDetector(
                                     onTap: () async {
-                                      final phoneno =
-                                          Uri.parse('tel:${leadData?.phone}');
+                                      final phoneno = Uri.parse(
+                                          'tel:${widget.leadData?.phone}');
                                       if (!await launchUrl(phoneno)) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
@@ -308,11 +321,12 @@ class FollowUpList extends StatelessWidget {
                                 return [
                                   PopupMenuItem(
                                     onTap: () {
-                                      leadController.selectdePersonIds.clear();
+                                      widget.leadController.selectdePersonIds
+                                          .clear();
                                       controller.clearAll();
                                       assignandaddUser(
                                         context,
-                                        leadController
+                                        widget.leadController
                                             .followUpsListData[index].id,
                                         "assign",
                                       );
@@ -342,7 +356,7 @@ class FollowUpList extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.to(() => FollowUpsScreen(
-                leadId: leadId,
+                leadId: widget.leadId,
               ));
         },
         backgroundColor: primaryButtonColor,
@@ -387,7 +401,7 @@ class FollowUpList extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(14.r)),
                       child: Obx(
                         () => MultiDropdown<ResponsiblePersonData>(
-                          items: leadController.responsiblePersonList
+                          items: widget.leadController.responsiblePersonList
                               .map(
                                   (item) => DropdownItem<ResponsiblePersonData>(
                                         value: item,
@@ -436,7 +450,7 @@ class FollowUpList extends StatelessWidget {
                                 Icon(Icons.lock, color: Colors.grey.shade300),
                           ),
                           onSelectionChange: (selectedItems) {
-                            leadController.selectdePersonIds
+                            widget.leadController.selectdePersonIds
                                 .assignAll(selectedItems);
                           },
                         ),
@@ -448,7 +462,7 @@ class FollowUpList extends StatelessWidget {
                   ),
                   Obx(
                     () => CustomButton(
-                      text: leadController.isPeopleAdding.value == true
+                      text: widget.leadController.isPeopleAdding.value == true
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -472,9 +486,10 @@ class FollowUpList extends StatelessWidget {
                                   color: whiteColor),
                             ),
                       onPressed: () async {
-                        if (leadController.isPeopleAdding.value == false) {
-                          await leadController.assignFollowup(
-                            personid: leadController.selectdePersonIds,
+                        if (widget.leadController.isPeopleAdding.value ==
+                            false) {
+                          await widget.leadController.assignFollowup(
+                            personid: widget.leadController.selectdePersonIds,
                             followupId: id,
                           );
                           // addPeople(
@@ -550,7 +565,7 @@ class FollowUpList extends StatelessWidget {
                                     : status == "Not Done"
                                         ? 2
                                         : 3,
-                                leadId: leadId,
+                                leadId: widget.leadId,
                                 followUpsListData: followUpsListData);
                           }
                         },

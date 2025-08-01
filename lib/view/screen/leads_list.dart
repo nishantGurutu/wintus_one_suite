@@ -98,6 +98,8 @@ class _LeadListState extends State<LeadList> {
     Future.microtask(() {
       leadController.selectedLeadStatusData.value = null;
       leadController.selectedLeadStatusUpdateData.value = null;
+      leadController.selectedLeadType.value = '';
+      leadController.selectedLeadStatusData.value = null;
     });
     super.dispose();
   }
