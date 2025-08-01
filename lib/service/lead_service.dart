@@ -190,7 +190,7 @@ class LeadService {
     }
   }
 
-  Future<LeedListModel?> leadsListApi(int? id) async {
+  Future<LeedListModel?> leadsListApi(int? id, String leadTypeValue) async {
     try {
       final token = StorageHelper.getToken();
       print("Token wiuye873 38798e3s79j9used: $id");
@@ -202,12 +202,29 @@ class LeadService {
         requestHeader: true,
         error: true,
       ));
+      var leadSelectedtype = "";
+      if (leadTypeValue == "Created by me") {
+        leadSelectedtype = 'created_by_me';
+      } else if (leadTypeValue == "Assigned to me") {
+        leadSelectedtype = 'assigned_to_me';
+      } else if (leadTypeValue == "Added to me") {
+        leadSelectedtype = 'added_to_me';
+      }
+
+      print("kjdh8743 3iu843 ${leadSelectedtype}");
       var url =
           "https://onesuite.winntus.in/public/api/leads-list?user_id=$userId";
       final response = await _dio.get(
-        id == null || id == "null"
+        ((id == null || id == "null") &&
+                (leadSelectedtype.isEmpty || leadSelectedtype == ""))
             ? 'https://onesuite.winntus.in/public/api/leads-list?user_id=$userId'
-            : "$url&status=$id",
+            : ((id != null || id != "null") &&
+                    (leadSelectedtype.isEmpty || leadSelectedtype == ""))
+                ? "$url&status=$id"
+                : ((id == null || id == "null") &&
+                        (leadSelectedtype.isNotEmpty || leadSelectedtype != ""))
+                    ? "$url&type=$leadSelectedtype"
+                    : "$url&status=$id&type=$leadSelectedtype",
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

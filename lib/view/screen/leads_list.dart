@@ -185,41 +185,40 @@ class _LeadListState extends State<LeadList> {
                                       BorderRadius.all(Radius.circular(8.r)),
                                   child: Obx(
                                     () => DropdownButtonHideUnderline(
-                                      child: DropdownButton2<LeadStatusData>(
+                                      child: DropdownButton2<String>(
                                         isExpanded: true,
-                                        items: leadController.leadStatusData
-                                            .map((LeadStatusData item) {
-                                          return DropdownMenuItem<
-                                              LeadStatusData>(
+                                        items: leadController.leadTypeList
+                                            .map((String item) {
+                                          return DropdownMenuItem<String>(
                                             value: item,
                                             child: Text(
-                                              item.name ?? "",
+                                              item ?? "",
                                               style: TextStyle(
                                                 decoration: TextDecoration.none,
                                                 fontFamily: 'Roboto',
                                                 color: darkGreyColor,
                                                 fontWeight: FontWeight.w400,
-                                                fontSize: 16,
+                                                fontSize: 14.sp,
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           );
                                         }).toList(),
                                         value: leadController
-                                                    .selectedLeadStatusData
-                                                    .value ==
-                                                null
+                                                .selectedLeadType.value.isEmpty
                                             ? null
                                             : leadController
-                                                .selectedLeadStatusData.value,
-                                        onChanged: (LeadStatusData? value) {
-                                          leadController.selectedLeadStatusData
-                                              .value = value;
-                                          leadController.leadsList(
+                                                .selectedLeadType.value,
+                                        onChanged: (String? value) async {
+                                          leadController
+                                              .selectedLeadType.value = value!;
+                                          await leadController.leadsList(
                                               leadController
                                                   .selectedLeadStatusData
                                                   .value
-                                                  ?.id);
+                                                  ?.id,
+                                              leadController
+                                                  .selectedLeadType.value);
                                         },
                                         buttonStyleData: ButtonStyleData(
                                           height: 50,
@@ -239,7 +238,7 @@ class _LeadListState extends State<LeadList> {
                                             fontFamily: 'Roboto',
                                             color: darkGreyColor,
                                             fontWeight: FontWeight.w400,
-                                            fontSize: 16.sp,
+                                            fontSize: 14.sp,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -314,7 +313,7 @@ class _LeadListState extends State<LeadList> {
                                                 fontFamily: 'Roboto',
                                                 color: darkGreyColor,
                                                 fontWeight: FontWeight.w400,
-                                                fontSize: 16,
+                                                fontSize: 14.sp,
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -327,14 +326,17 @@ class _LeadListState extends State<LeadList> {
                                             ? null
                                             : leadController
                                                 .selectedLeadStatusData.value,
-                                        onChanged: (LeadStatusData? value) {
+                                        onChanged:
+                                            (LeadStatusData? value) async {
                                           leadController.selectedLeadStatusData
                                               .value = value;
-                                          leadController.leadsList(
+                                          await leadController.leadsList(
                                               leadController
                                                   .selectedLeadStatusData
                                                   .value
-                                                  ?.id);
+                                                  ?.id,
+                                              leadController
+                                                  .selectedLeadType.value);
                                         },
                                         buttonStyleData: ButtonStyleData(
                                           height: 50,
@@ -354,7 +356,7 @@ class _LeadListState extends State<LeadList> {
                                             fontFamily: 'Roboto',
                                             color: darkGreyColor,
                                             fontWeight: FontWeight.w400,
-                                            fontSize: 16.sp,
+                                            fontSize: 14.sp,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),

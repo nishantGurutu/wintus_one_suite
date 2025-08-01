@@ -13,7 +13,6 @@ import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/button_widget.dart';
 import 'package:task_management/custom_widget/task_text_field.dart';
 import 'package:task_management/helper/db_helper.dart';
-import 'package:task_management/model/lead_list_model.dart';
 import 'package:task_management/model/lead_status_lead.dart';
 import 'package:task_management/model/source_list_model.dart';
 import 'package:task_management/view/widgets/voiceRecorderButton.dart';
@@ -539,10 +538,13 @@ class _AddLeadsState extends State<AddLeads> {
                                               DateTime.now().toIso8601String(),
                                         );
 
-                                        leadController.leadsList(leadController
-                                            .addselectedLeadStatusData
-                                            .value
-                                            ?.id);
+                                        leadController.leadsList(
+                                            leadController
+                                                .addselectedLeadStatusData
+                                                .value
+                                                ?.id,
+                                            leadController
+                                                .selectedLeadType.value);
                                       }
                                       attachment = File('');
                                       leadController.pickedFile.value =

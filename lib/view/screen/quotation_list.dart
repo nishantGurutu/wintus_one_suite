@@ -8,7 +8,6 @@ import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/model/quotation_list_model.dart';
 import 'package:task_management/view/screen/create_quotation.dart';
 import 'package:task_management/view/screen/update_quotation.dart';
-import 'package:task_management/view/widgets/document_list_bottom_sheet.dart';
 
 class QuotationListScreen extends StatefulWidget {
   final dynamic leadId;
@@ -108,10 +107,10 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
                             width: 15.w,
                           ),
                           InkWell(
-                            onTap: () {
+                            onTap: () async {
                               if (leadController.isQuotationDownloading.value ==
                                   false) {
-                                leadController.downloadQuotation(
+                                await leadController.downloadQuotation(
                                     quotation.id, quotation.quotationNumber);
                               }
                             },
