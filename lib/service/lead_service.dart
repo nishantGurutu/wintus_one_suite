@@ -190,6 +190,51 @@ class LeadService {
     }
   }
 
+  Future<bool> assignFollowup(
+      RxList<ResponsiblePersonData> personid, int? followupId) async {
+    try {
+      final token = StorageHelper.getToken();
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.options.contentType = 'multipart/form-data';
+
+      String ids = personid
+          .map((e) => e.id.toString())
+          .toList()
+          .toString()
+          .replaceAll('[', '')
+          .replaceAll(']', '')
+          .replaceAll(' ', '');
+
+      final Map<String, dynamic> formDataMap = {
+        'follow_up_id': followupId.toString(),
+        'assigned_to': ids.toString(),
+      };
+
+      final formData = FormData.fromMap(formDataMap);
+
+      final response = await _dio.post(
+        '${ApiConstant.baseUrl + ApiConstant.assign_followup}',
+        data: formData,
+        options: Options(
+          validateStatus: (s) => s != null && s < 500,
+          receiveDataWhenStatusError: true,
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        CustomToast().showCustomToast(response.data['message']);
+        return true;
+      } else {
+        print("Error: ${response.data}");
+        CustomToast().showCustomToast("Failed to add lead");
+        return true;
+      }
+    } catch (e) {
+      print("Add lead error: $e");
+      return false;
+    }
+  }
+
   Future<LeedListModel?> leadsListApi(int? id, String leadTypeValue) async {
     try {
       final token = StorageHelper.getToken();

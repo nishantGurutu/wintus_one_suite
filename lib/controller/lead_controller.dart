@@ -318,6 +318,19 @@ class LeadController extends GetxController {
     isLeadUpdating.value = false;
   }
 
+  var isFollowUp = false.obs;
+  Future<void> assignFollowup(
+      {required RxList<ResponsiblePersonData> personid,
+      int? followupId}) async {
+    isLeadUpdating.value = true;
+    final result = await LeadService().assignFollowup(personid, followupId);
+    if (result) {
+      Get.back();
+      await leadsList(selectedLeadStatusData.value?.id, selectedLeadType.value);
+    } else {}
+    isLeadUpdating.value = false;
+  }
+
   var isLeadLoading = false.obs;
   RxList<LeadListData> leadsListData = <LeadListData>[].obs;
   RxList<LeadStatusData> selectedStatusPerLead = <LeadStatusData>[].obs;
