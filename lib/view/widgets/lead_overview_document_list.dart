@@ -5,28 +5,27 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
-import 'package:task_management/constant/custom_toast.dart';
-import 'package:task_management/constant/style_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
-import 'package:task_management/custom_widget/button_widget.dart';
 
-class DocumentListBotomsheet extends StatefulWidget {
-  final String? from;
+class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
   final dynamic leadId;
   final dynamic quotationId;
-  const DocumentListBotomsheet(
-      {super.key, required this.from, required this.leadId, this.quotationId});
+  const LeadOverviewDocumentListBotomsheet(
+      {super.key, required this.leadId, this.quotationId});
 
   @override
-  State<DocumentListBotomsheet> createState() => _DocumentListBotomsheetState();
+  State<LeadOverviewDocumentListBotomsheet> createState() =>
+      _LeadOverviewDocumentListBotomsheet();
 }
 
-class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
+class _LeadOverviewDocumentListBotomsheet
+    extends State<LeadOverviewDocumentListBotomsheet> {
   final LeadController leadController = Get.find();
 
   @override
   void initState() {
     leadController.documentType();
+
     leadController.leadpickedFile.value = File("");
     leadController.profilePicPath.value = "";
     super.initState();
@@ -35,6 +34,7 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
   @override
   dispose() {
     super.dispose();
+    leadController.isDocumentCheckBoxSelected.clear();
     leadController.leadpickedFile.value = File("");
     leadController.profilePicPath.value = "";
   }
@@ -99,25 +99,16 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                                             fontWeight: FontWeight.w500),
                                       ),
                                     ),
-                                    if (widget.from == "quotation")
-                                      InkWell(
-                                        onTap: () {
-                                          takeDocument(
-                                              documentId: leadController
-                                                      .documentTypeListData[
-                                                          index]
-                                                      .id ??
-                                                  0);
-                                        },
-                                        child: Container(
+                                    InkWell(
+                                      onTap: () {},
+                                      child: Container(
                                           width: 40.w,
                                           height: 30.h,
                                           child: Icon(
-                                            Icons.upload,
+                                            Icons.download,
                                             size: 30.sp,
-                                          ),
-                                        ),
-                                      ),
+                                          )),
+                                    ),
                                     InkWell(
                                       onTap: () {},
                                       child: Container(
@@ -129,6 +120,17 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                                         ),
                                       ),
                                     ),
+                                    Obx(
+                                      () => Checkbox(
+                                        value: leadController
+                                            .isDocumentCheckBoxSelected[index],
+                                        onChanged: (value) {
+                                          leadController
+                                                  .isDocumentCheckBoxSelected[
+                                              index] = value!;
+                                        },
+                                      ),
+                                    )
                                   ],
                                 ),
                                 Divider(
@@ -139,37 +141,31 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                           },
                         ),
                       ),
-                      if (widget.from == "quotation")
-                        CustomButton(
-                          onPressed: () {
-                            if (leadController.isDocumentUploading.value ==
-                                false) {
-                              if (leadController
-                                  .documentUplodedList.isNotEmpty) {
-                                leadController.documentUploading(
-                                  documentId: leadController.documentIdList,
-                                  ducument: leadController.documentUplodedList,
-                                  leadId: widget.leadId,
-                                  quotationId: widget.quotationId,
-                                );
-                              } else {
-                                CustomToast()
-                                    .showCustomToast('Upload Document.');
-                              }
-                            }
-                          },
-                          text: Text(
-                            'Submit',
-                            style: changeTextColor(rubikBlack, whiteColor),
-                          ),
-                          color: primaryColor,
-                          height: 45.h,
-                          width: double.infinity,
-                        ),
-                      if (widget.from == "quotation")
-                        SizedBox(
-                          height: 10.h,
-                        ),
+                      // if (widget.from == "quotation")
+                      //   CustomButton(
+                      //     onPressed: () {
+                      //       if (leadController.isDocumentUploading.value ==
+                      //           false) {
+                      //         leadController.documentUploading(
+                      //           documentId: leadController.documentIdList,
+                      //           ducument: leadController.documentUplodedList,
+                      //           leadId: widget.leadId,
+                      //           quotationId: widget.quotationId,
+                      //         );
+                      //       }
+                      //     },
+                      //     text: Text(
+                      //       'Submit',
+                      //       style: changeTextColor(rubikBlack, whiteColor),
+                      //     ),
+                      //     color: primaryColor,
+                      //     height: 45.h,
+                      //     width: double.infinity,
+                      //   ),
+                      // if (widget.from == "quotation")
+                      //   SizedBox(
+                      //     height: 10.h,
+                      //   ),
                     ],
                   ),
           ),

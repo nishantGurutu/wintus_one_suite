@@ -91,18 +91,31 @@ class _MessageScreenState extends State<MessageScreen> {
     }
   }
 
+  // Future<void> _scrollListener() async {
+  //   if (_scrollController.position.pixels ==
+  //       _scrollController.position.maxScrollExtent) {
+  //     chatController.pageCountValue.value += 1;
+  //     chatController.chatHistoryListApi(
+  //         widget.chatId, chatController.pageCountValue.value, '');
+  //     print('scroll controller listining');
+  //   } else if (_scrollController.position.pixels ==
+  //       _scrollController.position.minScrollExtent) {
+  //     chatController.pageCountValue.value -= 1;
+  //     chatController.chatHistoryListApi(
+  //         widget.chatId, chatController.pageCountValue.value, '');
+  //   }
+  // }
+
   Future<void> _scrollListener() async {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
+            _scrollController.position.minScrollExtent &&
+        chatController.hasMoreMessages.value) {
       chatController.pageCountValue.value += 1;
-      chatController.chatHistoryListApi(
-          widget.chatId, chatController.pageCountValue.value, '');
-      print('scroll controller listining');
-    } else if (_scrollController.position.pixels ==
-        _scrollController.position.minScrollExtent) {
-      chatController.pageCountValue.value -= 1;
-      chatController.chatHistoryListApi(
-          widget.chatId, chatController.pageCountValue.value, '');
+      await chatController.chatHistoryListApi(
+        widget.chatId,
+        chatController.pageCountValue.value,
+        'pagination',
+      );
     }
   }
 
@@ -426,7 +439,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                                                           context)
                                                                       .size
                                                                       .width *
-                                                                  0.9,
+                                                                  0.7,
                                                             ),
                                                             decoration:
                                                                 BoxDecoration(
@@ -1185,7 +1198,7 @@ class _MessageScreenState extends State<MessageScreen> {
       }
 
       chatController.isMessagePicUploading.value = false;
-      Get.back();
+      // Get.back();
       if (from == 'group') {
         await chatController.updateGroupIconApi(widget.chatId);
       }

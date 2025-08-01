@@ -35,6 +35,7 @@ import 'package:task_management/view/widgets/pdf_screen.dart';
 
 class LeadController extends GetxController {
   var isImageLoading = false.obs;
+  RxList<bool> isDocumentCheckBoxSelected = <bool>[].obs;
   var selectedUserType = ''.obs;
   RxList<String> addressTypeList =
       ["Site Address", "Office Address", "Other"].obs;
@@ -374,6 +375,15 @@ class LeadController extends GetxController {
       selectedStatusPerLead.addAll(
         List<LeadStatusData>.filled(leadsListData.length, LeadStatusData()),
       );
+
+      for (int i = 0; i < leadsListData.length; i++) {
+        for (int j = 0; j < leadStatusData.length; j++) {
+          if (leadsListData[i].status == leadStatusData[j].id) {
+            selectedStatusPerLead[i] = leadStatusData[j];
+            break;
+          }
+        }
+      }
       for (int i = 0; i < leadsListData.length; i++) {
         for (int j = 0; j < leadStatusData.length; j++) {
           if (leadsListData[i].status == leadStatusData[j].id) {
@@ -502,6 +512,7 @@ class LeadController extends GetxController {
     if (result != null) {
       leadDetails.value = result.data;
       await sourceList(source: leadDetails.value?.source);
+      await offLineStatusdata(status: leadDetails.value?.status.toString());
       selectedGender.value = leadDetails.value?.gender ?? "";
     }
     isLeadDetailsLoading.value = false;
@@ -851,9 +862,9 @@ class LeadController extends GetxController {
 
   RxList<SessionListData> sessionListData = <SessionListData>[].obs;
   var issessionLoading = false.obs;
-  Future<void> sessionListApi({required leadId, dynamic quotationid}) async {
+  Future<void> sessionListApi({required leadId}) async {
     issessionLoading.value = true;
-    final result = await LeadService().sessionListApi(leadId, quotationid);
+    final result = await LeadService().sessionListApi(leadId);
     if (result != null) {
       if (result.data!.isNotEmpty) {
         sessionListData.assignAll(result.data!);
@@ -869,8 +880,11 @@ class LeadController extends GetxController {
     isDocumentTypeLoading.value = true;
     final result = await LeadService().documentTypeList();
     if (result != null) {
+      isDocumentCheckBoxSelected.clear();
       if (result.data!.isNotEmpty) {
         documentTypeListData.assignAll(result.data!);
+        isDocumentCheckBoxSelected
+            .addAll(List.filled(documentTypeListData.length, false));
       }
     } else {}
     isDocumentTypeLoading.value = false;

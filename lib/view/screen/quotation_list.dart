@@ -127,64 +127,63 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
                         "Quotation: ${quotation.quotationNumber}",
                         style: TextStyle(color: Colors.grey.shade700),
                       ),
-                      SizedBox(height: 6),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (context) => Padding(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  child: DocumentListBotomsheet(
-                                    from: 'quotation',
-                                    leadId: widget.leadId,
-                                    quotationId: quotation.id,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 30.h,
-                              width: 140.w,
-                              decoration: BoxDecoration(
-                                color: lightBlue,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10.r),
-                                ),
-                              ),
-                              child: Center(
-                                  child: Text(
-                                "Accept",
-                                style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w500),
-                              )),
-                            ),
-                          ),
-                          Container(
-                            height: 30.h,
-                            width: 140.w,
-                            decoration: BoxDecoration(
-                              color: lightBlue,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.r),
-                              ),
-                            ),
-                            child: Center(
-                                child: Text(
-                              "Not Accept",
-                              style: TextStyle(
-                                  fontSize: 13.sp, fontWeight: FontWeight.w500),
-                            )),
-                          ),
-                        ],
-                      ),
+                      // SizedBox(height: 6),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     GestureDetector(
+                      //       onTap: () {
+                      //         showModalBottomSheet(
+                      //           context: context,
+                      //           isScrollControlled: true,
+                      //           builder: (context) => Padding(
+                      //             padding: EdgeInsets.only(
+                      //                 bottom: MediaQuery.of(context)
+                      //                     .viewInsets
+                      //                     .bottom),
+                      //             child: DocumentListBotomsheet(
+                      //               from: "quotation",
+                      //               leadId: widget.leadId,
+                      //             ),
+                      //           ),
+                      //         );
+                      //       },
+                      //       child: Container(
+                      //         height: 30.h,
+                      //         width: 140.w,
+                      //         decoration: BoxDecoration(
+                      //           color: lightBlue,
+                      //           borderRadius: BorderRadius.all(
+                      //             Radius.circular(10.r),
+                      //           ),
+                      //         ),
+                      //         child: Center(
+                      //             child: Text(
+                      //           "Accept",
+                      //           style: TextStyle(
+                      //               fontSize: 13.sp,
+                      //               fontWeight: FontWeight.w500),
+                      //         )),
+                      //       ),
+                      //     ),
+                      //     Container(
+                      //       height: 30.h,
+                      //       width: 140.w,
+                      //       decoration: BoxDecoration(
+                      //         color: lightBlue,
+                      //         borderRadius: BorderRadius.all(
+                      //           Radius.circular(10.r),
+                      //         ),
+                      //       ),
+                      //       child: Center(
+                      //           child: Text(
+                      //         "Not Accept",
+                      //         style: TextStyle(
+                      //             fontSize: 13.sp, fontWeight: FontWeight.w500),
+                      //       )),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),

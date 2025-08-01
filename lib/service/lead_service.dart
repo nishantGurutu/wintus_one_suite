@@ -715,12 +715,22 @@ class LeadService {
         'address_line2': officeAddress.toString(),
         'city_town': city.toString(),
         'id': leadId.toString(),
-        'follow_up_date': followupDate.toString(),
-        'follow_up_time': followupTime.toString(),
-        'follow_up_type': followupType,
         'reminder': reminder,
       };
 
+      print("data value in form data 87y9822 ${formDataMap}");
+      if (followupDate.isNotEmpty) {
+        formDataMap['follow_up_date'] = followupDate;
+      }
+      if (followupTime.isNotEmpty) {
+        formDataMap['follow_up_time'] = followupTime;
+      }
+      if (reminder.isNotEmpty) {
+        formDataMap['reminder'] = reminder;
+      }
+      if (followupType != null) {
+        formDataMap['follow_up_type'] = followupType;
+      }
       if (pickedFile.path.isNotEmpty) {
         final fileName = pickedFile.path.split('/').last;
         formDataMap['image'] = await MultipartFile.fromFile(
@@ -1135,11 +1145,11 @@ class LeadService {
     }
   }
 
-  Future<SessionListModel?> sessionListApi(leadId, quotationid) async {
+  Future<SessionListModel?> sessionListApi(leadId) async {
     try {
       final token = StorageHelper.getToken();
       print("Tokenasf6 quotation skdo 8y8y8used: $leadId");
-      print("Tokenasf6 quotation skdo 8y8y8used: $quotationid");
+      // print("Tokenasf6 quotation skdo 8y8y8used: $quotationid");
 
       _dio.options.headers["Authorization"] = "Bearer $token";
       _dio.interceptors.add(LogInterceptor(
@@ -1151,7 +1161,7 @@ class LeadService {
 
       final Map<String, dynamic> formDataMap = {
         "lead_id": leadId,
-        "quotation_id": quotationid,
+        // "quotation_id": quotationid,
       };
 
       final formData = FormData.fromMap(formDataMap);

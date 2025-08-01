@@ -61,42 +61,6 @@ class ChatController extends GetxController {
     isChatLoading.value = false;
   }
 
-  var isChatHistoryLoading = false.obs;
-  var chatHistoryModel = ChatHistoryModel().obs;
-  RxList<ChatHistoryData> chatHistoryList = <ChatHistoryData>[].obs;
-
-  RxBool hasMoreMessages = true.obs;
-  RxInt pageCountValue = 1.obs;
-  RxInt prePageCount = 1.obs;
-  Future<void> chatHistoryListApi(
-    String? chatId,
-    int pageCount,
-    String fromRoute,
-  ) async {
-    if (fromRoute == 'initstate') {
-      isChatHistoryLoading.value = true;
-    }
-
-    final result = await ChatService().chatHistoryServiceApi(chatId, pageCount);
-
-    if (result != null && result.data!.isNotEmpty) {
-      if ((result.data?.length ?? 0) >= 20) {
-        prePageCount.value = pageCount;
-        chatHistoryList.assignAll(result.data!.reversed.toList());
-      } else {
-        pageCountValue.value = prePageCount.value;
-        chatHistoryList.addAll(result.data!.reversed.toList());
-      }
-    } else {
-      if (fromRoute == 'initstate') {
-        hasMoreMessages.value = false;
-      }
-    }
-    if (fromRoute == 'initstate') {
-      isChatHistoryLoading.value = false;
-    }
-  }
-
   RxList<int> selectedChatId = <int>[].obs;
   Future<dynamic> deleteChat() async {
     isChatHistoryLoading.value = true;
@@ -120,6 +84,72 @@ class ChatController extends GetxController {
     chatHistoryList.add(newMessage.data as ChatHistoryData);
     refresh();
   }
+
+  var isChatHistoryLoading = false.obs;
+  var chatHistoryModel = ChatHistoryModel().obs;
+  RxList<ChatHistoryData> chatHistoryList = <ChatHistoryData>[].obs;
+
+  RxBool hasMoreMessages = true.obs;
+  RxInt pageCountValue = 1.obs;
+  RxInt prePageCount = 1.obs;
+  Future<void> chatHistoryListApi(
+    String? chatId,
+    int pageCount,
+    String fromRoute,
+  ) async {
+    if (fromRoute == 'initstate') {
+      isChatHistoryLoading.value = true;
+    }
+
+    final result = await ChatService().chatHistoryServiceApi(chatId, pageCount);
+
+    if (result != null && result.data!.isNotEmpty) {
+      List<ChatHistoryData> newMessages = result.data!.reversed.toList();
+
+      if (fromRoute == 'initstate') {
+        chatHistoryList.assignAll(newMessages);
+      } else {
+        chatHistoryList.insertAll(0, newMessages);
+      }
+
+      hasMoreMessages.value = result.data!.length >= 20;
+      prePageCount.value = pageCount;
+    } else {
+      hasMoreMessages.value = false;
+    }
+
+    if (fromRoute == 'initstate') {
+      isChatHistoryLoading.value = false;
+    }
+  }
+  // Future<void> chatHistoryListApi(
+  //   String? chatId,
+  //   int pageCount,
+  //   String fromRoute,
+  // ) async {
+  //   if (fromRoute == 'initstate') {
+  //     isChatHistoryLoading.value = true;
+  //   }
+
+  //   final result = await ChatService().chatHistoryServiceApi(chatId, pageCount);
+
+  //   if (result != null && result.data!.isNotEmpty) {
+  //     if ((result.data?.length ?? 0) >= 20) {
+  //       prePageCount.value = pageCount;
+  //       chatHistoryList.assignAll(result.data!.reversed.toList());
+  //     } else {
+  //       pageCountValue.value = prePageCount.value;
+  //       chatHistoryList.addAll(result.data!.reversed.toList());
+  //     }
+  //   } else {
+  //     if (fromRoute == 'initstate') {
+  //       hasMoreMessages.value = false;
+  //     }
+  //   }
+  //   if (fromRoute == 'initstate') {
+  //     isChatHistoryLoading.value = false;
+  //   }
+  // }
 
   Future<void> sendMessageApi(String? userId, String text, String? chatId,
       String? fromPage, File attachment,

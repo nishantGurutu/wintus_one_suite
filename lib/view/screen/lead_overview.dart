@@ -18,9 +18,9 @@ import 'package:task_management/view/widgets/add_assign_user.dart';
 import 'package:task_management/view/widgets/add_lead_contact.dart';
 import 'package:task_management/view/widgets/assign_user.dart';
 import 'package:task_management/view/widgets/customAudioPlayer.dart';
-import 'package:task_management/view/widgets/document_list_bottom_sheet.dart';
 import 'package:task_management/view/widgets/followup_list.dart';
 import 'package:task_management/view/widgets/lead_discussion_list.dart';
+import 'package:task_management/view/widgets/lead_overview_document_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:task_management/helper/sos_pusher.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
@@ -436,8 +436,8 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
             ),
             leadInfo(leadDatavalue),
             SizedBox(height: 15.h),
-            agrementWidget(),
-            SizedBox(height: 8.h),
+            // agrementWidget(),
+            // SizedBox(height: 8.h),
           ],
         ),
       ),
@@ -457,7 +457,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Agrement Process",
+              "Document Uploaded || Successfully Added || Check and approved",
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
@@ -465,70 +465,44 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
               ),
             ),
             SizedBox(height: 10.h),
-            InkWell(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) => Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) => Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: LeadOverviewDocumentListBotomsheet(
+                          leadId: widget.leadId,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: lightBlue,
+                      borderRadius: BorderRadius.all(Radius.circular(8.r)),
                     ),
-                    child: DocumentListBotomsheet(
-                      from: "overview",
-                      leadId: widget.leadId,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 6.w, vertical: 5.h),
+                      child: Text(
+                        'View Document',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: lightBlue,
-                  borderRadius: BorderRadius.all(Radius.circular(10.r)),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 5.h),
-                  child: Text(
-                    'View Document',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
+              ],
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Container(
-            //       decoration: BoxDecoration(
-            //         color: lightBlue,
-            //         borderRadius: BorderRadius.all(
-            //           Radius.circular(10.r),
-            //         ),
-
-            //       ),
-            //       child: Padding(
-            //         padding:   EdgeInsets.symmetric(horizontal: 6.w, vertical: 5.h),
-            //         child: Text('Approve', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, ),),
-            //       ),
-            //     ),
-            //     Container(
-            //       decoration: BoxDecoration(
-            //         color: lightBlue,
-            //         borderRadius: BorderRadius.all(
-            //           Radius.circular(10.r),
-            //         ),
-
-            //       ),
-            //       child: Padding(
-            //         padding:   EdgeInsets.symmetric(horizontal: 6.w, vertical: 5.h),
-            //         child: Text('Raise', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, ),),
-            //       ),
-            //     ),
-            //   ],
-            // ),
             SizedBox(height: 10.h),
           ],
         ),
@@ -988,15 +962,15 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                 ),
                 SizedBox(height: 5.h),
                 if (leadController.leadContactData.length > 0)
-                  SizedBox(
-                    height: 300.h,
-                    child: Obx(
-                      () => leadController.isLeadContactLoading.value == true
-                          ? Center(child: CircularProgressIndicator())
-                          : ListView.builder(
-                              itemCount: leadController.leadContactData.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
+                  Obx(
+                    () => leadController.isLeadContactLoading.value == true
+                        ? Center(child: CircularProgressIndicator())
+                        : Column(
+                            children: [
+                              for (int i = 0;
+                                  i < leadController.leadContactData.length;
+                                  i++)
+                                Padding(
                                   padding: EdgeInsets.symmetric(vertical: 4.h),
                                   child: Row(
                                     children: [
@@ -1015,17 +989,16 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                       ),
                                       SizedBox(width: 8.w),
                                       Text(
-                                        '${leadController.leadContactData[index].name ?? ""}',
+                                        '${leadController.leadContactData[i].name ?? ""}',
                                         style: TextStyle(
                                             fontSize: 15.sp,
                                             fontWeight: FontWeight.w400),
                                       )
                                     ],
                                   ),
-                                );
-                              },
-                            ),
-                    ),
+                                ),
+                            ],
+                          ),
                   ),
                 SizedBox(
                   height: 5.h,
