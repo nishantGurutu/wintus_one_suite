@@ -448,7 +448,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       TextCapitalization.sentences,
                                   keyboardType: TextInputType.number,
                                   maxLength: 10,
-                                  data: mobileNumber,
+                                  data: 'Phone',
                                   hintText: mobileNumber,
                                 ),
                                 SizedBox(height: 15.h),

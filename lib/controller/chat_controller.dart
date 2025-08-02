@@ -166,6 +166,7 @@ class ChatController extends GetxController {
   }
 
   var selectedMessage = "".obs;
+  Rx<File> selectedFile = File('').obs;
   var selectedMessageId = "".obs;
   var selectedParentMessageSender = "".obs;
   Future<void> updateMessageData(

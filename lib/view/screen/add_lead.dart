@@ -113,7 +113,7 @@ class _AddLeadsState extends State<AddLeads> {
                         TaskCustomTextField(
                           controller: leadNameController,
                           textCapitalization: TextCapitalization.sentences,
-                          data: leadName,
+                          data: name,
                           hintText: leadName,
                           labelText: leadName,
                           index: 0,

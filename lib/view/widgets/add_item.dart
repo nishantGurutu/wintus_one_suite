@@ -32,6 +32,7 @@ class _AddItemShetState extends State<AddItemShet> {
   @override
   void dispose() {
     super.dispose();
+    leadController.selectedProductData.value = null;
     leadController.qtyControlelr.clear();
   }
 

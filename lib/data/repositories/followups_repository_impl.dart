@@ -27,7 +27,7 @@ class FollowupsRepositoryImpl implements FollowupsRepository {
       });
 
       final response = await _apiService.getMultipartPostApiResponse(
-        "https://onesuite.winntus.in/public/api/store-follow-ups",
+        "https://taskmaster.electionmaster.in/public/api/store-follow-ups",
         formData,
       );
 
@@ -53,7 +53,7 @@ class FollowupsRepositoryImpl implements FollowupsRepository {
       });
 
       final response = await _apiService.getMultipartPostApiResponse(
-        "https://onesuite.winntus.in/public/api/change-lead-followup-status",
+        "https://taskmaster.electionmaster.in/public/api/change-lead-followup-status",
         formData,
       );
 

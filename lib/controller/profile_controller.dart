@@ -548,8 +548,9 @@ class ProfileController extends GetxController {
     final result = await ProfileService().assignAssetsList();
     if (result != null) {
       isAssestAssigningList.value = false;
-
-      allocatedAssignList.assignAll(result['allocated_assets']);
+      if (result['allocated_assets'] != null) {
+        allocatedAssignList.assignAll(result['allocated_assets']);
+      }
     }
     isAssestAssigningList.value = false;
   }

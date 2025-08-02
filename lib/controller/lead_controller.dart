@@ -343,6 +343,7 @@ class LeadController extends GetxController {
       final db = await DatabaseHelper.instance.database;
 
       if (result != null && result.data != null) {
+        isLeadLoading.value = false;
         for (var onlineLead in result.data!) {
           if (onlineLead.phone != null &&
               onlineLead.phone!.isNotEmpty &&
@@ -785,6 +786,7 @@ class LeadController extends GetxController {
     final result = await LeadService().productListApi();
     if (result != null) {
       productListData.assignAll(result.data!);
+      refresh();
     }
     isProductLoading.value = false;
   }
@@ -1070,15 +1072,33 @@ class LeadController extends GetxController {
     isQuotationDownloading.value = true;
 
     final Uint8List? pdfData = await LeadService().downloadQuotationApi(id!);
-    final directory = await getApplicationDocumentsDirectory();
-    final filePath = '${directory.path}/quotation_$quotationNumber.pdf';
+    if (pdfData != null) {
+      final directory = await getApplicationDocumentsDirectory();
 
-    final file = File(filePath);
-    await file.writeAsBytes(pdfData!);
-    CustomToast().showCustomToast("Quotation downloaded successfully.");
-    Get.to(() => PDFScreen(file: file));
-    print('✅ PDF saved to $filePath');
+      String replaceSlac = '';
+      if ((quotationNumber ?? "").contains("/")) {
+        replaceSlac = (quotationNumber ?? "").replaceAll("/", "_");
+      } else {
+        replaceSlac = quotationNumber ?? "";
+      }
 
+      final folderPath = '${directory.path}/quotation_$replaceSlac';
+      final folder = Directory(folderPath);
+
+      if (!await folder.exists()) {
+        await folder.create(recursive: true);
+      }
+
+      final filePath = '$folderPath/quotation.pdf';
+
+      final file = File(filePath);
+      await file.writeAsBytes(pdfData);
+
+      CustomToast().showCustomToast("Quotation downloaded successfully.");
+      Get.to(() => PDFScreen(file: file));
+
+      print('✅ PDF saved to $filePath');
+    }
     isQuotationDownloading.value = false;
   }
 

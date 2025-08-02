@@ -131,7 +131,7 @@ class _FollowUpListState extends State<FollowUpList> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 140.w,
+                                  width: 120.w,
                                   child: Obx(() {
                                     final status = item.status.toString();
                                     final disabled =
@@ -195,8 +195,8 @@ class _FollowUpListState extends State<FollowUpList> {
                                                 }
                                               },
                                         buttonStyleData: ButtonStyleData(
-                                          height: 50,
-                                          width: 140.w,
+                                          height: 40.h,
+                                          width: 120.w,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 14),
                                           decoration: BoxDecoration(
@@ -220,12 +220,11 @@ class _FollowUpListState extends State<FollowUpList> {
                                           iconSize: 14,
                                         ),
                                         dropdownStyleData: DropdownStyleData(
-                                          maxHeight: 200,
-                                          width: 140.w,
+                                          maxHeight: 200.h,
+                                          width: 120.w,
                                         ),
-                                        menuItemStyleData:
-                                            const MenuItemStyleData(
-                                          height: 40,
+                                        menuItemStyleData: MenuItemStyleData(
+                                          height: 40.h,
                                           padding: EdgeInsets.only(
                                               left: 14, right: 14),
                                         ),

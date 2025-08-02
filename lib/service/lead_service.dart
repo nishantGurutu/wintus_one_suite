@@ -94,7 +94,7 @@ class LeadService {
       final formData = FormData.fromMap(formDataMap);
 
       final response = await _dio.post(
-        'https://onesuite.winntus.in/public/api/store-leads',
+        ApiConstant.baseUrl + ApiConstant.store_leads,
         data: formData,
         options: Options(
           validateStatus: (s) => s != null && s < 500,
@@ -103,7 +103,6 @@ class LeadService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Save to database after successful API call
         await DatabaseHelper.instance.insertStatus(status: "online");
 
         CustomToast().showCustomToast(response.data['message']);
@@ -168,7 +167,7 @@ class LeadService {
       final formData = FormData.fromMap(formDataMap);
 
       final response = await _dio.post(
-        'https://onesuite.winntus.in/public/api/update-leads',
+        ApiConstant.baseUrl + ApiConstant.update_leads,
         data: formData,
         options: Options(
           validateStatus: (s) => s != null && s < 500,
@@ -258,11 +257,11 @@ class LeadService {
 
       print("kjdh8743 3iu843 ${leadSelectedtype}");
       var url =
-          "https://onesuite.winntus.in/public/api/leads-list?user_id=$userId";
+          "${ApiConstant.baseUrl + ApiConstant.leads_list}?user_id=$userId";
       final response = await _dio.get(
         ((id == null || id == "null") &&
                 (leadSelectedtype.isEmpty || leadSelectedtype == ""))
-            ? 'https://onesuite.winntus.in/public/api/leads-list?user_id=$userId'
+            ? '${ApiConstant.baseUrl + ApiConstant.leads_list}?user_id=$userId'
             : ((id != null || id != "null") &&
                     (leadSelectedtype.isEmpty || leadSelectedtype == ""))
                 ? "$url&status=$id"
@@ -301,7 +300,7 @@ class LeadService {
       ));
 
       final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/source-list",
+        ApiConstant.baseUrl + ApiConstant.source_list,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -333,7 +332,7 @@ class LeadService {
       ));
 
       final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/lead-status-list",
+        ApiConstant.baseUrl + ApiConstant.lead_status_list,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -369,9 +368,8 @@ class LeadService {
       };
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-          "https://onesuite.winntus.in/public/api/lead-details",
-          data: formData);
+      final response = await _dio
+          .post(ApiConstant.baseUrl + ApiConstant.lead_details, data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return LeadDetailsModel.fromJson(response.data);
@@ -407,9 +405,8 @@ class LeadService {
       };
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-          "https://onesuite.winntus.in/public/api/home-lead",
-          data: formData);
+      final response = await _dio
+          .post(ApiConstant.baseUrl + ApiConstant.home_lead, data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HomeLeadsModel.fromJson(response.data);
@@ -428,7 +425,6 @@ class LeadService {
 
   Future<HomeLeadsModel?> userleadHomeApi(homeAdminUserId) async {
     try {
-      // final userId = StorageHelper.getId();
       final token = StorageHelper.getToken();
       print("Token used: $token");
 
@@ -445,9 +441,8 @@ class LeadService {
       };
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-          "https://onesuite.winntus.in/public/api/home-lead",
-          data: formData);
+      final response = await _dio
+          .post(ApiConstant.baseUrl + ApiConstant.home_lead, data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HomeLeadsModel.fromJson(response.data);
@@ -466,7 +461,6 @@ class LeadService {
 
   Future<UserReportModel?> userReportApi(homeAdminUserId) async {
     try {
-      // final userId = StorageHelper.getId();
       final token = StorageHelper.getToken();
       print("Token used: $token");
 
@@ -484,7 +478,7 @@ class LeadService {
       final formData = FormData.fromMap(formDataMap);
 
       final response = await _dio.post(
-          "https://onesuite.winntus.in/public/api/get-user-report",
+          ApiConstant.baseUrl + ApiConstant.get_user_report,
           data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -516,7 +510,7 @@ class LeadService {
       ));
 
       final response = await _dio.delete(
-        "https://onesuite.winntus.in/public/api/delete-lead",
+        ApiConstant.baseUrl + ApiConstant.delete_lead,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -554,7 +548,7 @@ class LeadService {
       final formData = FormData.fromMap(formDataMap);
 
       final response = await _dio.post(
-        "https://onesuite.winntus.in/public/api/lead-followup-list",
+        ApiConstant.baseUrl + ApiConstant.lead_followup_list,
         data: formData,
       );
 
@@ -588,7 +582,7 @@ class LeadService {
       ));
 
       final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/followup-type-list?lead_id=$leadId",
+        "${ApiConstant.baseUrl + ApiConstant.followup_type_list}?lead_id=$leadId",
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -620,7 +614,7 @@ class LeadService {
       ));
 
       final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/visit-list",
+        ApiConstant.baseUrl + ApiConstant.followup_type_list,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -652,7 +646,7 @@ class LeadService {
       ));
 
       final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/visit-type-list",
+        ApiConstant.baseUrl + ApiConstant.visit_type_list,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -699,7 +693,7 @@ class LeadService {
       final formData = FormData.fromMap(formDataMap);
 
       final response = await _dio.post(
-        'https://onesuite.winntus.in/public/api/store-follow-ups',
+        ApiConstant.baseUrl + ApiConstant.store_follow_ups,
         data: formData,
       );
 
@@ -1064,58 +1058,6 @@ class LeadService {
     }
   }
 
-  // Future<bool> documentUploading(
-  //     RxList<int> documentId, RxList<File> ducument) async {
-  //   try {
-  //     final token = StorageHelper.getToken();
-  //     _dio.options.headers["Authorization"] = "Bearer $token";
-  //     _dio.options.contentType = 'multipart/form-data';
-
-  //     _dio.interceptors.add(LogInterceptor(
-  //       requestBody: true,
-  //       responseBody: true,
-  //       requestHeader: true,
-  //       error: true,
-  //     ));
-
-  //     final Map<String, dynamic> formDataMap = {
-  //       "lead_id": '',
-  //       "user_id": name,
-  //       "quotation_id": phone,
-  //       'documents[0][document_type]': documentId,
-  //     };
-
-  //     if (ducument.path.isNotEmpty) {
-  //       final fileName = ducument.path.split('/').last;
-  //       formDataMap['documents[0]'] = await MultipartFile.fromFile(
-  //         ducument.path,
-  //         filename: fileName,
-  //       );
-  //     }
-
-  //     final formData = FormData.fromMap(formDataMap);
-
-  //     final response = await _dio.post(
-  //       ApiConstant.baseUrl + ApiConstant.upload_lead_document,
-  //       data: formData,
-  //     );
-
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       CustomToast().showCustomToast(response.data['message']);
-  //       return true;
-  //     } else {
-  //       print("Error: ${response.data}");
-  //       CustomToast().showCustomToast("Failed to add lead");
-  //       return false;
-  //     }
-  //   } on DioException catch (e) {
-  //     print("Dio error: ${e.response?.statusCode}");
-  //     print("Error response: ${e.response?.data}");
-  //     print("Message: ${e.message}");
-  //     return false;
-  //   }
-  // }
-
   Future<bool> documentUploading(
     RxList<int> documentId,
     RxList<File> ducument,
@@ -1210,8 +1152,6 @@ class LeadService {
   Future<SessionListModel?> sessionListApi(leadId) async {
     try {
       final token = StorageHelper.getToken();
-      print("Tokenasf6 quotation skdo 8y8y8used: $leadId");
-      // print("Tokenasf6 quotation skdo 8y8y8used: $quotationid");
 
       _dio.options.headers["Authorization"] = "Bearer $token";
       _dio.interceptors.add(LogInterceptor(
@@ -1638,22 +1578,22 @@ class LeadService {
       }
       if (status.toString() == "2") {
         formDataMap['out_latitude'] =
-            "${LocationHandler.currentPosition?.latitude ?? "8736478"}";
+            "${LocationHandler.currentPosition?.latitude ?? ""}";
       }
       if (status.toString() == "2") {
         formDataMap['out_longitude'] =
-            "${LocationHandler.currentPosition?.longitude ?? "8736478"}";
+            "${LocationHandler.currentPosition?.longitude ?? ""}";
       }
       if (status.toString() == "1") {
         formDataMap['start_meeting_time'] = formattedTime;
       }
       if (status.toString() == "1") {
         formDataMap['latitude'] =
-            "${LocationHandler.currentPosition?.latitude ?? "8736478"}";
+            "${LocationHandler.currentPosition?.latitude ?? ""}";
       }
       if (status.toString() == "1") {
         formDataMap['longitude'] =
-            "${LocationHandler.currentPosition?.longitude ?? "8736478"}";
+            "${LocationHandler.currentPosition?.longitude ?? ""}";
       }
       if (status.toString() == "2") {
         formDataMap['end_meeting_date'] = formattedTime;

@@ -8,7 +8,7 @@ class VisitTypeRepository {
   Future<List<VisitType>> fetchVisitTypes() async {
     try {
       final response = await _apiServices.getGetApiResponse(
-        "https://onesuite.winntus.in/public/api/visit-type-list",
+        "https://taskmaster.electionmaster.in/public/api/visit-type-list",
       );
 
       if (response['status'] == true && response['data'] != null) {

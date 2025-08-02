@@ -52,11 +52,13 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
     _tabController =
         TabController(length: 6, vsync: this, initialIndex: widget.index ?? 0);
     callingApi();
+    print("tabController index ${_tabController}");
     super.initState();
   }
 
   void callingApi() async {
     print('leadoverview lead id ${widget.leadId}');
+    print('leadoverview lead id ${widget.leadNumber}');
     await leadController.leadContactList(
         leadId: int.parse(widget.leadId.toString()));
     await leadController.leadDetailsApi(
