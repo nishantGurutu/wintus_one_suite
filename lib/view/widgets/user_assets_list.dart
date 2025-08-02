@@ -43,9 +43,10 @@ class UserAssetsList extends StatelessWidget {
                   ? Expanded(
                       child: Center(
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              'assets/image/png/Finance.png',
+                              'assets/image/png/Finance-removebg-preview.png',
                               height: 100.h,
                             ),
                             SizedBox(height: 10.h),
