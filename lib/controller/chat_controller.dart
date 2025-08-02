@@ -38,10 +38,14 @@ class ChatController extends GetxController {
     }
     final result = await ChatService().chatServiceApi();
     if (result != null) {
+      isChatLoading.value = false;
       chatModel.value = result;
+
       isLongPressed.clear();
       totalUnsenMessage.value = 0;
       chatList.assignAll(chatModel.value.data!);
+      chatList.refresh();
+      isChatLoading.refresh();
       isLongPressed.addAll(List<bool>.filled(chatList.length, false));
       isChatLoading.value = false;
       for (var chat in chatList) {
@@ -82,7 +86,7 @@ class ChatController extends GetxController {
     final eventData = jsonDecode(event.data);
     final newMessage = ChatHistoryModel.fromJson(eventData);
     chatHistoryList.add(newMessage.data as ChatHistoryData);
-    refresh();
+    chatHistoryList.refresh();
   }
 
   var isChatHistoryLoading = false.obs;
@@ -111,7 +115,9 @@ class ChatController extends GetxController {
       } else {
         chatHistoryList.insertAll(0, newMessages);
       }
-
+      chatHistoryList.refresh();
+      hasMoreMessages.refresh();
+      isChatHistoryLoading.refresh();
       hasMoreMessages.value = result.data!.length >= 20;
       prePageCount.value = pageCount;
     } else {
@@ -122,34 +128,6 @@ class ChatController extends GetxController {
       isChatHistoryLoading.value = false;
     }
   }
-  // Future<void> chatHistoryListApi(
-  //   String? chatId,
-  //   int pageCount,
-  //   String fromRoute,
-  // ) async {
-  //   if (fromRoute == 'initstate') {
-  //     isChatHistoryLoading.value = true;
-  //   }
-
-  //   final result = await ChatService().chatHistoryServiceApi(chatId, pageCount);
-
-  //   if (result != null && result.data!.isNotEmpty) {
-  //     if ((result.data?.length ?? 0) >= 20) {
-  //       prePageCount.value = pageCount;
-  //       chatHistoryList.assignAll(result.data!.reversed.toList());
-  //     } else {
-  //       pageCountValue.value = prePageCount.value;
-  //       chatHistoryList.addAll(result.data!.reversed.toList());
-  //     }
-  //   } else {
-  //     if (fromRoute == 'initstate') {
-  //       hasMoreMessages.value = false;
-  //     }
-  //   }
-  //   if (fromRoute == 'initstate') {
-  //     isChatHistoryLoading.value = false;
-  //   }
-  // }
 
   Future<void> sendMessageApi(String? userId, String text, String? chatId,
       String? fromPage, File attachment,

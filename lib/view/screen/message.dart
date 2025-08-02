@@ -182,10 +182,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                       child: chatController.groupmessagePicPath
                                               .value.isNotEmpty
                                           ? InkWell(
-                                              onTap: () {
-                                                // openFile(chatController
-                                                //     .groupmessagePicPath.value);
-                                              },
+                                              onTap: () {},
                                               child: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(22.5),

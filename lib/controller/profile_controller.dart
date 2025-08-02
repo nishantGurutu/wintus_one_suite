@@ -89,6 +89,7 @@ class ProfileController extends GetxController {
     final result = await ProfileService().userDetails();
     if (result != null) {
       isUserDetailsLoading.value = false;
+      isUserDetailsLoading.refresh();
       userProfileModel.value = result;
       dataFromImagePicker.value = false;
       assetsList.clear();
@@ -118,6 +119,8 @@ class ProfileController extends GetxController {
       profilePicPath.value = userProfileModel.value?.data?.image ?? "";
       genderDateController.value.text =
           userProfileModel.value?.data?.gender ?? "";
+
+      selectedGender?.value = userProfileModel.value?.data?.gender ?? "";
 
       StorageHelper.setName(userProfileModel.value?.data?.name ?? '');
       StorageHelper.setEmail(userProfileModel.value?.data?.email ?? '');
