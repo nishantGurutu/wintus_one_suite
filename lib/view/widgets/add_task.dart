@@ -71,6 +71,8 @@ class _AddTaskState extends State<AddTask> {
   @override
   void dispose() {
     super.dispose();
+    taskController.pickedFile.value = File("");
+    taskController.profilePicPath.value = "";
     taskController.reviewerUserId.clear();
     taskController.toAssignedPersonCheckBox.clear();
     taskController.assignedUserId.clear();
