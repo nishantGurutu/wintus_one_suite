@@ -457,7 +457,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                   SizedBox(height: 10.h),
                                   Text(
-                                    'Email',
+                                    'Mobile',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500),
@@ -475,7 +475,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                   SizedBox(height: 10.h),
                                   Text(
-                                    'Mobile number',
+                                    'Department',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500),
@@ -740,9 +740,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   .value
                                                   .text,
                                               profileController
-                                                  .selectedDepartMentListData
+                                                  .departmentIdTextEditingController
                                                   .value
-                                                  ?.id,
+                                                  .text,
                                               userPageControlelr
                                                   .selectedRoleListData
                                                   .value

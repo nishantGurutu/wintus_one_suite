@@ -79,6 +79,10 @@ class HomeController extends GetxController {
     final result = await LeadService().leadHomeApi();
     if (result != null) {
       homeLeadData.value = result.data;
+      isLeadDetailsLoading.value = false;
+      isLeadDetailsLoading.refresh();
+      homeLeadData.refresh();
+
       print("ksiudyiue eidueoi");
     } else {}
     isLeadDetailsLoading.value = false;
@@ -91,6 +95,8 @@ class HomeController extends GetxController {
     final result = await LeadService().userleadHomeApi(homeAdminUserId);
     if (result != null) {
       userhomeLeadData.value = result.data;
+      isLeadDetailsLoading.value = false;
+      userhomeLeadData.refresh();
       print("ksiudyiue eidueoi");
     } else {}
     isLeadDetailsLoading.value = false;
@@ -120,6 +126,7 @@ class HomeController extends GetxController {
         onTimemsg.value = result['data']['message'];
         onTimemsgUrl.value = result['data']['link'];
       }
+      onTimemsgUrl.refresh();
 
       if (StorageHelper.getOnetimeMsg().toString().toLowerCase() !=
           onTimemsg.value.toString().toLowerCase()) {

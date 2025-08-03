@@ -32,6 +32,7 @@ class ProfileController extends GetxController {
   var nameTextEditingController = TextEditingController().obs;
   var emailTextEditingController = TextEditingController().obs;
   var departmentTextEditingController = TextEditingController().obs;
+  var departmentIdTextEditingController = TextEditingController().obs;
   var mobileTextEditingController = TextEditingController().obs;
   var dobTextEditingController = TextEditingController().obs;
   var anniversaryDateController = TextEditingController().obs;
@@ -50,7 +51,7 @@ class ProfileController extends GetxController {
     String name,
     String email,
     String mobile,
-    int? departmentId,
+    String? departmentId,
     int? id,
     String? value,
     String dob,
@@ -101,6 +102,7 @@ class ProfileController extends GetxController {
             .assignAll(userProfileModel.value!.data!.allocatedAssets!);
       }
       profilePicPath.value = '';
+      await departmentList(null);
       await Future.delayed(Duration(milliseconds: 100));
       profilePicPath.value = userProfileModel.value?.data?.image ?? '';
       profilePicPath.refresh();
@@ -114,6 +116,10 @@ class ProfileController extends GetxController {
           userProfileModel.value?.data?.dob ?? "";
       anniversaryDateController.value.text =
           userProfileModel.value?.data?.anniversaryDate ?? "";
+      if (userProfileModel.value?.data?.departmentId != null) {
+        departmentIdTextEditingController.value.text =
+            userProfileModel.value?.data?.departmentId.toString() ?? "";
+      }
       selectedAnniversary?.value =
           userProfileModel.value?.data?.anniversaryType ?? "";
       profilePicPath.value = userProfileModel.value?.data?.image ?? "";
@@ -177,7 +183,7 @@ class ProfileController extends GetxController {
         if (userProfileModel.value?.data?.departmentId.toString() ==
             deptId.id.toString()) {
           departmentTextEditingController.value.text = deptId.name ?? '';
-          userPageControlelr.roleListApi(
+          await userPageControlelr.roleListApi(
             selectedDepartMentListData.value?.id,
           );
           return;

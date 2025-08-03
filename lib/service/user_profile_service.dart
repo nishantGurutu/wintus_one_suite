@@ -21,7 +21,7 @@ class ProfileService {
     String name,
     String email,
     String mobile,
-    int? departmentId,
+    String? departmentId,
     int? id,
     String? value,
     Rx<File> pickedFile,
@@ -39,7 +39,6 @@ class ProfileService {
         'email': email,
         'position': id,
         'mobile': mobile,
-        'department_id': departmentId,
         'dob': dob,
         "anniversary_type":
             annivresaryDate.isNotEmpty ? 'Marriage Anniversary' : "",
