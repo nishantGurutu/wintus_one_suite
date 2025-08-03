@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,7 +19,6 @@ import 'package:task_management/view/screen/add_lead.dart';
 import 'package:task_management/view/screen/lead_detail_update.dart';
 import 'package:task_management/view/screen/lead_overview.dart';
 import 'package:task_management/view/screen/update_leads.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LeadList extends StatefulWidget {
   final String? status;

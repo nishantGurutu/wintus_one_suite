@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -6,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management/controller/home_controller.dart';
 import 'package:task_management/controller/profile_controller.dart';
-import 'package:task_management/custom_widget/custom_caches_manager.dart';
 import 'package:task_management/firebase_messaging/notification_service.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/all_project_list_model.dart';
