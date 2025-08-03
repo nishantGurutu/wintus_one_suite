@@ -11,6 +11,7 @@ import 'package:task_management/constant/image_constant.dart';
 import 'package:task_management/constant/text_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/button_widget.dart';
+import 'package:task_management/helper/call_helper.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/lead_status_lead.dart';
 import 'package:task_management/model/responsible_person_list_model.dart'
@@ -906,12 +907,13 @@ class _LeadListState extends State<LeadList> {
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () async {
-                                                      await callWhatsApp(
-                                                          mobileNo:
-                                                              leadController
-                                                                  .leadsListData[
-                                                                      index]
-                                                                  .phone);
+                                                      await CallHelper()
+                                                          .callWhatsApp(
+                                                              mobileNo:
+                                                                  leadController
+                                                                      .leadsListData[
+                                                                          index]
+                                                                      .phone);
                                                     },
                                                     child: Image.asset(
                                                       'assets/image/png/whatsapp (2).png',
@@ -921,13 +923,12 @@ class _LeadListState extends State<LeadList> {
                                                   SizedBox(width: 12.w),
                                                   GestureDetector(
                                                     onTap: () async {
-                                                      Uri phoneno = Uri.parse(
-                                                          'tel:${leadController.leadsListData[index].phone}');
-                                                      if (await launchUrl(
-                                                          phoneno)) {
-                                                      } else {
-                                                        print('Not working');
-                                                      }
+                                                      CallHelper().callPhone(
+                                                          mobileNo:
+                                                              leadController
+                                                                  .leadsListData[
+                                                                      index]
+                                                                  .phone);
                                                     },
                                                     child: Image.asset(
                                                       'assets/image/png/phone_call-removebg-preview.png',
@@ -1120,22 +1121,6 @@ class _LeadListState extends State<LeadList> {
   }
 
   final controller = MultiSelectController<ResponsiblePersonData>();
-  Future<void> callWhatsApp({String? mobileNo}) async {
-    String? mobileContact =
-        mobileNo!.contains('+91') ? mobileNo : "+91$mobileNo";
-    var androidUrl = "whatsapp://send?phone=$mobileContact";
-    var iosUrl = "https://wa.me/$mobileContact";
-
-    try {
-      if (Platform.isIOS) {
-        await launchUrl(Uri.parse(iosUrl));
-      } else {
-        await launchUrl(Uri.parse(androidUrl));
-      }
-    } on Exception {
-      // EasyLoading.showError('WhatsApp is not installed.');
-    }
-  }
 
   Future<void> _shareSingleCard(int index) async {
     final ap = leadController.leadsListData[index];
