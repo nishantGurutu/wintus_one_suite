@@ -84,6 +84,7 @@ dependencies:
   flutter_cache_manager: ^3.4.1
   audioplayers: ^6.5.0
   swipe_to: ^1.0.6
+  media_store_plus: ^0.1.3
   # background_locator_2:
   # background_locator_2:
   #   git:
@@ -102,7 +103,6 @@ flutter_icons:
   flutter_lints: ^4.0.0
 
 flutter:
-
   uses-material-design: true
   assets:
     - assets/images/png/

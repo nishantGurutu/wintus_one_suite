@@ -37,7 +37,6 @@ class ProfileController extends GetxController {
   var dobTextEditingController = TextEditingController().obs;
   var anniversaryDateController = TextEditingController().obs;
   var genderDateController = TextEditingController().obs;
-
   final HomeController homeController = Get.put(HomeController());
   var profilePicPath = "".obs;
   var isPicUpdated = false.obs;
@@ -407,15 +406,7 @@ class ProfileController extends GetxController {
                               ),
                               InkWell(
                                 onTap: () async {
-                                  // if (selectedDateTextController
-                                  //     .text.isNotEmpty) {
-                                  //   await previousSubmittedTaskLoading(
-                                  //       selectedDateTextController.text);
-                                  // } else {
-                                  //   CustomToast()
-                                  //       .showCustomToast('Please select date.');
-                                  // }
-                                  downloadReport(
+                                  await downloadReport(
                                       date: selectedDateTextController.text);
                                 },
                                 child: SizedBox(
@@ -440,7 +431,6 @@ class ProfileController extends GetxController {
     );
   }
 
-  var pdfFile = ''.obs;
   var isQuotationDownloading = false.obs;
 
   Future<void> downloadReport({required String date}) async {
@@ -457,17 +447,11 @@ class ProfileController extends GetxController {
           '${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}-${now.year}_${now.second}';
       final fileName = 'report_${formattedDate}.pdf';
       final filePath = '$folderPath/$fileName';
-      // final filePath = '${directory.path}/quotation.pdf';
-
       final file = File(filePath);
       await file.writeAsBytes(pdfData);
       CustomToast().showCustomToast("Report downloaded successfuly.");
       Get.back();
-      print('✅ PDF saved to $filePath');
-    } else {
-      print("❌ Failed to download PDF");
     }
-
     isQuotationDownloading.value = false;
   }
 

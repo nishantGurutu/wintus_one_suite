@@ -29,6 +29,7 @@ import 'package:task_management/model/quotation_list_model.dart';
 import 'package:task_management/model/responsible_person_list_model.dart';
 import 'package:task_management/model/session_list_model.dart';
 import 'package:task_management/model/source_list_model.dart';
+import 'package:task_management/model/uploaded_document_list_model.dart';
 import 'package:task_management/model/user_report_model.dart';
 
 class LeadService {
@@ -1117,6 +1118,46 @@ class LeadService {
     }
   }
 
+  Future<bool> approveDocument(int? documentId) async {
+    try {
+      final token = StorageHelper.getToken();
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.options.contentType = 'multipart/form-data';
+      print('j9e38e 3ue83 ${documentId}');
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+
+      final Map<String, dynamic> formDataMap = {
+        "document_id": documentId,
+      };
+
+      final formData = FormData.fromMap(formDataMap);
+
+      final response = await _dio.post(
+        ApiConstant.baseUrl + ApiConstant.approve_lead_document,
+        data: formData,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        CustomToast().showCustomToast(response.data['message']);
+        return true;
+      } else {
+        print("Error: ${response.data}");
+        CustomToast().showCustomToast("Failed to upload documents");
+        return false;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return false;
+    }
+  }
+
   Future<QuotationListModel?> quotationListApi(leadId) async {
     try {
       final token = StorageHelper.getToken();
@@ -1218,7 +1259,7 @@ class LeadService {
     }
   }
 
-  Future<DocumentTypeListModel?> leadDocumentList(int leadId) async {
+  Future<UploadedDocumentListModel?> leadDocumentList(int leadId) async {
     try {
       final token = StorageHelper.getToken();
 
@@ -1242,7 +1283,7 @@ class LeadService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return DocumentTypeListModel.fromJson(response.data);
+        return UploadedDocumentListModel.fromJson(response.data);
       } else {
         print("Unexpected response: ${response.data}");
         CustomToast().showCustomToast(response.data['message']);

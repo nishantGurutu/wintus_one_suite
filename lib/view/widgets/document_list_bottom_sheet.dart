@@ -59,164 +59,179 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
           child: Obx(
             () => leadController.isDocumentTypeLoading.value == true
                 ? Center(child: CircularProgressIndicator())
-                : Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                : leadController.documentTypeListData.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No document list',
+                          style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: textColor),
+                        ),
+                      )
+                    : Column(
                         children: [
-                          Text(
-                            "Document List",
-                            style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                                color: textColor),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Document List",
+                                style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: textColor),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Get.back();
+                                },
+                                child: SizedBox(
+                                  width: 25.w,
+                                  height: 35.h,
+                                  child: SvgPicture.asset(
+                                      'assets/images/svg/cancel.svg'),
+                                ),
+                              )
+                            ],
                           ),
-                          InkWell(
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: SizedBox(
-                              width: 25.w,
-                              height: 35.h,
-                              child: SvgPicture.asset(
-                                  'assets/images/svg/cancel.svg'),
-                            ),
-                          )
-                        ],
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: leadController.documentTypeListData.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount:
+                                  leadController.documentTypeListData.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        "${index + 1}. ${leadController.documentTypeListData[index].name ?? ''}",
-                                        style: TextStyle(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        leadController.documentIdList[index] =
-                                            leadController
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "${index + 1}. ${leadController.documentTypeListData[index].name ?? ''}",
+                                            style: TextStyle(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            leadController.documentIdList[
+                                                index] = leadController
                                                     .documentTypeListData[index]
                                                     .id ??
                                                 0;
-                                        takeDocument(
-                                            index: index,
-                                            documentId: leadController
-                                                    .documentTypeListData[index]
-                                                    .id ??
-                                                0);
-                                      },
-                                      child: Container(
-                                        width: 40.w,
-                                        height: 30.h,
-                                        child: Icon(
-                                          Icons.upload,
-                                          size: 30.sp,
-                                        ),
-                                      ),
-                                    ),
-                                    Obx(
-                                      () => leadController
-                                              .documentUplodedList[index]
-                                              .path
-                                              .isEmpty
-                                          ? Container(
-                                              width: 40.w,
-                                              height: 30.h,
-                                              child: Icon(
-                                                Icons.preview,
-                                                size: 30.sp,
-                                              ),
-                                            )
-                                          : InkWell(
-                                              onTap: () {
-                                                Get.to(
-                                                  () => ImageScreen(
-                                                    file: leadController
-                                                            .documentUplodedList[
-                                                        index],
-                                                  ),
-                                                );
-                                              },
-                                              child: Container(
-                                                height: 40.h,
-                                                width: 40.w,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: lightBorderColor),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(8.r)),
-                                                ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              10.r)),
-                                                  child: Image.file(
-                                                    leadController
-                                                            .documentUplodedList[
-                                                        index],
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
+                                            takeDocument(
+                                                index: index,
+                                                documentId: leadController
+                                                        .documentTypeListData[
+                                                            index]
+                                                        .id ??
+                                                    0);
+                                          },
+                                          child: Container(
+                                            width: 40.w,
+                                            height: 30.h,
+                                            child: Icon(
+                                              Icons.upload,
+                                              size: 30.sp,
                                             ),
+                                          ),
+                                        ),
+                                        Obx(
+                                          () => leadController
+                                                  .documentUplodedList[index]
+                                                  .path
+                                                  .isEmpty
+                                              ? Container(
+                                                  width: 40.w,
+                                                  height: 30.h,
+                                                  child: Icon(
+                                                    Icons.preview,
+                                                    size: 30.sp,
+                                                  ),
+                                                )
+                                              : InkWell(
+                                                  onTap: () {
+                                                    Get.to(
+                                                      () => ImageScreen(
+                                                        file: leadController
+                                                                .documentUplodedList[
+                                                            index],
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    height: 40.h,
+                                                    width: 40.w,
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color:
+                                                              lightBorderColor),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.r)),
+                                                    ),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10.r)),
+                                                      child: Image.file(
+                                                        leadController
+                                                                .documentUplodedList[
+                                                            index],
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                        ),
+                                      ],
+                                    ),
+                                    Divider(
+                                      thickness: 1,
                                     ),
                                   ],
-                                ),
-                                Divider(
-                                  thickness: 1,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      if (widget.from == "quotation")
-                        CustomButton(
-                          onPressed: () async {
-                            if (leadController.isDocumentUploading.value ==
-                                false) {
-                              if (leadController
-                                  .documentUplodedList.isNotEmpty) {
-                                await leadController.documentUploading(
-                                  documentId: leadController.documentIdList,
-                                  ducument: leadController.documentUplodedList,
-                                  leadId: widget.leadId,
-                                  quotationId: widget.quotationId,
                                 );
-                              } else {
-                                CustomToast()
-                                    .showCustomToast('Upload Document.');
-                              }
-                            }
-                          },
-                          text: Text(
-                            'Submit',
-                            style: changeTextColor(rubikBlack, whiteColor),
+                              },
+                            ),
                           ),
-                          color: primaryColor,
-                          height: 45.h,
-                          width: double.infinity,
-                        ),
-                      if (widget.from == "quotation")
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                    ],
-                  ),
+                          if (widget.from == "quotation")
+                            CustomButton(
+                              onPressed: () async {
+                                if (leadController.isDocumentUploading.value ==
+                                    false) {
+                                  if (leadController
+                                      .documentUplodedList.isNotEmpty) {
+                                    await leadController.documentUploading(
+                                      documentId: leadController.documentIdList,
+                                      ducument:
+                                          leadController.documentUplodedList,
+                                      leadId: widget.leadId,
+                                      quotationId: widget.quotationId,
+                                    );
+                                  } else {
+                                    CustomToast()
+                                        .showCustomToast('Upload Document.');
+                                  }
+                                }
+                              },
+                              text: Text(
+                                'Submit',
+                                style: changeTextColor(rubikBlack, whiteColor),
+                              ),
+                              color: primaryColor,
+                              height: 45.h,
+                              width: double.infinity,
+                            ),
+                          if (widget.from == "quotation")
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                        ],
+                      ),
           ),
         ),
       ),

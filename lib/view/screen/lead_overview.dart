@@ -884,31 +884,6 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                       ),
                   ],
                 ),
-
-                // Container(
-                //   decoration: BoxDecoration(
-                //     color: meetingBoxColor,
-                //     borderRadius: BorderRadius.all(
-                //       Radius.circular(8.r),
-                //     ),
-                //   ),
-                //   child: Center(
-                //     child: Padding(
-                //       padding: EdgeInsets.symmetric(
-                //           horizontal: 4.w, vertical: 2.h),
-                //       child: Text(
-                //         'Assigned User',
-                //         style: TextStyle(
-                //             fontSize: 14.sp,
-                //             fontWeight: FontWeight.w400,
-                //             color: whiteColor),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                //         ),
-                //   ],
-                // ),
                 SizedBox(height: 10.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

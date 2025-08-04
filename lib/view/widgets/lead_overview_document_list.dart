@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
+import 'package:task_management/constant/download.dart' show DownloadFile;
 import 'package:task_management/controller/lead_controller.dart';
+import 'package:task_management/custom_widget/network_image_class.dart';
 
 class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
   final dynamic leadId;
@@ -24,8 +26,8 @@ class _LeadOverviewDocumentListBotomsheet
 
   @override
   void initState() {
-    leadController.documentType();
-
+    print('wjh838e3 e3uey38 4ue48 ${widget.leadId}');
+    leadController.leadDocumentList(leadId: widget.leadId);
     leadController.leadpickedFile.value = File("");
     leadController.profilePicPath.value = "";
     super.initState();
@@ -53,7 +55,7 @@ class _LeadOverviewDocumentListBotomsheet
         padding: EdgeInsets.symmetric(horizontal: 15.w),
         child: SafeArea(
           child: Obx(
-            () => leadController.isDocumentTypeLoading.value == true
+            () => leadController.isDocumentListLoading.value == true
                 ? Center(child: CircularProgressIndicator())
                 : Column(
                     children: [
@@ -80,92 +82,101 @@ class _LeadOverviewDocumentListBotomsheet
                           )
                         ],
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: leadController.documentTypeListData.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "${index + 1}. ${leadController.documentTypeListData[index].name ?? ''}",
-                                        style: TextStyle(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {},
-                                      child: Container(
-                                          width: 40.w,
-                                          height: 30.h,
-                                          child: Icon(
-                                            Icons.download,
-                                            size: 30.sp,
-                                          )),
-                                    ),
-                                    InkWell(
-                                      onTap: () {},
-                                      child: Container(
-                                        width: 40.w,
-                                        height: 30.h,
-                                        child: Icon(
-                                          Icons.preview,
-                                          size: 30.sp,
-                                        ),
-                                      ),
-                                    ),
-                                    Obx(
-                                      () => Checkbox(
-                                        value: leadController
-                                            .isDocumentCheckBoxSelected[index],
-                                        onChanged: (value) {
-                                          leadController
-                                                  .isDocumentCheckBoxSelected[
-                                              index] = value!;
-                                        },
-                                      ),
-                                    )
-                                  ],
+                      leadController.leadDocumentListData.isEmpty
+                          ? Expanded(
+                              child: Center(
+                                child: Text(
+                                  'No uploaded document found',
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: textColor),
                                 ),
-                                Divider(
-                                  thickness: 1,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      // if (widget.from == "quotation")
-                      //   CustomButton(
-                      //     onPressed: () {
-                      //       if (leadController.isDocumentUploading.value ==
-                      //           false) {
-                      //         leadController.documentUploading(
-                      //           documentId: leadController.documentIdList,
-                      //           ducument: leadController.documentUplodedList,
-                      //           leadId: widget.leadId,
-                      //           quotationId: widget.quotationId,
-                      //         );
-                      //       }
-                      //     },
-                      //     text: Text(
-                      //       'Submit',
-                      //       style: changeTextColor(rubikBlack, whiteColor),
-                      //     ),
-                      //     color: primaryColor,
-                      //     height: 45.h,
-                      //     width: double.infinity,
-                      //   ),
-                      // if (widget.from == "quotation")
-                      //   SizedBox(
-                      //     height: 10.h,
-                      //   ),
+                              ),
+                            )
+                          : Expanded(
+                              child: ListView.builder(
+                                itemCount:
+                                    leadController.leadDocumentListData.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              "${index + 1}. ${leadController.leadDocumentListData[index].fileName ?? ''}",
+                                              style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              DownloadFile().saveToDownloads(
+                                                  leadController
+                                                          .leadDocumentListData[
+                                                              index]
+                                                          .fileUrl ??
+                                                      "",
+                                                  isNetwork: true);
+                                            },
+                                            child: Container(
+                                                width: 40.w,
+                                                height: 30.h,
+                                                child: Icon(
+                                                  Icons.download,
+                                                  size: 30.sp,
+                                                )),
+                                          ),
+                                          InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              width: 40.w,
+                                              height: 40.h,
+                                              child: NetworkImageWidget(
+                                                imageurl: leadController
+                                                    .leadDocumentListData[index]
+                                                    .fileUrl,
+                                                height: 40.h,
+                                                width: 40.w,
+                                              ),
+                                            ),
+                                          ),
+                                          Obx(
+                                            () => Checkbox(
+                                              value: leadController
+                                                      .isDocumentCheckBoxSelected[
+                                                  index],
+                                              onChanged: (value) async {
+                                                await leadController
+                                                    .approveDocument(
+                                                  documentId: leadController
+                                                      .leadDocumentListData[
+                                                          index]
+                                                      .id,
+                                                  leadId: widget.leadId,
+                                                );
+                                                leadController
+                                                        .isDocumentCheckBoxSelected[
+                                                    index] = value!;
+                                              },
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Divider(
+                                        thickness: 1,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
                     ],
                   ),
           ),

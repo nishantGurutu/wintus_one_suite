@@ -29,6 +29,8 @@ import 'package:task_management/model/quotation_list_model.dart';
 import 'package:task_management/model/responsible_person_list_model.dart';
 import 'package:task_management/model/session_list_model.dart';
 import 'package:task_management/model/source_list_model.dart';
+import 'package:task_management/model/uploaded_document_list_model.dart'
+    show UploadedDocumentData;
 import 'package:task_management/service/lead_service.dart';
 import 'package:task_management/view/screen/meeting/meeting_form.dart';
 import 'package:task_management/view/widgets/pdf_screen.dart';
@@ -39,9 +41,6 @@ class LeadController extends GetxController {
   var selectedUserType = ''.obs;
   RxList<String> addressTypeList =
       ["Site Address", "Office Address", "Other"].obs;
-  // created_by_me
-  // assigned_to_me
-  // added_to_me
   RxList<String> leadTypeList =
       ["Created by me", "Assigned to me", "Added to me"].obs;
   RxString selectedLeadType = "".obs;
@@ -871,6 +870,16 @@ class LeadController extends GetxController {
     isDocumentUploading.value = false;
   }
 
+  Future<void> approveDocument({int? documentId, required leadId}) async {
+    isDocumentUploading.value = true;
+    final result = await LeadService().approveDocument(documentId);
+    if (result != null) {
+      // Get.back();
+      await leadDocumentList(leadId: leadId);
+    } else {}
+    isDocumentUploading.value = false;
+  }
+
   RxList<QuotationListData> quotationListData = <QuotationListData>[].obs;
   var isQuotationLoading = false.obs;
   Future<void> quotationListApi({required leadId, String? leadNumber}) async {
@@ -915,18 +924,24 @@ class LeadController extends GetxController {
     isDocumentTypeLoading.value = false;
   }
 
-  RxList<DocumentTypeListData> leadDocumentListData =
-      <DocumentTypeListData>[].obs;
+  RxList<UploadedDocumentData> leadDocumentListData =
+      <UploadedDocumentData>[].obs;
   var isDocumentListLoading = false.obs;
   Future<void> leadDocumentList({required int leadId}) async {
     isDocumentListLoading.value = true;
     final result = await LeadService().leadDocumentList(leadId);
     if (result != null) {
-      isDocumentCheckBoxSelected.clear();
       if (result.data!.isNotEmpty) {
-        documentTypeListData.assignAll(result.data!);
+        leadDocumentListData.assignAll(result.data!);
         isDocumentCheckBoxSelected
-            .addAll(List.filled(documentTypeListData.length, false));
+            .addAll(List.filled(leadDocumentListData.length, false));
+        for (int i = 0; i < leadDocumentListData.length; i++) {
+          if (leadDocumentListData[i].status == 1) {
+            isDocumentCheckBoxSelected[i] = true;
+          } else {
+            isDocumentCheckBoxSelected[i] = false;
+          }
+        }
         isDocumentListLoading.value = false;
         documentTypeListData.refresh();
         isDocumentListLoading.refresh();

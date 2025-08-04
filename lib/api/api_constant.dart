@@ -232,4 +232,5 @@ class ApiConstant {
   static const String followup_type_list = "followup-type-list";
   static const String visit_list = "visit-list";
   static const String visit_type_list = "visit-type-list";
+  static const String approve_lead_document = "approve-lead-document";
 }
