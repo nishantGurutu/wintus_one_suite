@@ -130,7 +130,8 @@ class ProfileController extends GetxController {
       StorageHelper.setName(userProfileModel.value?.data?.name ?? '');
       StorageHelper.setEmail(userProfileModel.value?.data?.email ?? '');
       StorageHelper.setPhone(userProfileModel.value?.data?.phone ?? '');
-      StorageHelper.setRole(userProfileModel.value?.data?.role ?? 0);
+      StorageHelper.setRole(
+          userProfileModel.value?.data?.role.toString() ?? '');
       StorageHelper.setDepartmentId(
           userProfileModel.value?.data?.departmentId ?? 0);
       StorageHelper.setGender(userProfileModel.value?.data?.gender ?? '');

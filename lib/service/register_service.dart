@@ -81,7 +81,8 @@ class RegisterService {
           StorageHelper.setName(loginModel.data?.name ?? "");
           StorageHelper.setEmail(loginModel.data?.email ?? "");
           StorageHelper.setPhone(loginModel.data?.phone ?? "");
-          StorageHelper.setRole(loginModel.data?.role ?? 0);
+          StorageHelper.setRole(loginModel.data?.roleId.toString() ?? "");
+          StorageHelper.setRole(loginModel.data?.roleName ?? "");
           StorageHelper.setDepartmentId(loginModel.data?.departmentId ?? 0);
           StorageHelper.setGender(loginModel.data?.gender ?? '');
           StorageHelper.setImage(loginModel.data?.image ?? '');
@@ -89,7 +90,6 @@ class RegisterService {
           StorageHelper.setType(loginModel.data?.type ?? 0);
           StorageHelper.setRecoveryPassword(
               loginModel.data?.recoveryPassword ?? "");
-
           StorageHelper.setTokenType(loginModel.data?.tokenType ?? "");
           StorageHelper.setAssignedDept(loginModel.data?.assignedDept ?? "");
           if (StorageHelper.getType() == 3) {

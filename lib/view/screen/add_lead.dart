@@ -104,7 +104,7 @@ class _AddLeadsState extends State<AddLeads> {
                           height: 10.h,
                         ),
                         Text(
-                          "Person Name",
+                          "Lead Name",
                           style: TextStyle(fontSize: 14.sp),
                         ),
                         SizedBox(
@@ -113,7 +113,7 @@ class _AddLeadsState extends State<AddLeads> {
                         TaskCustomTextField(
                           controller: leadNameController,
                           textCapitalization: TextCapitalization.sentences,
-                          data: name,
+                          data: leadName,
                           hintText: leadName,
                           labelText: leadName,
                           index: 0,
@@ -173,7 +173,7 @@ class _AddLeadsState extends State<AddLeads> {
                           controller: emailController,
                           textCapitalization: TextCapitalization.none,
                           keyboardType: TextInputType.emailAddress,
-                          data: email,
+                          data: "",
                           hintText: email,
                           labelText: email,
                           index: 11,

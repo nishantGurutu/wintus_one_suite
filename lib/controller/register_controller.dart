@@ -62,8 +62,6 @@ class RegisterController extends GetxController {
         appVersion: appVersion);
     if (result != null) {
       loginModel.value = result;
-
-      // await LocationTrackerService().getCurrentLocation();
     } else {}
     isLoginLoading.value = false;
   }

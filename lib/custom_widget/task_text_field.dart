@@ -81,6 +81,9 @@ class _TaskCustomTextFieldState extends State<TaskCustomTextField> {
           maxLength: widget.maxLength,
           obscureText: widget.obscureText ?? false,
           validator: (value) {
+            if (widget.data == "") {
+              return null;
+            }
             if (value == null || value.isEmpty) {
               return "Please Enter ${widget.data}";
             }

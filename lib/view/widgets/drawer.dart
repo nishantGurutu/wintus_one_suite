@@ -14,14 +14,12 @@ import 'package:task_management/controller/register_controller.dart';
 import 'package:task_management/controller/task_controller.dart';
 import 'package:task_management/custom_widget/button_widget.dart';
 import 'package:task_management/custom_widget/task_text_field.dart';
-import 'package:task_management/helper/location_trackimg.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/assets_submit_model.dart';
 import 'package:task_management/model/daily_task_submit_model.dart';
 import 'package:task_management/model/role_list_model.dart';
 import 'package:task_management/view/screen/bootom_bar.dart';
 import 'package:task_management/view/screen/calender_screen.dart';
-import 'package:task_management/view/screen/canwin_member.dart';
 import 'package:task_management/view/screen/canwinn_brand.dart';
 import 'package:task_management/view/screen/contact.dart';
 import 'package:task_management/view/screen/inscreen/hr_screen.dart';
@@ -33,16 +31,13 @@ import 'package:task_management/view/screen/outscreen/out_screen.dart';
 import 'package:task_management/view/screen/outscreen/out_screen_chalan_list.dart';
 import 'package:task_management/view/screen/page_screen.dart';
 import 'package:task_management/view/screen/profile.dart';
-import 'package:task_management/view/screen/project.dart';
 import 'package:task_management/view/screen/setting.dart';
 import 'package:task_management/view/screen/task_screen.dart';
 import 'package:task_management/view/screen/todo_list.dart';
 import 'package:task_management/view/screen/user.dart';
 import 'package:task_management/view/screen/vehicleManagement.dart';
 import 'package:task_management/view/widgets/all_assets.dart';
-import 'package:task_management/view/widgets/notes_folder.dart';
 import 'package:task_management/view/widgets/select_user.dart';
-import 'package:task_management/view/widgets/stored_location_screen.dart';
 import '../screen/outscreen/hr_screen.dart';
 import '../screen/outscreen/security.dart';
 import 'add_assets.dart';
@@ -122,7 +117,7 @@ class _SideDrawerState extends State<SideDrawer> {
                                   Radius.circular(13.r),
                                 ),
                                 child: Image.network(
-                                  StorageHelper.getImage(),
+                                  StorageHelper.getImage() ?? "",
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Container(
