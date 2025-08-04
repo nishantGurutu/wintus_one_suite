@@ -144,6 +144,8 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
                                   child: DocumentListBotomsheet(
                                     from: "quotation",
                                     leadId: widget.leadId,
+                                    quotationId: leadController
+                                        .quotationListData[index].id,
                                   ),
                                 ),
                               );

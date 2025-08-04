@@ -27,6 +27,7 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
 
   @override
   void initState() {
+    print("eh9849 4u49h94 4f9u4h9 ${widget.quotationId}");
     leadController.documentType();
     leadController.leadpickedFile.value = File("");
     leadController.profilePicPath.value = "";
@@ -104,6 +105,11 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                                     ),
                                     InkWell(
                                       onTap: () {
+                                        leadController.documentIdList[index] =
+                                            leadController
+                                                    .documentTypeListData[index]
+                                                    .id ??
+                                                0;
                                         takeDocument(
                                             index: index,
                                             documentId: leadController
@@ -135,11 +141,13 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                                             )
                                           : InkWell(
                                               onTap: () {
-                                                Get.to(() => ImageScreen(
-                                                      file: leadController
-                                                              .documentUplodedList[
-                                                          index],
-                                                    ));
+                                                Get.to(
+                                                  () => ImageScreen(
+                                                    file: leadController
+                                                            .documentUplodedList[
+                                                        index],
+                                                  ),
+                                                );
                                               },
                                               child: Container(
                                                 height: 40.h,

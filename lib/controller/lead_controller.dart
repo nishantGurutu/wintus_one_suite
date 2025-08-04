@@ -905,6 +905,7 @@ class LeadController extends GetxController {
       isDocumentCheckBoxSelected.clear();
       if (result.data!.isNotEmpty) {
         documentTypeListData.assignAll(result.data!);
+        documentIdList.addAll(List.filled(documentTypeListData.length, 0));
         documentUplodedList
             .addAll(List.filled(documentTypeListData.length, File('')));
         isDocumentCheckBoxSelected
