@@ -905,11 +905,33 @@ class LeadController extends GetxController {
       isDocumentCheckBoxSelected.clear();
       if (result.data!.isNotEmpty) {
         documentTypeListData.assignAll(result.data!);
+        documentUplodedList
+            .addAll(List.filled(documentTypeListData.length, File('')));
         isDocumentCheckBoxSelected
             .addAll(List.filled(documentTypeListData.length, false));
       }
     } else {}
     isDocumentTypeLoading.value = false;
+  }
+
+  RxList<DocumentTypeListData> leadDocumentListData =
+      <DocumentTypeListData>[].obs;
+  var isDocumentListLoading = false.obs;
+  Future<void> leadDocumentList({required int leadId}) async {
+    isDocumentListLoading.value = true;
+    final result = await LeadService().leadDocumentList(leadId);
+    if (result != null) {
+      isDocumentCheckBoxSelected.clear();
+      if (result.data!.isNotEmpty) {
+        documentTypeListData.assignAll(result.data!);
+        isDocumentCheckBoxSelected
+            .addAll(List.filled(documentTypeListData.length, false));
+        isDocumentListLoading.value = false;
+        documentTypeListData.refresh();
+        isDocumentListLoading.refresh();
+      }
+    } else {}
+    isDocumentListLoading.value = false;
   }
 
   RxList<LeadContactData> leadContactData = <LeadContactData>[].obs;

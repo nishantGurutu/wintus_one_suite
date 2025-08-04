@@ -333,39 +333,8 @@ class _MessageScreenState extends State<MessageScreen> {
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     if (showDateHeader)
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              Color(0xff27B1A2),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                            Radius.circular(
-                                                                5.r),
-                                                          ),
-                                                        ),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal: 8,
-                                                                  vertical: 4),
-                                                          child: Text(
-                                                            "${chat.createdDate ?? ''}",
-                                                            style: TextStyle(
-                                                                color:
-                                                                    whiteColor,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
-                                                            maxLines: 100000,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      ),
+                                                      timeContainer(
+                                                          chat.createdDate),
                                                   ],
                                                 ),
                                                 Row(
@@ -918,6 +887,27 @@ class _MessageScreenState extends State<MessageScreen> {
                     ],
                   ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget timeContainer(String? createdDate) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xff27B1A2),
+        borderRadius: BorderRadius.all(
+          Radius.circular(5.r),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Text(
+          "${createdDate ?? ''}",
+          style: TextStyle(
+              color: whiteColor, fontSize: 16, fontWeight: FontWeight.w500),
+          maxLines: 100000,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );

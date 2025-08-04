@@ -157,13 +157,19 @@ class ChatController extends GetxController {
       required String messageId,
       required String parrent_message_sender_name,
       required String selectedMessage}) async {
+    DateTime inputDateTime = DateTime.now();
+
+    String displayDate = getDisplayDate(inputDateTime);
+    String dt = DateFormat.Hm().format(DateTime.now());
+    print('oiwejui49 3i9u $displayDate');
     final newMessage = await ChatHistoryData(
       message: message,
       senderId: StorageHelper.getId(),
       senderName: name,
       senderEmail: "",
       attachment: attachment.path,
-      createdAt: DateFormat.Hm().format(DateTime.now()),
+      createdAt: dt,
+      createdDate: displayDate,
       parentSenderName: parrent_message_sender_name,
       parentMessageId: messageId.isNotEmpty ? int.parse(messageId) : 0,
       parentMessage: selectedMessage,
@@ -178,6 +184,25 @@ class ChatController extends GetxController {
       attachment,
       messageId: messageId,
     );
+  }
+
+  String getDisplayDate(DateTime inputDateTime) {
+    final now = DateTime.now();
+
+    // Remove Time (only Date part)
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(Duration(days: 1));
+    final inputDate =
+        DateTime(inputDateTime.year, inputDateTime.month, inputDateTime.day);
+
+    if (inputDate == today) {
+      return 'Today';
+    } else if (inputDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      // Format as "dd MMM yyyy"
+      return DateFormat('dd MMM yyyy').format(inputDateTime);
+    }
   }
 
   RxList<int> selectedMemberId = <int>[].obs;

@@ -9,6 +9,7 @@ import 'package:task_management/constant/custom_toast.dart';
 import 'package:task_management/constant/style_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/button_widget.dart';
+import 'package:task_management/view/widgets/image_screen.dart';
 
 class DocumentListBotomsheet extends StatefulWidget {
   final String? from;
@@ -36,6 +37,8 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
   dispose() {
     super.dispose();
     leadController.leadpickedFile.value = File("");
+    leadController.documentUplodedList.clear();
+    leadController.documentUplodedList.clear();
     leadController.profilePicPath.value = "";
   }
 
@@ -99,35 +102,69 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                                             fontWeight: FontWeight.w500),
                                       ),
                                     ),
-                                    if (widget.from == "quotation")
-                                      InkWell(
-                                        onTap: () {
-                                          takeDocument(
-                                              documentId: leadController
-                                                      .documentTypeListData[
-                                                          index]
-                                                      .id ??
-                                                  0);
-                                        },
-                                        child: Container(
-                                          width: 40.w,
-                                          height: 30.h,
-                                          child: Icon(
-                                            Icons.upload,
-                                            size: 30.sp,
-                                          ),
-                                        ),
-                                      ),
                                     InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        takeDocument(
+                                            index: index,
+                                            documentId: leadController
+                                                    .documentTypeListData[index]
+                                                    .id ??
+                                                0);
+                                      },
                                       child: Container(
                                         width: 40.w,
                                         height: 30.h,
                                         child: Icon(
-                                          Icons.preview,
+                                          Icons.upload,
                                           size: 30.sp,
                                         ),
                                       ),
+                                    ),
+                                    Obx(
+                                      () => leadController
+                                              .documentUplodedList[index]
+                                              .path
+                                              .isEmpty
+                                          ? Container(
+                                              width: 40.w,
+                                              height: 30.h,
+                                              child: Icon(
+                                                Icons.preview,
+                                                size: 30.sp,
+                                              ),
+                                            )
+                                          : InkWell(
+                                              onTap: () {
+                                                Get.to(() => ImageScreen(
+                                                      file: leadController
+                                                              .documentUplodedList[
+                                                          index],
+                                                    ));
+                                              },
+                                              child: Container(
+                                                height: 40.h,
+                                                width: 40.w,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: lightBorderColor),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(8.r)),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              10.r)),
+                                                  child: Image.file(
+                                                    leadController
+                                                            .documentUplodedList[
+                                                        index],
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                     ),
                                   ],
                                 ),
@@ -141,12 +178,12 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                       ),
                       if (widget.from == "quotation")
                         CustomButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (leadController.isDocumentUploading.value ==
                                 false) {
                               if (leadController
                                   .documentUplodedList.isNotEmpty) {
-                                leadController.documentUploading(
+                                await leadController.documentUploading(
                                   documentId: leadController.documentIdList,
                                   ducument: leadController.documentUplodedList,
                                   leadId: widget.leadId,
@@ -178,7 +215,7 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
     );
   }
 
-  Future<void> takeDocument({int? documentId}) async {
+  Future<void> takeDocument({required int index, int? documentId}) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.any,
@@ -196,13 +233,9 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
         }
 
         final File file = File(filePath);
-        leadController.leadpickedFile.value = File(file.path);
-        leadController.profilePicPath.value = file.path.toString();
-        leadController.documentIdList.add(documentId ?? 0);
-        leadController.documentUplodedList
-            .add(leadController.leadpickedFile.value);
-        print(
-            'selected file path from device is ${leadController.leadpickedFile.value}');
+        leadController.documentUplodedList[index] = file;
+        leadController.documentUplodedList.refresh();
+        print('File selected for index $index: ${file.path}');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('No file selected.')),

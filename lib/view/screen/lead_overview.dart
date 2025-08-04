@@ -65,6 +65,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
         leadId: int.parse(widget.leadId.toString()));
     await leadController.followUpsListApi(
         leadId: int.parse(widget.leadId.toString()));
+
     await SosPusherConfig()
         .initPusher(_onPusherEvent, channelName: "lead", context: context);
   }
@@ -438,8 +439,8 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
             ),
             leadInfo(leadDatavalue),
             SizedBox(height: 15.h),
-            // agrementWidget(),
-            // SizedBox(height: 8.h),
+            agrementWidget(),
+            SizedBox(height: 8.h),
           ],
         ),
       ),

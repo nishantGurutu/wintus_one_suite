@@ -8,6 +8,7 @@ import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/model/quotation_list_model.dart';
 import 'package:task_management/view/screen/create_quotation.dart';
 import 'package:task_management/view/screen/update_quotation.dart';
+import 'package:task_management/view/widgets/document_list_bottom_sheet.dart';
 
 class QuotationListScreen extends StatefulWidget {
   final dynamic leadId;
@@ -126,63 +127,63 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
                         "Quotation: ${quotation.quotationNumber}",
                         style: TextStyle(color: Colors.grey.shade700),
                       ),
-                      // SizedBox(height: 6),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     GestureDetector(
-                      //       onTap: () {
-                      //         showModalBottomSheet(
-                      //           context: context,
-                      //           isScrollControlled: true,
-                      //           builder: (context) => Padding(
-                      //             padding: EdgeInsets.only(
-                      //                 bottom: MediaQuery.of(context)
-                      //                     .viewInsets
-                      //                     .bottom),
-                      //             child: DocumentListBotomsheet(
-                      //               from: "quotation",
-                      //               leadId: widget.leadId,
-                      //             ),
-                      //           ),
-                      //         );
-                      //       },
-                      //       child: Container(
-                      //         height: 30.h,
-                      //         width: 140.w,
-                      //         decoration: BoxDecoration(
-                      //           color: lightBlue,
-                      //           borderRadius: BorderRadius.all(
-                      //             Radius.circular(10.r),
-                      //           ),
-                      //         ),
-                      //         child: Center(
-                      //             child: Text(
-                      //           "Accept",
-                      //           style: TextStyle(
-                      //               fontSize: 13.sp,
-                      //               fontWeight: FontWeight.w500),
-                      //         )),
-                      //       ),
-                      //     ),
-                      //     Container(
-                      //       height: 30.h,
-                      //       width: 140.w,
-                      //       decoration: BoxDecoration(
-                      //         color: lightBlue,
-                      //         borderRadius: BorderRadius.all(
-                      //           Radius.circular(10.r),
-                      //         ),
-                      //       ),
-                      //       child: Center(
-                      //           child: Text(
-                      //         "Not Accept",
-                      //         style: TextStyle(
-                      //             fontSize: 13.sp, fontWeight: FontWeight.w500),
-                      //       )),
-                      //     ),
-                      //   ],
-                      // ),
+                      SizedBox(height: 6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (context) => Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                  child: DocumentListBotomsheet(
+                                    from: "quotation",
+                                    leadId: widget.leadId,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              height: 30.h,
+                              width: 140.w,
+                              decoration: BoxDecoration(
+                                color: lightBlue,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.r),
+                                ),
+                              ),
+                              child: Center(
+                                  child: Text(
+                                "Accept",
+                                style: TextStyle(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500),
+                              )),
+                            ),
+                          ),
+                          Container(
+                            height: 30.h,
+                            width: 140.w,
+                            decoration: BoxDecoration(
+                              color: lightBlue,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.r),
+                              ),
+                            ),
+                            child: Center(
+                                child: Text(
+                              "Not Accept",
+                              style: TextStyle(
+                                  fontSize: 13.sp, fontWeight: FontWeight.w500),
+                            )),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

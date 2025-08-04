@@ -44,7 +44,7 @@ class ProfileController extends GetxController {
   Rx<File> pickedFile = File('').obs;
   RxList<String> anniversaryList = <String>["DOB", "Marriage Anniversary"].obs;
   RxList<String> genderList = <String>["Male", "Female"].obs;
-  RxString? selectedGender = ''.obs;
+  RxString? selectedGender = "".obs;
   RxString? selectedAnniversary = ''.obs;
   var isProfileUpdating = false.obs;
   Future<void> updateProfile(

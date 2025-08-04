@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     apiCall();
-
+    profileController.selectedGender?.value = "";
     super.initState();
   }
 
@@ -525,11 +525,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: DropdownButton2<String>(
                                         isExpanded: true,
                                         items: profileController.genderList
-                                            .map((String item) {
+                                            .map((String? item) {
                                           return DropdownMenuItem<String>(
                                             value: item,
                                             child: Text(
-                                              item,
+                                              item ?? "",
                                               style: TextStyle(
                                                 decoration: TextDecoration.none,
                                                 fontFamily: 'Roboto',

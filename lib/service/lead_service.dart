@@ -1082,7 +1082,7 @@ class LeadService {
         "user_id": userId,
         "quotation_id": quotationId,
       };
-
+      print('ir4u8r4 498ur84 ${formDataMap}');
       for (int i = 0; i < ducument.length; i++) {
         final file = ducument[i];
         final fileName = file.path.split('/').last;
@@ -1201,6 +1201,44 @@ class LeadService {
 
       final response = await _dio.get(
         ApiConstant.baseUrl + ApiConstant.get_document_types,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return DocumentTypeListModel.fromJson(response.data);
+      } else {
+        print("Unexpected response: ${response.data}");
+        CustomToast().showCustomToast(response.data['message']);
+        return null;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return null;
+    }
+  }
+
+  Future<DocumentTypeListModel?> leadDocumentList(int leadId) async {
+    try {
+      final token = StorageHelper.getToken();
+
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+
+      print("iu4r84 4r948ur98 49849 ${leadId}");
+      final Map<String, dynamic> formMapData = {
+        "lead_id": leadId,
+      };
+      final formData = FormData.fromMap(formMapData);
+
+      final response = await _dio.post(
+        ApiConstant.baseUrl + ApiConstant.get_lead_document,
+        data: formData,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
