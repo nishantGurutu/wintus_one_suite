@@ -13,6 +13,7 @@ import 'package:task_management/firebase_messaging/notification_service.dart';
 import 'package:task_management/helper/db_helper.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/LeadNoteModel.dart';
+import 'package:task_management/model/added_document_lead_list_model.dart';
 import 'package:task_management/model/document_type_list_model.dart';
 import 'package:task_management/model/follow_ups_list_model.dart';
 import 'package:task_management/model/followups_type_list_model.dart';
@@ -37,6 +38,8 @@ import 'package:task_management/view/widgets/pdf_screen.dart';
 
 class LeadController extends GetxController {
   var isImageLoading = false.obs;
+  var isAllLeadSelected = true.obs;
+  var isUploadedDocumentLeadSelected = false.obs;
   RxList<bool> isDocumentCheckBoxSelected = <bool>[].obs;
   var selectedUserType = ''.obs;
   RxList<String> addressTypeList =
@@ -423,6 +426,31 @@ class LeadController extends GetxController {
     }
   }
 
+  RxList<AddedDocumentLeadData> addedDocumentLeadDataList =
+      <AddedDocumentLeadData>[].obs;
+  var isAddedDocumentLeadLoading = false.obs;
+  Future<void> addedDocumentLeadList() async {
+    isAddedDocumentLeadLoading.value = true;
+    try {
+      final result = await LeadService().addedDocumentLeadList();
+
+      if (result != null && result.data != null) {
+        isAddedDocumentLeadLoading.value = false;
+        isAddedDocumentLeadLoading.refresh();
+        addedDocumentLeadDataList.assignAll(result.data!);
+      }
+    } catch (e) {
+      debugPrint("Error fetching leads: $e");
+      Get.snackbar(
+        'Error',
+        'Failed to fetch leads: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isAddedDocumentLeadLoading.value = false;
+    }
+  }
+
   var isSourceLoading = false.obs;
   RxList<SourceListData> sourceListData = <SourceListData>[].obs;
   Rx<SourceListData?> selectedSourceListData = Rx<SourceListData?>(null);
@@ -454,7 +482,6 @@ class LeadController extends GetxController {
   Future<void> offLineStatusdata({String? status}) async {
     final result = await DatabaseHelper.instance.getLeadStatus();
     leadStatusData.assignAll(result);
-    // print('kdje93 fiyr874 ${leadStatusData[0].name}');
     refresh();
     if (status != null) {
       for (var val in leadStatusData) {
@@ -465,7 +492,6 @@ class LeadController extends GetxController {
         }
       }
       print('lead selected id from home ${selectedLeadStatusData.value?.id}');
-      // await getOflineLeadList();
       await leadsList(selectedLeadStatusData.value?.id, selectedLeadType.value);
     }
   }
@@ -567,7 +593,6 @@ class LeadController extends GetxController {
         if (dt.followUpDate != null && dt.followUpTime != null) {
           try {
             String dateInput = "${dt.followUpDate} ${dt.followUpTime}";
-
             DateTime? dateTime;
             try {
               DateFormat inputFormat = DateFormat("dd-MM-yyyy h:mm a", 'en_US');
@@ -575,7 +600,6 @@ class LeadController extends GetxController {
             } catch (e) {
               print("Error parsing with lowercase AM/PM: $e");
             }
-
             if (dateTime == null) {
               try {
                 DateFormat inputFormat =
@@ -865,7 +889,6 @@ class LeadController extends GetxController {
     if (result != null) {
       Get.back();
       selectedLeadStatusUpdateData.value = null;
-      // await leadContactList(leadId: leadId);
     } else {}
     isDocumentUploading.value = false;
   }
@@ -874,7 +897,6 @@ class LeadController extends GetxController {
     isDocumentUploading.value = true;
     final result = await LeadService().approveDocument(documentId);
     if (result != null) {
-      // Get.back();
       await leadDocumentList(leadId: leadId);
     } else {}
     isDocumentUploading.value = false;
@@ -931,7 +953,7 @@ class LeadController extends GetxController {
     isDocumentListLoading.value = true;
     final result = await LeadService().leadDocumentList(leadId);
     if (result != null) {
-      if (result.data!.isNotEmpty) {
+      if (result.status == true) {
         leadDocumentListData.assignAll(result.data!);
         isDocumentCheckBoxSelected
             .addAll(List.filled(leadDocumentListData.length, false));

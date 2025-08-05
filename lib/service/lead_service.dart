@@ -13,6 +13,7 @@ import 'package:task_management/helper/db_helper.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:dio/dio.dart';
 import 'package:task_management/model/LeadNoteModel.dart';
+import 'package:task_management/model/added_document_lead_list_model.dart';
 import 'package:task_management/model/document_type_list_model.dart';
 import 'package:task_management/model/follow_ups_list_model.dart';
 import 'package:task_management/model/followups_type_list_model.dart';
@@ -287,7 +288,68 @@ class LeadService {
     }
   }
 
+  Future<AddedDocumentLeadModel?> addedDocumentLeadList() async {
+    try {
+      final token = StorageHelper.getToken();
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+      final response = await _dio.get(
+        ApiConstant.baseUrl + ApiConstant.added_document_lead_list,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return AddedDocumentLeadModel.fromJson(response.data);
+      } else {
+        print("Unexpected response: ${response.data}");
+        CustomToast().showCustomToast(response.data['message']);
+        return null;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return null;
+    }
+  }
+
   Future<SourseListModel?> sourseList() async {
+    try {
+      final token = StorageHelper.getToken();
+      print("Token used: $token");
+
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+
+      final response = await _dio.get(
+        ApiConstant.baseUrl + ApiConstant.source_list,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return SourseListModel.fromJson(response.data);
+      } else {
+        print("Unexpected response: ${response.data}");
+        CustomToast().showCustomToast(response.data['message']);
+        return null;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return null;
+    }
+  }
+
+  Future<SourseListModel?> addedLeadList() async {
     try {
       final token = StorageHelper.getToken();
       print("Token used: $token");

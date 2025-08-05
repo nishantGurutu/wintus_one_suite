@@ -118,6 +118,7 @@ class StorageHelper {
   static dynamic getImage() => _preferences?.getString(_keyImage);
   static dynamic getDepartmentId() => _preferences?.getInt(_keyDepartmentId);
   static dynamic getRole() => _preferences?.getString(_role);
+  static dynamic getRoleName() => _preferences?.getString(_roleName);
   static dynamic getType() => _preferences?.getInt(_type);
   static dynamic getRecoveryPassword() =>
       _preferences?.getString(_recoveryPassword);

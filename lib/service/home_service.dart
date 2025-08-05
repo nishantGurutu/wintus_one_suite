@@ -116,10 +116,9 @@ class HomeService {
       dynamic id) async {
     try {
       var token = StorageHelper.getToken();
+      print('Responsible person API URL: 873ye8738 $id');
       var url =
           "${ApiConstant.baseUrl + ApiConstant.responsiblePersonList}?dept_id=$id";
-
-      print('Responsible person API URL: $url');
 
       _dio.options.headers["Authorization"] = "Bearer $token";
 

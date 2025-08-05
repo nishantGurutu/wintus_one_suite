@@ -8,6 +8,7 @@ import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/download.dart' show DownloadFile;
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/network_image_class.dart';
+import 'package:task_management/helper/storage_helper.dart';
 
 class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
   final dynamic leadId;
@@ -177,6 +178,63 @@ class _LeadOverviewDocumentListBotomsheet
                                 },
                               ),
                             ),
+                      if (StorageHelper.getRoleName()
+                              .toString()
+                              .toLowerCase() ==
+                          "marketing manager")
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 40.h,
+                                  width: 150.w,
+                                  decoration: BoxDecoration(
+                                    color: primaryButtonColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8.r),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Approve',
+                                      style: TextStyle(
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: whiteColor),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 40.h,
+                                  width: 150.w,
+                                  decoration: BoxDecoration(
+                                    color: primaryButtonColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8.r),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Raise Concern',
+                                      style: TextStyle(
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: whiteColor),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                          ],
+                        ),
                     ],
                   ),
           ),

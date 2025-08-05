@@ -180,6 +180,7 @@ class HomeController extends GetxController {
       selectedResponsiblePersonData.value = null;
       responsiblePersonListModel.value = result;
       isResponsiblePersonLoading.value = false;
+      isResponsiblePersonLoading.refresh();
       responsiblePersonList.clear();
       if (fromPage.toString() == "add_meeting") {
         responsiblePersonList.add(
@@ -193,6 +194,7 @@ class HomeController extends GetxController {
       for (var person in responsiblePersonListModel.value.data!) {
         responsiblePersonList.add(person);
       }
+      responsiblePersonList.refresh();
       selectedSharedListPerson
           .addAll(List<bool>.filled(responsiblePersonList.length, false));
       responsiblePersonSelectedCheckBox

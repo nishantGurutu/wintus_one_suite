@@ -82,7 +82,7 @@ class RegisterService {
           StorageHelper.setEmail(loginModel.data?.email ?? "");
           StorageHelper.setPhone(loginModel.data?.phone ?? "");
           StorageHelper.setRole(loginModel.data?.roleId.toString() ?? "");
-          StorageHelper.setRole(loginModel.data?.roleName ?? "");
+          StorageHelper.setRoleName(loginModel.data?.roleName ?? "");
           StorageHelper.setDepartmentId(loginModel.data?.departmentId ?? 0);
           StorageHelper.setGender(loginModel.data?.gender ?? '');
           StorageHelper.setImage(loginModel.data?.image ?? '');
