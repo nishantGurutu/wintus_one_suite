@@ -181,9 +181,13 @@ class _LeadOverviewDocumentListBotomsheet
                               ),
                             ),
                       if (StorageHelper.getRoleName()
-                              .toString()
-                              .toLowerCase() ==
-                          "marketing manager")
+                                  .toString()
+                                  .toLowerCase() ==
+                              "marketing manager" ||
+                          StorageHelper.getRoleName()
+                                  .toString()
+                                  .toLowerCase() ==
+                              "branch head")
                         Column(
                           children: [
                             SizedBox(
@@ -325,12 +329,27 @@ class _LeadOverviewDocumentListBotomsheet
                     InkWell(
                       onTap: () async {
                         debugPrint("Approve Button Clicked");
-                        if (leadController.isMarketingManagerApproving.value ==
-                            false) {
-                          await leadController.approveMarketingManager(
-                              leadId: widget.leadId,
-                              remark: remarkControlelr.text,
-                              status: type == "approve" ? 1 : 2);
+                        if (StorageHelper.getRoleName()
+                                .toString()
+                                .toLowerCase() ==
+                            "branch head") {
+                          if (leadController
+                                  .isBranchHeadManagerApproving.value ==
+                              false) {
+                            await leadController.branchheadManagerApproving(
+                                leadId: widget.leadId,
+                                remark: remarkControlelr.text,
+                                status: type == "approve" ? 1 : 2);
+                          }
+                        } else {
+                          if (leadController
+                                  .isMarketingManagerApproving.value ==
+                              false) {
+                            await leadController.approveMarketingManager(
+                                leadId: widget.leadId,
+                                remark: remarkControlelr.text,
+                                status: type == "approve" ? 1 : 2);
+                          }
                         }
                       },
                       child: Container(

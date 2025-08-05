@@ -236,4 +236,6 @@ class ApiConstant {
   static const String added_document_lead_list = "added-document-lead-list";
   static const String manager_approve_lead_document =
       "manager-approve-lead-document";
+  static const String branchhead_approve_lead_document =
+      "branchhead-approve-lead-document";
 }

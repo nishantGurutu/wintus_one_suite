@@ -173,9 +173,13 @@ class _LeadListState extends State<LeadList> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (StorageHelper.getRoleName()
-                                .toString()
-                                .toLowerCase() ==
-                            "marketing manager")
+                                    .toString()
+                                    .toLowerCase() ==
+                                "marketing manager" ||
+                            StorageHelper.getRoleName()
+                                    .toString()
+                                    .toLowerCase() ==
+                                "branch head")
                           Column(
                             children: [
                               SizedBox(

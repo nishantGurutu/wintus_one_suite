@@ -1453,6 +1453,20 @@ class LeadController extends GetxController {
     isMarketingManagerApproving.value = false;
   }
 
+  var isBranchHeadManagerApproving = false.obs;
+  Future<void> branchheadManagerApproving(
+      {required leadId, required String remark, required int status}) async {
+    isBranchHeadManagerApproving.value = true;
+    final result =
+        await LeadService().branchHeadManagerApproving(leadId, remark, status);
+    if (result != null) {
+      Get.back();
+      // Get.back();
+      // await followUpsListApi(leadId: leadId);
+    } else {}
+    isBranchHeadManagerApproving.value = false;
+  }
+
   RxList<String> timeList = <String>[
     "Minutes",
     "Hours",
