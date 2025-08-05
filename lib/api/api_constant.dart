@@ -234,4 +234,6 @@ class ApiConstant {
   static const String visit_type_list = "visit-type-list";
   static const String approve_lead_document = "approve-lead-document";
   static const String added_document_lead_list = "added-document-lead-list";
+  static const String manager_approve_lead_document =
+      "manager-approve-lead-document";
 }

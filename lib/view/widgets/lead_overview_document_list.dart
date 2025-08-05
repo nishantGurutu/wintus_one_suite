@@ -6,8 +6,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/download.dart' show DownloadFile;
+import 'package:task_management/constant/show_dialog_class.dart';
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/network_image_class.dart';
+import 'package:task_management/custom_widget/task_text_field.dart';
 import 'package:task_management/helper/storage_helper.dart';
 
 class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
@@ -190,41 +192,51 @@ class _LeadOverviewDocumentListBotomsheet
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  height: 40.h,
-                                  width: 150.w,
-                                  decoration: BoxDecoration(
-                                    color: primaryButtonColor,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8.r),
+                                GestureDetector(
+                                  onTap: () {
+                                    documentApprovedDialog(context, "approve");
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    width: 150.w,
+                                    decoration: BoxDecoration(
+                                      color: primaryButtonColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8.r),
+                                      ),
                                     ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Approve',
-                                      style: TextStyle(
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: whiteColor),
+                                    child: Center(
+                                      child: Text(
+                                        'Approve',
+                                        style: TextStyle(
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: whiteColor),
+                                      ),
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  height: 40.h,
-                                  width: 150.w,
-                                  decoration: BoxDecoration(
-                                    color: primaryButtonColor,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8.r),
+                                GestureDetector(
+                                  onTap: () {
+                                    documentApprovedDialog(context, "concern");
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    width: 150.w,
+                                    decoration: BoxDecoration(
+                                      color: redColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8.r),
+                                      ),
                                     ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Raise Concern',
-                                      style: TextStyle(
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: whiteColor),
+                                    child: Center(
+                                      child: Text(
+                                        'Raise Concern',
+                                        style: TextStyle(
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: whiteColor),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -240,6 +252,115 @@ class _LeadOverviewDocumentListBotomsheet
           ),
         ),
       ),
+    );
+  }
+
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final TextEditingController remarkControlelr = TextEditingController();
+  ValueNotifier<int?> focusedIndexNotifier = ValueNotifier<int?>(null);
+  Future<void> documentApprovedDialog(BuildContext context, String type) async {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext builderContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Container(
+            width: double.infinity,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.9,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: whiteColor,
+            ),
+            padding: EdgeInsets.all(16.w),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _key,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          type == "approve"
+                              ? "Approve Document"
+                              : "Raise Concern",
+                          style: TextStyle(
+                              fontSize: 14.sp, fontWeight: FontWeight.w500),
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            Get.back();
+                          },
+                          child: Icon(Icons.close, size: 30),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Remarks",
+                          style: TextStyle(
+                              fontSize: 14.sp, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                    TaskCustomTextField(
+                      controller: remarkControlelr,
+                      focusedIndexNotifier: focusedIndexNotifier,
+                      index: 1,
+                      textCapitalization: TextCapitalization.sentences,
+                      hintText: "Enter remarks",
+                      data: "",
+                    ),
+                    SizedBox(height: 8.h),
+                    InkWell(
+                      onTap: () async {
+                        debugPrint("Approve Button Clicked");
+                        if (leadController.isMarketingManagerApproving.value ==
+                            false) {
+                          await leadController.approveMarketingManager(
+                              leadId: widget.leadId,
+                              remark: remarkControlelr.text,
+                              status: type == "approve" ? 1 : 2);
+                        }
+                      },
+                      child: Container(
+                        width: 130.w,
+                        height: 35.h,
+                        decoration: BoxDecoration(
+                          color: primaryButtonColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20.r),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            type == 'approve' ? 'Approve' : "Concern",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: whiteColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

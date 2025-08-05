@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:http_parser/http_parser.dart' show MediaType;
 import 'package:intl/intl.dart';
@@ -1805,6 +1806,52 @@ class LeadService {
 
       final response = await _dio.post(
         ApiConstant.baseUrl + ApiConstant.store_follow_ups,
+        data: formData,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        CustomToast().showCustomToast(response.data['message']);
+        return true;
+      } else {
+        print("Error: ${response.data}");
+        CustomToast().showCustomToast("Failed to add lead");
+        return false;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return false;
+    }
+  }
+
+  Future<bool> markitingManagerApproving(
+      leadId, String remark, int status) async {
+    try {
+      final token = StorageHelper.getToken();
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.options.contentType = 'multipart/form-data';
+
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+
+      print("euh8 398ue93 e983ue93 ${leadId}");
+      print("euh8 398ue93 e983ue93 ${remark}");
+      print("euh8 398ue93 e983ue93 ${status}");
+
+      final Map<String, dynamic> formDataMap = {
+        'lead_id': leadId,
+        'manager_remarks': remark,
+        'status': status,
+      };
+      final formData = FormData.fromMap(formDataMap);
+
+      final response = await _dio.post(
+        ApiConstant.baseUrl + ApiConstant.manager_approve_lead_document,
         data: formData,
       );
 

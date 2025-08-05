@@ -172,103 +172,112 @@ class _LeadListState extends State<LeadList> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: borderColor),
-                            color: backgroundColor,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20.r),
-                            ),
-                          ),
-                          child: Row(
+                        if (StorageHelper.getRoleName()
+                                .toString()
+                                .toLowerCase() ==
+                            "marketing manager")
+                          Column(
                             children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    leadController.isAllLeadSelected.value =
-                                        true;
-                                    leadController
-                                        .isUploadedDocumentLeadSelected
-                                        .value = false;
-                                  },
-                                  child: Container(
-                                    height: 35.h,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: leadController
-                                                  .isAllLeadSelected.value ==
-                                              true
-                                          ? primaryButtonColor
-                                          : backgroundColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(20.r),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'All Lead',
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: leadController
-                                                      .isAllLeadSelected
-                                                      .value ==
-                                                  true
-                                              ? whiteColor
-                                              : primaryButtonColor,
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: borderColor),
+                                  color: backgroundColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20.r),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          leadController
+                                              .isAllLeadSelected.value = true;
+                                          leadController
+                                              .isUploadedDocumentLeadSelected
+                                              .value = false;
+                                        },
+                                        child: Container(
+                                          height: 35.h,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: leadController
+                                                        .isAllLeadSelected
+                                                        .value ==
+                                                    true
+                                                ? primaryButtonColor
+                                                : backgroundColor,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(20.r),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'All Lead',
+                                              style: TextStyle(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w400,
+                                                color: leadController
+                                                            .isAllLeadSelected
+                                                            .value ==
+                                                        true
+                                                    ? whiteColor
+                                                    : primaryButtonColor,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          leadController
+                                              .isAllLeadSelected.value = false;
+                                          leadController
+                                              .isUploadedDocumentLeadSelected
+                                              .value = true;
+                                        },
+                                        child: Container(
+                                          height: 35.h,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: leadController
+                                                        .isUploadedDocumentLeadSelected
+                                                        .value ==
+                                                    true
+                                                ? primaryButtonColor
+                                                : backgroundColor,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(20.r),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Document Lead',
+                                              style: TextStyle(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w400,
+                                                color: leadController
+                                                            .isUploadedDocumentLeadSelected
+                                                            .value ==
+                                                        true
+                                                    ? whiteColor
+                                                    : primaryButtonColor,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    leadController.isAllLeadSelected.value =
-                                        false;
-                                    leadController
-                                        .isUploadedDocumentLeadSelected
-                                        .value = true;
-                                  },
-                                  child: Container(
-                                    height: 35.h,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: leadController
-                                                  .isUploadedDocumentLeadSelected
-                                                  .value ==
-                                              true
-                                          ? primaryButtonColor
-                                          : backgroundColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(20.r),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Document Lead',
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: leadController
-                                                      .isUploadedDocumentLeadSelected
-                                                      .value ==
-                                                  true
-                                              ? whiteColor
-                                              : primaryButtonColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
                             ],
                           ),
-                        ),
                         SizedBox(
                           height: 8.h,
                         ),

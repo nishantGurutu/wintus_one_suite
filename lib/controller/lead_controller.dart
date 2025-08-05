@@ -1439,6 +1439,20 @@ class LeadController extends GetxController {
     isPeopleAdding.value = false;
   }
 
+  var isMarketingManagerApproving = false.obs;
+  Future<void> approveMarketingManager(
+      {required leadId, required String remark, required int status}) async {
+    isMarketingManagerApproving.value = true;
+    final result =
+        await LeadService().markitingManagerApproving(leadId, remark, status);
+    if (result != null) {
+      Get.back();
+      // Get.back();
+      // await followUpsListApi(leadId: leadId);
+    } else {}
+    isMarketingManagerApproving.value = false;
+  }
+
   RxList<String> timeList = <String>[
     "Minutes",
     "Hours",
