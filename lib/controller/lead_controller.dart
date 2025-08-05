@@ -1455,10 +1455,13 @@ class LeadController extends GetxController {
 
   var isBranchHeadManagerApproving = false.obs;
   Future<void> branchheadManagerApproving(
-      {required leadId, required String remark, required int status}) async {
+      {required leadId,
+      required String remark,
+      required int status,
+      required File attachment}) async {
     isBranchHeadManagerApproving.value = true;
-    final result =
-        await LeadService().branchHeadManagerApproving(leadId, remark, status);
+    final result = await LeadService()
+        .branchHeadManagerApproving(leadId, remark, status, attachment);
     if (result != null) {
       Get.back();
       // Get.back();

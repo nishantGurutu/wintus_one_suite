@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
+import 'package:task_management/constant/custom_toast.dart';
 import 'package:task_management/constant/download.dart' show DownloadFile;
-import 'package:task_management/constant/show_dialog_class.dart';
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/network_image_class.dart';
 import 'package:task_management/custom_widget/task_text_field.dart';
@@ -263,6 +263,7 @@ class _LeadOverviewDocumentListBotomsheet
   final TextEditingController remarkControlelr = TextEditingController();
   ValueNotifier<int?> focusedIndexNotifier = ValueNotifier<int?>(null);
   Future<void> documentApprovedDialog(BuildContext context, String type) async {
+    leadController.leadpickedFile.value = File('');
     return showDialog(
       barrierDismissible: false,
       context: context,
@@ -317,14 +318,76 @@ class _LeadOverviewDocumentListBotomsheet
                         ),
                       ],
                     ),
-                    TaskCustomTextField(
-                      controller: remarkControlelr,
-                      focusedIndexNotifier: focusedIndexNotifier,
-                      index: 1,
-                      textCapitalization: TextCapitalization.sentences,
-                      hintText: "Enter remarks",
-                      data: "",
-                    ),
+                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "branch head" &&
+                        type == "approve")
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TaskCustomTextField(
+                              controller: remarkControlelr,
+                              focusedIndexNotifier: focusedIndexNotifier,
+                              index: 1,
+                              textCapitalization: TextCapitalization.sentences,
+                              hintText: "Enter remarks",
+                              data: "",
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              takeDocument();
+                            },
+                            child: Container(
+                              height: 40.h,
+                              width: 100.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.r),
+                                ),
+                              ),
+                              child: Obx(
+                                () {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    child: Image.file(
+                                      leadController.leadpickedFile.value!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.r),
+                                              border: Border.all(
+                                                  color: lightBorderColor)),
+                                          height: 40.h,
+                                          width: 100.w,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    if (type == "concern")
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                    if (type == "concern")
+                      TaskCustomTextField(
+                        controller: remarkControlelr,
+                        focusedIndexNotifier: focusedIndexNotifier,
+                        index: 1,
+                        textCapitalization: TextCapitalization.sentences,
+                        hintText: "Enter remarks",
+                        data: "",
+                      ),
                     SizedBox(height: 8.h),
                     InkWell(
                       onTap: () async {
@@ -333,13 +396,29 @@ class _LeadOverviewDocumentListBotomsheet
                                 .toString()
                                 .toLowerCase() ==
                             "branch head") {
-                          if (leadController
-                                  .isBranchHeadManagerApproving.value ==
-                              false) {
-                            await leadController.branchheadManagerApproving(
+                          if (type == "approve" &&
+                              leadController
+                                      .isBranchHeadManagerApproving.value ==
+                                  false) {
+                            if (leadController
+                                .leadpickedFile.value.path.isNotEmpty) {
+                              await leadController.branchheadManagerApproving(
                                 leadId: widget.leadId,
                                 remark: remarkControlelr.text,
-                                status: type == "approve" ? 1 : 2);
+                                status: type == "approve" ? 1 : 2,
+                                attachment: leadController.leadpickedFile.value,
+                              );
+                            } else {
+                              CustomToast()
+                                  .showCustomToast('Please select attachment');
+                            }
+                          } else if (type != "approve") {
+                            await leadController.branchheadManagerApproving(
+                              leadId: widget.leadId,
+                              remark: remarkControlelr.text,
+                              status: type == "approve" ? 1 : 2,
+                              attachment: leadController.leadpickedFile.value,
+                            );
                           }
                         } else {
                           if (leadController
@@ -383,7 +462,7 @@ class _LeadOverviewDocumentListBotomsheet
     );
   }
 
-  Future<void> takeDocument({int? documentId}) async {
+  Future<void> takeDocument() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.any,
@@ -403,9 +482,9 @@ class _LeadOverviewDocumentListBotomsheet
         final File file = File(filePath);
         leadController.leadpickedFile.value = File(file.path);
         leadController.profilePicPath.value = file.path.toString();
-        leadController.documentIdList.add(documentId ?? 0);
-        leadController.documentUplodedList
-            .add(leadController.leadpickedFile.value);
+        // leadController.documentIdList.add();
+        // leadController.documentUplodedList
+        //     .add(leadController.leadpickedFile.value);
         print(
             'selected file path from device is ${leadController.leadpickedFile.value}');
       } else {
