@@ -563,7 +563,7 @@ class ProfileService {
       _dio.options.headers["Authorization"] = "Bearer $token";
 
       final response = await _dio.get(
-        "https://taskmaster.electionmaster.in/public/api/download-employee-report/$userId?date=$date",
+        "${ApiConstant.baseUrl}${ApiConstant.download_employee_report}/$userId?date=$date",
         options: Options(
           responseType: ResponseType.bytes,
         ),

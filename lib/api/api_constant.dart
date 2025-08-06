@@ -2,6 +2,7 @@ class ApiConstant {
   static const String baseUrl =
       "https://taskmaster.electionmaster.in/public/api/";
   // "https://onesuite.winntus.in/public/api/";
+  // "https://canwinnpro.canwinn.in/public/api/";
   static const String register = "auth/register";
   static const String login = "auth/login";
   static const String logout = "logout";
@@ -238,4 +239,7 @@ class ApiConstant {
       "manager-approve-lead-document";
   static const String branchhead_approve_lead_document =
       "branchhead-approve-lead-document";
+  static const String download_employee_report = "download-employee-report";
+  static const String change_lead_followup_status =
+      "change-lead-followup-status";
 }

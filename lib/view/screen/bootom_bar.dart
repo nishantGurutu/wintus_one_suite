@@ -350,7 +350,7 @@ class _BottomNavigationBarExampleState
                         ),
                         child: Center(
                           child: Text(
-                            '${CustomTextConvert().getNameChar(StorageHelper.getName())}',
+                            '${CustomTextConvert().getNameChar(StorageHelper.getName() ?? "")}',
                             style: TextStyle(
                               color: whiteColor,
                               fontSize: 16,

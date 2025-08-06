@@ -515,15 +515,15 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                 decoration: BoxDecoration(
                   color: whiteColor,
                   borderRadius: BorderRadius.all(Radius.circular(10.r)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: lightGreyColor.withOpacity(0.1),
-                      blurRadius: 6,
-                      spreadRadius: 5,
-                      blurStyle: BlurStyle.inner,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: lightGreyColor.withOpacity(0.1),
+                  //     blurRadius: 6,
+                  //     spreadRadius: 5,
+                  //     blurStyle: BlurStyle.inner,
+                  //     offset: Offset(2, 2),
+                  //   ),
+                  // ],
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),

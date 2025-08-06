@@ -436,6 +436,7 @@ class ProfileController extends GetxController {
 
   Future<void> downloadReport({required String date}) async {
     isQuotationDownloading.value = true;
+    print('download report data value ${date}');
 
     final Uint8List? pdfData = await ProfileService().downloadReportApi(date);
     if (pdfData != null && pdfData.isNotEmpty) {

@@ -1,3 +1,4 @@
+import 'package:task_management/api/api_constant.dart';
 import 'package:task_management/constant/custom_toast.dart';
 import 'package:task_management/data/network/base_api_services.dart';
 import 'package:task_management/data/network/network_api_services.dart';
@@ -27,7 +28,7 @@ class FollowupsRepositoryImpl implements FollowupsRepository {
       });
 
       final response = await _apiService.getMultipartPostApiResponse(
-        "https://taskmaster.electionmaster.in/public/api/store-follow-ups",
+        "${ApiConstant.baseUrl}${ApiConstant.store_follow_ups}",
         formData,
       );
 
@@ -53,7 +54,7 @@ class FollowupsRepositoryImpl implements FollowupsRepository {
       });
 
       final response = await _apiService.getMultipartPostApiResponse(
-        "https://taskmaster.electionmaster.in/public/api/change-lead-followup-status",
+        ApiConstant.baseUrl + ApiConstant.change_lead_followup_status,
         formData,
       );
 

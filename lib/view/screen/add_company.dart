@@ -51,7 +51,6 @@ class _AddCompanyState extends State<AddCompany> {
   final TextEditingController describeTextEditingController =
       TextEditingController();
 
-  // Address field
   final TextEditingController streetAddressTextEditingController =
       TextEditingController();
   final TextEditingController cityTextEditingController =
@@ -61,7 +60,6 @@ class _AddCompanyState extends State<AddCompany> {
   final TextEditingController postalCodeTextEditingController =
       TextEditingController();
 
-  // Address field
   final TextEditingController facebookTextEditingController =
       TextEditingController();
   final TextEditingController skypeTextEditingController =

@@ -34,8 +34,8 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
   @override
   void initState() {
     super.initState();
-    print(
-        'lead id in overview quotation ${widget.leadDetails.value!.assignedTo!}');
+    // print(
+    //     'lead id in overview quotation ${widget.leadDetails.value!.assignedTo!}');
     Future.microtask(() {
       leadController.quotationListApi(leadId: widget.leadId);
     });
@@ -135,7 +135,7 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
                         style: TextStyle(color: Colors.grey.shade700),
                       ),
                       SizedBox(height: 6.h),
-                      if (widget.leadDetails.value!.assignedTo!
+                      if ((widget.leadDetails.value?.assignedTo ?? "")
                           .toString()
                           .contains(StorageHelper.getId().toString()))
                         Row(
