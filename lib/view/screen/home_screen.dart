@@ -432,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       summary(),
                       if (StorageHelper.getAssignedDept() != null)
                         SizedBox(height: 10.h),
-                      if (StorageHelper.getAssignedDept() != null)
+                      if (homeController.userReportDataList.isNotEmpty)
                         AdminUserList(
                           (homeController.homeDataModel.value?.users ?? []).obs,
                           taskController,

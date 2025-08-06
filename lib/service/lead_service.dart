@@ -432,8 +432,10 @@ class LeadService {
       };
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio
-          .post(ApiConstant.baseUrl + ApiConstant.lead_details, data: formData);
+      final response = await _dio.post(
+        ApiConstant.baseUrl + ApiConstant.lead_details,
+        data: formData,
+      );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return LeadDetailsModel.fromJson(response.data);
@@ -1884,10 +1886,6 @@ class LeadService {
         requestHeader: true,
         error: true,
       ));
-
-      print("euh8 398ue93 e983ue93 ${leadId}");
-      print("euh8 398ue93 e983ue93 ${remark}");
-      print("euh8 398ue93 e983ue93 ${status}");
 
       final Map<String, dynamic> formDataMap = {
         'lead_id': leadId,

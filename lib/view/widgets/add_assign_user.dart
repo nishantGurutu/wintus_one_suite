@@ -64,6 +64,9 @@ class LeadAddUserList extends StatelessWidget {
                               child: Image.network(
                                 '${addUser[index].image ?? ""}',
                                 fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container();
+                                },
                               ),
                             ),
                           ),

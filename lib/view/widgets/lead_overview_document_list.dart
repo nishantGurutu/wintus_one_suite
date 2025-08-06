@@ -30,7 +30,7 @@ class _LeadOverviewDocumentListBotomsheet
   @override
   void initState() {
     print('wjh838e3 e3uey38 4ue48 ${widget.leadId}');
-    leadController.leadDocumentList(leadId: widget.leadId);
+    leadController.leadDocumentList(leadId: widget.leadId, from: 'initstate');
     leadController.leadpickedFile.value = File("");
     leadController.profilePicPath.value = "";
     super.initState();
@@ -187,7 +187,11 @@ class _LeadOverviewDocumentListBotomsheet
                           StorageHelper.getRoleName()
                                   .toString()
                                   .toLowerCase() ==
-                              "branch head")
+                              "branch head" ||
+                          StorageHelper.getRoleName()
+                                  .toString()
+                                  .toLowerCase() ==
+                              "pa")
                         Column(
                           children: [
                             SizedBox(
@@ -198,7 +202,15 @@ class _LeadOverviewDocumentListBotomsheet
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    documentApprovedDialog(context, "approve");
+                                    if (!leadController
+                                        .isDocumentCheckBoxSelected
+                                        .contains(false)) {
+                                      documentApprovedDialog(
+                                          context, "approve");
+                                    } else {
+                                      CustomToast().showCustomToast(
+                                          "All document not approved.");
+                                    }
                                   },
                                   child: Container(
                                     height: 40.h,
@@ -311,16 +323,27 @@ class _LeadOverviewDocumentListBotomsheet
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(
-                          "Remarks",
-                          style: TextStyle(
-                              fontSize: 14.sp, fontWeight: FontWeight.w500),
+                        Expanded(
+                          child: Text(
+                            "Remarks",
+                            style: TextStyle(
+                                fontSize: 11.sp, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Container(
+                          width: 100.w,
+                          child: Text(
+                            'Upload Document',
+                            style: TextStyle(
+                                fontSize: 11.sp, fontWeight: FontWeight.w500),
+                          ),
                         ),
                       ],
                     ),
-                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "branch head" &&
-                        type == "approve")
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    if (type == "approve")
                       Row(
                         children: [
                           Expanded(
@@ -365,6 +388,10 @@ class _LeadOverviewDocumentListBotomsheet
                                                   color: lightBorderColor)),
                                           height: 40.h,
                                           width: 100.w,
+                                          child: Image.asset(
+                                            'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                            height: 15.h,
+                                          ),
                                         );
                                       },
                                     ),

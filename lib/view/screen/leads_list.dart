@@ -73,6 +73,8 @@ class _LeadListState extends State<LeadList> {
   Future<void> apiCalling() async {
     isLoading.value = true;
     leadController.selectedStatusPerLead.clear();
+    leadController.isAllLeadSelected.value = true;
+    leadController.isUploadedDocumentLeadSelected.value = false;
     if (widget.status == "total" || widget.status!.isEmpty) {
       await leadController.offLineStatusdata(status: widget.status);
     } else if (widget.status == 'pl') {
@@ -88,7 +90,10 @@ class _LeadListState extends State<LeadList> {
     } else if (widget.status == "lost") {
       await leadController.offLineStatusdata(status: widget.status);
     }
-    await leadController.addedDocumentLeadList();
+    if (StorageHelper.getRoleName() != null &&
+        StorageHelper.getRoleName() != '') {
+      await leadController.addedDocumentLeadList();
+    }
     isLoading.value = false;
     await leadController.taskResponsiblePersonListApi();
   }
@@ -179,7 +184,11 @@ class _LeadListState extends State<LeadList> {
                             StorageHelper.getRoleName()
                                     .toString()
                                     .toLowerCase() ==
-                                "branch head")
+                                "branch head" ||
+                            StorageHelper.getRoleName()
+                                    .toString()
+                                    .toLowerCase() ==
+                                "pa")
                           Column(
                             children: [
                               SizedBox(
@@ -533,1176 +542,1255 @@ class _LeadListState extends State<LeadList> {
 
   Widget allLeadList() {
     return Expanded(
-      child: ListView.builder(
-        itemCount: leadController.leadsListData.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.h),
-            child: GestureDetector(
-              onTap: () {
-                Get.to(() => LeadOverviewScreen(
-                      leadId: leadController.leadsListData[index].id,
-                      leadNumber:
-                          leadController.leadsListData[index].leadNumber,
-                    ));
-              },
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  border: Border.all(color: lightBorderColor),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10.r),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: lightGreyColor.withOpacity(0.1),
-                      blurRadius: 6.0,
-                      spreadRadius: 2,
-                      blurStyle: BlurStyle.inner,
-                      offset: Offset(0, 1),
-                    ),
-                  ],
+      child: leadController.leadsListData.isEmpty
+          ? Center(
+              child: Text(
+                'No Lead data',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: textColor,
                 ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${leadController.leadsListData[index].leadName ?? ""}',
-                              style: TextStyle(
-                                  fontSize: 15.sp, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '${leadController.leadsListData[index].leadNumber ?? ""}',
-                              style: TextStyle(
-                                  fontSize: 15.sp, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          Container(
-                            width: 30.w,
-                            child: Center(
-                              child: PopupMenuButton(
-                                color: whiteColor,
-                                itemBuilder: (context) {
-                                  return [
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Get.to(() => UpdateLeads(
-                                            leadListData: leadController
-                                                .leadsListData[index]));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.edit),
-                                          SizedBox(width: 3.w),
-                                          Text(edit),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      onTap: () {},
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.delete),
-                                          SizedBox(width: 3.w),
-                                          Text(delete),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        Future.delayed(Duration.zero, () {
-                                          leadController.selectdePersonIds
-                                              .clear();
-                                          controller.clearAll();
-                                          assignandaddUser(
-                                            context,
-                                            leadController
-                                                .leadsListData[index].id,
-                                            "add-people",
-                                          );
-                                        });
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/image/png/add_people-removebg-preview.png',
-                                            height: 1.h,
-                                          ),
-                                          SizedBox(width: 3.w),
-                                          Text("Add People"),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        leadController.selectdePersonIds
-                                            .clear();
-                                        controller.clearAll();
-                                        assignandaddUser(
-                                          context,
-                                          leadController
-                                              .leadsListData[index].id,
-                                          "assign",
-                                        );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/image/png/assign_people-removebg-preview.png',
-                                            height: 1.h,
-                                          ),
-                                          SizedBox(width: 3.w),
-                                          Text("Assign Lead"),
-                                        ],
-                                      ),
-                                    ),
-                                  ];
-                                },
-                              ),
-                            ),
+              ),
+            )
+          : ListView.builder(
+              itemCount: leadController.leadsListData.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5.h),
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.to(() => LeadOverviewScreen(
+                            leadId: leadController.leadsListData[index].id,
+                            leadNumber:
+                                leadController.leadsListData[index].leadNumber,
+                          ));
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        border: Border.all(color: lightBorderColor),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.r),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: lightGreyColor.withOpacity(0.1),
+                            blurRadius: 6.0,
+                            spreadRadius: 2,
+                            blurStyle: BlurStyle.inner,
+                            offset: Offset(0, 1),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Row(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 5.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Icon(
-                                  Icons.business,
-                                  size: 16.sp,
-                                ),
-                                SizedBox(
-                                  width: 2.w,
-                                ),
-                                Text(
-                                  '${leadController.leadsListData[index].company ?? ""}',
-                                  style: TextStyle(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                Spacer(),
-                                if ((leadController
-                                            .leadsListData[index].leadNumber ??
-                                        "")
-                                    .isEmpty)
-                                  InkWell(
-                                    onTap: () {
-                                      leadController.uploadOfflineLead(
-                                          leadController.leadsListData[index]);
-                                    },
-                                    child: Container(
-                                      child: Row(
-                                        children: [
-                                          Text('Async'),
-                                          SizedBox(
-                                            width: 4.w,
-                                          ),
-                                          Container(
-                                            height: 12.h,
-                                            width: 12.w,
-                                            decoration: BoxDecoration(
-                                              color: redColor,
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(6.r),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 4.h,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.phone,
-                                  size: 16.sp,
-                                ),
-                                SizedBox(
-                                  width: 2.w,
-                                ),
-                                Text(
-                                  '${leadController.leadsListData[index].phone ?? ""}',
-                                  style: TextStyle(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.email,
-                                  size: 16.sp,
-                                ),
-                                SizedBox(
-                                  width: 2.w,
+                                Expanded(
+                                  child: Text(
+                                    '${leadController.leadsListData[index].leadName ?? ""}',
+                                    style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
                                 Expanded(
                                   child: Text(
-                                    '${leadController.leadsListData[index].email ?? ""}',
+                                    '${leadController.leadsListData[index].leadNumber ?? ""}',
                                     style: TextStyle(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w400),
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                Container(
+                                  width: 30.w,
+                                  child: Center(
+                                    child: PopupMenuButton(
+                                      color: whiteColor,
+                                      itemBuilder: (context) {
+                                        return [
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              Get.to(() => UpdateLeads(
+                                                  leadListData: leadController
+                                                      .leadsListData[index]));
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.edit),
+                                                SizedBox(width: 3.w),
+                                                Text(edit),
+                                              ],
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            onTap: () {},
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.delete),
+                                                SizedBox(width: 3.w),
+                                                Text(delete),
+                                              ],
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              Future.delayed(Duration.zero, () {
+                                                leadController.selectdePersonIds
+                                                    .clear();
+                                                controller.clearAll();
+                                                assignandaddUser(
+                                                  context,
+                                                  leadController
+                                                      .leadsListData[index].id,
+                                                  "add-people",
+                                                );
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/image/png/add_people-removebg-preview.png',
+                                                  height: 1.h,
+                                                ),
+                                                SizedBox(width: 3.w),
+                                                Text("Add People"),
+                                              ],
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              leadController.selectdePersonIds
+                                                  .clear();
+                                              controller.clearAll();
+                                              assignandaddUser(
+                                                context,
+                                                leadController
+                                                    .leadsListData[index].id,
+                                                "assign",
+                                              );
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/image/png/assign_people-removebg-preview.png',
+                                                  height: 1.h,
+                                                ),
+                                                SizedBox(width: 3.w),
+                                                Text("Assign Lead"),
+                                              ],
+                                            ),
+                                          ),
+                                        ];
+                                      },
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 100.w,
-                                child: Obx(
-                                  () => DropdownButtonHideUnderline(
-                                    child: DropdownButton2<LeadStatusData>(
-                                      isExpanded: true,
-                                      items: leadController.leadStatusData
-                                          .map((LeadStatusData item) {
-                                        return DropdownMenuItem<LeadStatusData>(
-                                          value: item,
-                                          child: Text(
-                                            item.name ?? "",
-                                            style: TextStyle(
-                                              decoration: TextDecoration.none,
-                                              fontFamily: 'Roboto',
-                                              color: darkGreyColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        );
-                                      }).toList(),
-                                      value: leadController.leadStatusData
-                                              .contains(leadController
-                                                  .selectedStatusPerLead[index])
-                                          ? leadController
-                                              .selectedStatusPerLead[index]
-                                          : null,
-                                      onChanged: (LeadStatusData? value) {
-                                        changeStatusDialog(
-                                            context,
-                                            leadController
-                                                .leadsListData[index].id,
-                                            value);
-                                      },
-                                      buttonStyleData: ButtonStyleData(
-                                        height: 30,
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.only(
-                                            left: 14, right: 14),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: lightBorderColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5.r),
-                                          color: leadController
-                                                      .selectedStatusPerLead[
-                                                          index]
-                                                      .name
-                                                      ?.toLowerCase() ==
-                                                  "new lead"
-                                              ? Colors.blue
-                                              : leadController
-                                                          .selectedStatusPerLead[
-                                                              index]
-                                                          .name
-                                                          ?.toLowerCase() ==
-                                                      "pl"
-                                                  ? Colors.yellow
-                                                  : leadController
-                                                              .selectedStatusPerLead[
-                                                                  index]
-                                                              .name
-                                                              ?.toLowerCase() ==
-                                                          "spl"
-                                                      ? Colors.purple
-                                                      : leadController
-                                                                  .selectedStatusPerLead[
-                                                                      index]
-                                                                  .name
-                                                                  ?.toLowerCase() ==
-                                                              "quotation"
-                                                          ? Colors.orange
-                                                          : leadController
-                                                                      .selectedStatusPerLead[
-                                                                          index]
-                                                                      .name
-                                                                      ?.toLowerCase() ==
-                                                                  "won"
-                                                              ? Colors.green
-                                                              : leadController
-                                                                          .selectedStatusPerLead[
-                                                                              index]
-                                                                          .name
-                                                                          ?.toLowerCase() ==
-                                                                      "lost"
-                                                                  ? Colors.red
-                                                                  : whiteColor,
-                                        ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            SizedBox(
+                              height: 3.h,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.business,
+                                        size: 16.sp,
                                       ),
-                                      hint: Text(
-                                        'Status'.tr,
+                                      SizedBox(
+                                        width: 2.w,
+                                      ),
+                                      Text(
+                                        '${leadController.leadsListData[index].company ?? ""}',
                                         style: TextStyle(
-                                          decoration: TextDecoration.none,
-                                          fontFamily: 'Roboto',
-                                          color: darkGreyColor,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 14.sp,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w400),
                                       ),
-                                      iconStyleData: IconStyleData(
-                                        icon: Image.asset(
-                                          'assets/images/png/Vector 3.png',
-                                          color: secondaryColor,
-                                          height: 8.h,
-                                        ),
-                                        iconSize: 14,
-                                        iconEnabledColor: lightGreyColor,
-                                        iconDisabledColor: lightGreyColor,
+                                      Spacer(),
+                                      if ((leadController.leadsListData[index]
+                                                  .leadNumber ??
+                                              "")
+                                          .isEmpty)
+                                        InkWell(
+                                          onTap: () {
+                                            leadController.uploadOfflineLead(
+                                                leadController
+                                                    .leadsListData[index]);
+                                          },
+                                          child: Container(
+                                            child: Row(
+                                              children: [
+                                                Text('Async'),
+                                                SizedBox(
+                                                  width: 4.w,
+                                                ),
+                                                Container(
+                                                  height: 12.h,
+                                                  width: 12.w,
+                                                  decoration: BoxDecoration(
+                                                    color: redColor,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(6.r),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 4.h,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.phone,
+                                        size: 16.sp,
                                       ),
-                                      dropdownStyleData: DropdownStyleData(
-                                        maxHeight: 200.h,
-                                        width: 100.w,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8.r),
-                                            color: whiteColor,
-                                            border: Border.all(
-                                                color: lightBorderColor)),
-                                        offset: const Offset(0, 0),
-                                        scrollbarTheme: ScrollbarThemeData(
-                                          radius: const Radius.circular(40),
-                                          thickness:
-                                              WidgetStateProperty.all<double>(
-                                                  6),
-                                          thumbVisibility:
-                                              WidgetStateProperty.all<bool>(
-                                                  true),
+                                      SizedBox(
+                                        width: 2.w,
+                                      ),
+                                      Text(
+                                        '${leadController.leadsListData[index].phone ?? ""}',
+                                        style: TextStyle(
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.email,
+                                        size: 16.sp,
+                                      ),
+                                      SizedBox(
+                                        width: 2.w,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          '${leadController.leadsListData[index].email ?? ""}',
+                                          style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w400),
                                         ),
                                       ),
-                                      menuItemStyleData:
-                                          const MenuItemStyleData(
-                                        height: 30,
-                                        padding: EdgeInsets.only(
-                                            left: 14, right: 14),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 100.w,
+                                      child: Obx(
+                                        () => DropdownButtonHideUnderline(
+                                          child:
+                                              DropdownButton2<LeadStatusData>(
+                                            isExpanded: true,
+                                            items: leadController.leadStatusData
+                                                .map((LeadStatusData item) {
+                                              return DropdownMenuItem<
+                                                  LeadStatusData>(
+                                                value: item,
+                                                child: Text(
+                                                  item.name ?? "",
+                                                  style: TextStyle(
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                    fontFamily: 'Roboto',
+                                                    color: darkGreyColor,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              );
+                                            }).toList(),
+                                            value: leadController.leadStatusData
+                                                    .contains(leadController
+                                                            .selectedStatusPerLead[
+                                                        index])
+                                                ? leadController
+                                                        .selectedStatusPerLead[
+                                                    index]
+                                                : null,
+                                            onChanged: (LeadStatusData? value) {
+                                              changeStatusDialog(
+                                                  context,
+                                                  leadController
+                                                      .leadsListData[index].id,
+                                                  value);
+                                            },
+                                            buttonStyleData: ButtonStyleData(
+                                              height: 30,
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.only(
+                                                  left: 14, right: 14),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: lightBorderColor),
+                                                borderRadius:
+                                                    BorderRadius.circular(5.r),
+                                                color: leadController
+                                                            .selectedStatusPerLead[
+                                                                index]
+                                                            .name
+                                                            ?.toLowerCase() ==
+                                                        "new lead"
+                                                    ? Colors.blue
+                                                    : leadController
+                                                                .selectedStatusPerLead[
+                                                                    index]
+                                                                .name
+                                                                ?.toLowerCase() ==
+                                                            "pl"
+                                                        ? Colors.yellow
+                                                        : leadController
+                                                                    .selectedStatusPerLead[
+                                                                        index]
+                                                                    .name
+                                                                    ?.toLowerCase() ==
+                                                                "spl"
+                                                            ? Colors.purple
+                                                            : leadController
+                                                                        .selectedStatusPerLead[
+                                                                            index]
+                                                                        .name
+                                                                        ?.toLowerCase() ==
+                                                                    "quotation"
+                                                                ? Colors.orange
+                                                                : leadController
+                                                                            .selectedStatusPerLead[
+                                                                                index]
+                                                                            .name
+                                                                            ?.toLowerCase() ==
+                                                                        "won"
+                                                                    ? Colors
+                                                                        .green
+                                                                    : leadController.selectedStatusPerLead[index].name?.toLowerCase() ==
+                                                                            "lost"
+                                                                        ? Colors
+                                                                            .red
+                                                                        : whiteColor,
+                                              ),
+                                            ),
+                                            hint: Text(
+                                              'Status'.tr,
+                                              style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                fontFamily: 'Roboto',
+                                                color: darkGreyColor,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14.sp,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            iconStyleData: IconStyleData(
+                                              icon: Image.asset(
+                                                'assets/images/png/Vector 3.png',
+                                                color: secondaryColor,
+                                                height: 8.h,
+                                              ),
+                                              iconSize: 14,
+                                              iconEnabledColor: lightGreyColor,
+                                              iconDisabledColor: lightGreyColor,
+                                            ),
+                                            dropdownStyleData:
+                                                DropdownStyleData(
+                                              maxHeight: 200.h,
+                                              width: 100.w,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.r),
+                                                  color: whiteColor,
+                                                  border: Border.all(
+                                                      color: lightBorderColor)),
+                                              offset: const Offset(0, 0),
+                                              scrollbarTheme:
+                                                  ScrollbarThemeData(
+                                                radius:
+                                                    const Radius.circular(40),
+                                                thickness: WidgetStateProperty
+                                                    .all<double>(6),
+                                                thumbVisibility:
+                                                    WidgetStateProperty.all<
+                                                        bool>(true),
+                                              ),
+                                            ),
+                                            menuItemStyleData:
+                                                const MenuItemStyleData(
+                                              height: 30,
+                                              padding: EdgeInsets.only(
+                                                  left: 14, right: 14),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${_formatDate(leadController.leadsListData[index].createdAt ?? "")}',
+                                  style: TextStyle(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        await CallHelper().callWhatsApp(
+                                            mobileNo: leadController
+                                                .leadsListData[index].phone);
+                                      },
+                                      child: Image.asset(
+                                        'assets/image/png/whatsapp (2).png',
+                                        height: 20.h,
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        CallHelper().callPhone(
+                                            mobileNo: leadController
+                                                .leadsListData[index].phone);
+                                      },
+                                      child: Image.asset(
+                                        'assets/image/png/phone_call-removebg-preview.png',
+                                        height: 20.h,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 12,
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          _shareSingleCard(index);
+                                        },
+                                        icon: Icon(Icons.share))
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 8.h,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.to(
+                                        () => LeadOverviewScreen(
+                                          leadId: leadController
+                                              .leadsListData[index].id,
+                                          index: 1,
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 3.h),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              getPassIcon,
+                                              color: textColor,
+                                              height: 17.h,
+                                            ),
+                                            SizedBox(width: 3.w),
+                                            Text(followups),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            '${_formatDate(leadController.leadsListData[index].createdAt ?? "")}',
-                            style: TextStyle(
-                                fontSize: 13.sp, fontWeight: FontWeight.w400),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  await CallHelper().callWhatsApp(
-                                      mobileNo: leadController
-                                          .leadsListData[index].phone);
-                                },
-                                child: Image.asset(
-                                  'assets/image/png/whatsapp (2).png',
-                                  height: 20.h,
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              GestureDetector(
-                                onTap: () async {
-                                  CallHelper().callPhone(
-                                      mobileNo: leadController
-                                          .leadsListData[index].phone);
-                                },
-                                child: Image.asset(
-                                  'assets/image/png/phone_call-removebg-preview.png',
-                                  height: 20.h,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    _shareSingleCard(index);
-                                  },
-                                  icon: Icon(Icons.share))
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 8.h,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                  () => LeadOverviewScreen(
-                                    leadId:
-                                        leadController.leadsListData[index].id,
-                                    index: 1,
-                                  ),
-                                );
-                              },
-                              child: SizedBox(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 3.h),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        getPassIcon,
-                                        color: textColor,
-                                        height: 17.h,
-                                      ),
-                                      SizedBox(width: 3.w),
-                                      Text(followups),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(() => LeadOverviewScreen(
-                                      leadId: leadController
-                                          .leadsListData[index].id,
-                                      index: 5,
-                                    ));
-                              },
-                              child: SizedBox(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 3.h),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/image/png/location-mark.png',
-                                        height: 17.sp,
-                                      ),
-                                      SizedBox(width: 3.w),
-                                      Text(visit),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(() => LeadOverviewScreen(
-                                      leadId: leadController
-                                          .leadsListData[index].id,
-                                      index: 2,
-                                      leadNumber: leadController
-                                          .leadsListData[index].leadNumber,
-                                    ));
-                              },
-                              child: SizedBox(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 3.h),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/image/png/quotation_icon-removebg-preview.png',
-                                        height: 17.sp,
-                                      ),
-                                      SizedBox(width: 3.w),
-                                      Text('Quotation'),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          if (StorageHelper.getId().toString() ==
-                              leadController.leadsListData[index].userId
-                                  .toString())
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.to(() => LeadDetailUpdate(
-                                      leadId: leadController
-                                          .leadsListData[index].id,
-                                      leadDetails:
-                                          leadController.leadsListData[index]));
-                                },
-                                child: Container(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 15.w, top: 3.h, bottom: 3.h),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/image/png/update_icon-removebg-preview.png',
-                                          height: 17.sp,
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => LeadOverviewScreen(
+                                            leadId: leadController
+                                                .leadsListData[index].id,
+                                            index: 5,
+                                          ));
+                                    },
+                                    child: SizedBox(
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 3.h),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/image/png/location-mark.png',
+                                              height: 17.sp,
+                                            ),
+                                            SizedBox(width: 3.w),
+                                            Text(visit),
+                                          ],
                                         ),
-                                        SizedBox(width: 3.w),
-                                        Text('Update'),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                        ],
-                      )
-                    ],
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => LeadOverviewScreen(
+                                            leadId: leadController
+                                                .leadsListData[index].id,
+                                            index: 2,
+                                            leadNumber: leadController
+                                                .leadsListData[index]
+                                                .leadNumber,
+                                          ));
+                                    },
+                                    child: SizedBox(
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 3.h),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/image/png/quotation_icon-removebg-preview.png',
+                                              height: 17.sp,
+                                            ),
+                                            SizedBox(width: 3.w),
+                                            Text('Quotation'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (StorageHelper.getId().toString() ==
+                                    leadController.leadsListData[index].userId
+                                        .toString())
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => LeadDetailUpdate(
+                                            leadId: leadController
+                                                .leadsListData[index].id,
+                                            leadDetails: leadController
+                                                .leadsListData[index]));
+                                      },
+                                      child: Container(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 15.w,
+                                              top: 3.h,
+                                              bottom: 3.h),
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                'assets/image/png/update_icon-removebg-preview.png',
+                                                height: 17.sp,
+                                              ),
+                                              SizedBox(width: 3.w),
+                                              Text('Update'),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 
   Widget documentLeadList() {
     return Obx(
       () => Expanded(
-        child: ListView.builder(
-          itemCount: leadController.addedDocumentLeadDataList.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 5.h),
-              child: GestureDetector(
-                onTap: () {
-                  Get.to(() => LeadOverviewScreen(
-                        leadId:
-                            leadController.addedDocumentLeadDataList[index].id,
-                        leadNumber: leadController
-                            .addedDocumentLeadDataList[index].leadNumber,
-                      ));
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: whiteColor,
-                    border: Border.all(color: lightBorderColor),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.r),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: lightGreyColor.withOpacity(0.1),
-                        blurRadius: 6.0,
-                        spreadRadius: 2,
-                        blurStyle: BlurStyle.inner,
-                        offset: Offset(0, 1),
-                      ),
-                    ],
+        child: leadController.addedDocumentLeadDataList.isEmpty
+            ? Center(
+                child: Text(
+                  'No Lead data',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: textColor,
                   ),
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '${leadController.addedDocumentLeadDataList[index].leadName ?? ""}',
-                                style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                '${leadController.addedDocumentLeadDataList[index].leadNumber ?? ""}',
-                                style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Container(
-                              width: 30.w,
-                              child: Center(
-                                child: PopupMenuButton(
-                                  color: whiteColor,
-                                  itemBuilder: (context) {
-                                    return [
-                                      PopupMenuItem(
-                                        onTap: () {
-                                          // Get.to(() => UpdateLeads(
-                                          //     leadListData: leadController
-                                          //             .addedDocumentLeadDataList[
-                                          //         index]));
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.edit),
-                                            SizedBox(width: 3.w),
-                                            Text(edit),
-                                          ],
-                                        ),
-                                      ),
-                                      PopupMenuItem(
-                                        onTap: () {},
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.delete),
-                                            SizedBox(width: 3.w),
-                                            Text(delete),
-                                          ],
-                                        ),
-                                      ),
-                                      PopupMenuItem(
-                                        onTap: () {
-                                          Future.delayed(Duration.zero, () {
-                                            leadController.selectdePersonIds
-                                                .clear();
-                                            controller.clearAll();
-                                            assignandaddUser(
-                                              context,
-                                              leadController
-                                                  .leadsListData[index].id,
-                                              "add-people",
-                                            );
-                                          });
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Image.asset(
-                                              'assets/image/png/add_people-removebg-preview.png',
-                                              height: 1.h,
-                                            ),
-                                            SizedBox(width: 3.w),
-                                            Text("Add People"),
-                                          ],
-                                        ),
-                                      ),
-                                      PopupMenuItem(
-                                        onTap: () {
-                                          leadController.selectdePersonIds
-                                              .clear();
-                                          controller.clearAll();
-                                          assignandaddUser(
-                                            context,
-                                            leadController
-                                                .addedDocumentLeadDataList[
-                                                    index]
-                                                .id,
-                                            "assign",
-                                          );
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Image.asset(
-                                              'assets/image/png/assign_people-removebg-preview.png',
-                                              height: 1.h,
-                                            ),
-                                            SizedBox(width: 3.w),
-                                            Text("Assign Lead"),
-                                          ],
-                                        ),
-                                      ),
-                                    ];
-                                  },
-                                ),
-                              ),
+                ),
+              )
+            : ListView.builder(
+                itemCount: leadController.addedDocumentLeadDataList.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5.h),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(() => LeadOverviewScreen(
+                              leadId: leadController
+                                  .addedDocumentLeadDataList[index].id,
+                              leadNumber: leadController
+                                  .addedDocumentLeadDataList[index].leadNumber,
+                            ));
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          border: Border.all(color: lightBorderColor),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.r),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: lightGreyColor.withOpacity(0.1),
+                              blurRadius: 6.0,
+                              spreadRadius: 2,
+                              blurStyle: BlurStyle.inner,
+                              offset: Offset(0, 1),
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        SizedBox(
-                          height: 3.h,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Row(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 5.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Icon(
-                                    Icons.business,
-                                    size: 16.sp,
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                    '${leadController.addedDocumentLeadDataList[index].company ?? ""}',
-                                    style: TextStyle(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  Spacer(),
-                                  if ((leadController
-                                              .addedDocumentLeadDataList[index]
-                                              .leadNumber ??
-                                          "")
-                                      .isEmpty)
-                                    InkWell(
-                                      onTap: () {
-                                        // leadController.uploadOfflineLead(
-                                        //     leadController
-                                        //         .leadsListData[index]);
-                                      },
-                                      child: Container(
-                                        child: Row(
-                                          children: [
-                                            Text('Async'),
-                                            SizedBox(
-                                              width: 4.w,
-                                            ),
-                                            Container(
-                                              height: 12.h,
-                                              width: 12.w,
-                                              decoration: BoxDecoration(
-                                                color: redColor,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(6.r),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 4.h,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.phone,
-                                    size: 16.sp,
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                    '${leadController.addedDocumentLeadDataList[index].phone ?? ""}',
-                                    style: TextStyle(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.email,
-                                    size: 16.sp,
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
+                                  Expanded(
+                                    child: Text(
+                                      '${leadController.addedDocumentLeadDataList[index].leadName ?? ""}',
+                                      style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500),
+                                    ),
                                   ),
                                   Expanded(
                                     child: Text(
-                                      '${leadController.addedDocumentLeadDataList[index].email ?? ""}',
+                                      '${leadController.addedDocumentLeadDataList[index].leadNumber ?? ""}',
                                       style: TextStyle(
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.w400),
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 30.w,
+                                    child: Center(
+                                      child: PopupMenuButton(
+                                        color: whiteColor,
+                                        itemBuilder: (context) {
+                                          return [
+                                            PopupMenuItem(
+                                              onTap: () {
+                                                // Get.to(() => UpdateLeads(
+                                                //     leadListData: leadController
+                                                //             .addedDocumentLeadDataList[
+                                                //         index]));
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.edit),
+                                                  SizedBox(width: 3.w),
+                                                  Text(edit),
+                                                ],
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              onTap: () {},
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.delete),
+                                                  SizedBox(width: 3.w),
+                                                  Text(delete),
+                                                ],
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              onTap: () {
+                                                Future.delayed(Duration.zero,
+                                                    () {
+                                                  leadController
+                                                      .selectdePersonIds
+                                                      .clear();
+                                                  controller.clearAll();
+                                                  assignandaddUser(
+                                                    context,
+                                                    leadController
+                                                        .addedDocumentLeadDataList[
+                                                            index]
+                                                        .id,
+                                                    "add-people",
+                                                  );
+                                                });
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/image/png/add_people-removebg-preview.png',
+                                                    height: 1.h,
+                                                  ),
+                                                  SizedBox(width: 3.w),
+                                                  Text("Add People"),
+                                                ],
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              onTap: () {
+                                                leadController.selectdePersonIds
+                                                    .clear();
+                                                controller.clearAll();
+                                                assignandaddUser(
+                                                  context,
+                                                  leadController
+                                                      .addedDocumentLeadDataList[
+                                                          index]
+                                                      .id,
+                                                  "assign",
+                                                );
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/image/png/assign_people-removebg-preview.png',
+                                                    height: 1.h,
+                                                  ),
+                                                  SizedBox(width: 3.w),
+                                                  Text("Assign Lead"),
+                                                ],
+                                              ),
+                                            ),
+                                          ];
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 100.w,
-                                  child: Obx(
-                                    () => DropdownButtonHideUnderline(
-                                      child: DropdownButton2<LeadStatusData>(
-                                        isExpanded: true,
-                                        items: leadController.leadStatusData
-                                            .map((LeadStatusData item) {
-                                          return DropdownMenuItem<
-                                              LeadStatusData>(
-                                            value: item,
-                                            child: Text(
-                                              item.name ?? "",
-                                              style: TextStyle(
-                                                decoration: TextDecoration.none,
-                                                fontFamily: 'Roboto',
-                                                color: darkGreyColor,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          );
-                                        }).toList(),
-                                        value: leadController.leadStatusData
-                                                .contains(leadController
-                                                        .selectedStatusPerLead[
-                                                    index])
-                                            ? leadController
-                                                .selectedStatusPerLead[index]
-                                            : null,
-                                        onChanged: (LeadStatusData? value) {
-                                          changeStatusDialog(
-                                              context,
-                                              leadController
-                                                  .leadsListData[index].id,
-                                              value);
-                                        },
-                                        buttonStyleData: ButtonStyleData(
-                                          height: 30,
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.only(
-                                              left: 14, right: 14),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: lightBorderColor),
-                                            borderRadius:
-                                                BorderRadius.circular(5.r),
-                                            color: leadController
-                                                        .selectedStatusPerLead[
-                                                            index]
-                                                        .name
-                                                        ?.toLowerCase() ==
-                                                    "new lead"
-                                                ? Colors.blue
-                                                : leadController
-                                                            .selectedStatusPerLead[
-                                                                index]
-                                                            .name
-                                                            ?.toLowerCase() ==
-                                                        "pl"
-                                                    ? Colors.yellow
-                                                    : leadController
-                                                                .selectedStatusPerLead[
-                                                                    index]
-                                                                .name
-                                                                ?.toLowerCase() ==
-                                                            "spl"
-                                                        ? Colors.purple
-                                                        : leadController
-                                                                    .selectedStatusPerLead[
-                                                                        index]
-                                                                    .name
-                                                                    ?.toLowerCase() ==
-                                                                "quotation"
-                                                            ? Colors.orange
-                                                            : leadController
-                                                                        .selectedStatusPerLead[
-                                                                            index]
-                                                                        .name
-                                                                        ?.toLowerCase() ==
-                                                                    "won"
-                                                                ? Colors.green
-                                                                : leadController
-                                                                            .selectedStatusPerLead[index]
-                                                                            .name
-                                                                            ?.toLowerCase() ==
-                                                                        "lost"
-                                                                    ? Colors.red
-                                                                    : whiteColor,
-                                          ),
+                              SizedBox(
+                                height: 3,
+                              ),
+                              SizedBox(
+                                height: 3.h,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.business,
+                                          size: 16.sp,
                                         ),
-                                        hint: Text(
-                                          'Status'.tr,
+                                        SizedBox(
+                                          width: 2.w,
+                                        ),
+                                        Text(
+                                          '${leadController.addedDocumentLeadDataList[index].company ?? ""}',
                                           style: TextStyle(
-                                            decoration: TextDecoration.none,
-                                            fontFamily: 'Roboto',
-                                            color: darkGreyColor,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14.sp,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w400),
                                         ),
-                                        iconStyleData: IconStyleData(
-                                          icon: Image.asset(
-                                            'assets/images/png/Vector 3.png',
-                                            color: secondaryColor,
-                                            height: 8.h,
-                                          ),
-                                          iconSize: 14,
-                                          iconEnabledColor: lightGreyColor,
-                                          iconDisabledColor: lightGreyColor,
+                                        Spacer(),
+                                        if ((leadController
+                                                    .addedDocumentLeadDataList[
+                                                        index]
+                                                    .leadNumber ??
+                                                "")
+                                            .isEmpty)
+                                          InkWell(
+                                            onTap: () {
+                                              // leadController.uploadOfflineLead(
+                                              //     leadController
+                                              //         .leadsListData[index]);
+                                            },
+                                            child: Container(
+                                              child: Row(
+                                                children: [
+                                                  Text('Async'),
+                                                  SizedBox(
+                                                    width: 4.w,
+                                                  ),
+                                                  Container(
+                                                    height: 12.h,
+                                                    width: 12.w,
+                                                    decoration: BoxDecoration(
+                                                      color: redColor,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(6.r),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 4.h,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.phone,
+                                          size: 16.sp,
                                         ),
-                                        dropdownStyleData: DropdownStyleData(
-                                          maxHeight: 200.h,
-                                          width: 100.w,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.r),
-                                              color: whiteColor,
-                                              border: Border.all(
-                                                  color: lightBorderColor)),
-                                          offset: const Offset(0, 0),
-                                          scrollbarTheme: ScrollbarThemeData(
-                                            radius: const Radius.circular(40),
-                                            thickness:
-                                                WidgetStateProperty.all<double>(
-                                                    6),
-                                            thumbVisibility:
-                                                WidgetStateProperty.all<bool>(
-                                                    true),
+                                        SizedBox(
+                                          width: 2.w,
+                                        ),
+                                        Text(
+                                          '${leadController.addedDocumentLeadDataList[index].phone ?? ""}',
+                                          style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.email,
+                                          size: 16.sp,
+                                        ),
+                                        SizedBox(
+                                          width: 2.w,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            '${leadController.addedDocumentLeadDataList[index].email ?? ""}',
+                                            style: TextStyle(
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w400),
                                           ),
                                         ),
-                                        menuItemStyleData:
-                                            const MenuItemStyleData(
-                                          height: 30,
-                                          padding: EdgeInsets.only(
-                                              left: 14, right: 14),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 100.w,
+                                        child: Obx(
+                                          () => DropdownButtonHideUnderline(
+                                            child:
+                                                DropdownButton2<LeadStatusData>(
+                                              isExpanded: true,
+                                              items: leadController
+                                                  .leadStatusData
+                                                  .map((LeadStatusData item) {
+                                                return DropdownMenuItem<
+                                                    LeadStatusData>(
+                                                  value: item,
+                                                  child: Text(
+                                                    item.name ?? "",
+                                                    style: TextStyle(
+                                                      decoration:
+                                                          TextDecoration.none,
+                                                      fontFamily: 'Roboto',
+                                                      color: darkGreyColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              value: leadController
+                                                      .leadStatusData
+                                                      .contains(leadController
+                                                              .selectedStatusPerLead[
+                                                          index])
+                                                  ? leadController
+                                                          .selectedStatusPerLead[
+                                                      index]
+                                                  : null,
+                                              onChanged:
+                                                  (LeadStatusData? value) {
+                                                changeStatusDialog(
+                                                    context,
+                                                    leadController
+                                                        .leadsListData[index]
+                                                        .id,
+                                                    value);
+                                              },
+                                              buttonStyleData: ButtonStyleData(
+                                                height: 30,
+                                                width: double.infinity,
+                                                padding: const EdgeInsets.only(
+                                                    left: 14, right: 14),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: lightBorderColor),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.r),
+                                                  color: leadController
+                                                              .selectedStatusPerLead[
+                                                                  index]
+                                                              .name
+                                                              ?.toLowerCase() ==
+                                                          "new lead"
+                                                      ? Colors.blue
+                                                      : leadController
+                                                                  .selectedStatusPerLead[
+                                                                      index]
+                                                                  .name
+                                                                  ?.toLowerCase() ==
+                                                              "pl"
+                                                          ? Colors.yellow
+                                                          : leadController
+                                                                      .selectedStatusPerLead[
+                                                                          index]
+                                                                      .name
+                                                                      ?.toLowerCase() ==
+                                                                  "spl"
+                                                              ? Colors.purple
+                                                              : leadController
+                                                                          .selectedStatusPerLead[
+                                                                              index]
+                                                                          .name
+                                                                          ?.toLowerCase() ==
+                                                                      "quotation"
+                                                                  ? Colors
+                                                                      .orange
+                                                                  : leadController
+                                                                              .selectedStatusPerLead[
+                                                                                  index]
+                                                                              .name
+                                                                              ?.toLowerCase() ==
+                                                                          "won"
+                                                                      ? Colors
+                                                                          .green
+                                                                      : leadController.selectedStatusPerLead[index].name?.toLowerCase() ==
+                                                                              "lost"
+                                                                          ? Colors
+                                                                              .red
+                                                                          : whiteColor,
+                                                ),
+                                              ),
+                                              hint: Text(
+                                                'Status'.tr,
+                                                style: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontFamily: 'Roboto',
+                                                  color: darkGreyColor,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14.sp,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              iconStyleData: IconStyleData(
+                                                icon: Image.asset(
+                                                  'assets/images/png/Vector 3.png',
+                                                  color: secondaryColor,
+                                                  height: 8.h,
+                                                ),
+                                                iconSize: 14,
+                                                iconEnabledColor:
+                                                    lightGreyColor,
+                                                iconDisabledColor:
+                                                    lightGreyColor,
+                                              ),
+                                              dropdownStyleData:
+                                                  DropdownStyleData(
+                                                maxHeight: 200.h,
+                                                width: 100.w,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.r),
+                                                    color: whiteColor,
+                                                    border: Border.all(
+                                                        color:
+                                                            lightBorderColor)),
+                                                offset: const Offset(0, 0),
+                                                scrollbarTheme:
+                                                    ScrollbarThemeData(
+                                                  radius:
+                                                      const Radius.circular(40),
+                                                  thickness: WidgetStateProperty
+                                                      .all<double>(6),
+                                                  thumbVisibility:
+                                                      WidgetStateProperty.all<
+                                                          bool>(true),
+                                                ),
+                                              ),
+                                              menuItemStyleData:
+                                                  const MenuItemStyleData(
+                                                height: 30,
+                                                padding: EdgeInsets.only(
+                                                    left: 14, right: 14),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    '${_formatDate(leadController.addedDocumentLeadDataList[index].createdAt ?? "")}',
+                                    style: TextStyle(
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          await CallHelper().callWhatsApp(
+                                              mobileNo: leadController
+                                                  .addedDocumentLeadDataList[
+                                                      index]
+                                                  .phone);
+                                        },
+                                        child: Image.asset(
+                                          'assets/image/png/whatsapp (2).png',
+                                          height: 20.h,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12.w),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          CallHelper().callPhone(
+                                              mobileNo: leadController
+                                                  .addedDocumentLeadDataList[
+                                                      index]
+                                                  .phone);
+                                        },
+                                        child: Image.asset(
+                                          'assets/image/png/phone_call-removebg-preview.png',
+                                          height: 20.h,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 12,
+                                      ),
+                                      IconButton(
+                                          onPressed: () {
+                                            _shareSingleCard(index);
+                                          },
+                                          icon: Icon(Icons.share))
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8.h,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.to(
+                                          () => LeadOverviewScreen(
+                                            leadId: leadController
+                                                .addedDocumentLeadDataList[
+                                                    index]
+                                                .id,
+                                            index: 1,
+                                          ),
+                                        );
+                                      },
+                                      child: SizedBox(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 3.h),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                getPassIcon,
+                                                color: textColor,
+                                                height: 17.h,
+                                              ),
+                                              SizedBox(width: 3.w),
+                                              Text(followups),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              '${_formatDate(leadController.addedDocumentLeadDataList[index].createdAt ?? "")}',
-                              style: TextStyle(
-                                  fontSize: 13.sp, fontWeight: FontWeight.w400),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                GestureDetector(
-                                  onTap: () async {
-                                    await CallHelper().callWhatsApp(
-                                        mobileNo: leadController
-                                            .addedDocumentLeadDataList[index]
-                                            .phone);
-                                  },
-                                  child: Image.asset(
-                                    'assets/image/png/whatsapp (2).png',
-                                    height: 20.h,
-                                  ),
-                                ),
-                                SizedBox(width: 12.w),
-                                GestureDetector(
-                                  onTap: () async {
-                                    CallHelper().callPhone(
-                                        mobileNo: leadController
-                                            .addedDocumentLeadDataList[index]
-                                            .phone);
-                                  },
-                                  child: Image.asset(
-                                    'assets/image/png/phone_call-removebg-preview.png',
-                                    height: 20.h,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 12,
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      _shareSingleCard(index);
-                                    },
-                                    icon: Icon(Icons.share))
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.to(
-                                    () => LeadOverviewScreen(
-                                      leadId: leadController
-                                          .addedDocumentLeadDataList[index].id,
-                                      index: 1,
-                                    ),
-                                  );
-                                },
-                                child: SizedBox(
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 3.h),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          getPassIcon,
-                                          color: textColor,
-                                          height: 17.h,
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Text(followups),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.to(() => LeadOverviewScreen(
-                                        leadId: leadController
-                                            .addedDocumentLeadDataList[index]
-                                            .id,
-                                        index: 5,
-                                      ));
-                                },
-                                child: SizedBox(
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 3.h),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/image/png/location-mark.png',
-                                          height: 17.sp,
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Text(visit),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.to(() => LeadOverviewScreen(
-                                        leadId: leadController
-                                            .addedDocumentLeadDataList[index]
-                                            .id,
-                                        index: 2,
-                                        leadNumber: leadController
-                                            .addedDocumentLeadDataList[index]
-                                            .leadNumber,
-                                      ));
-                                },
-                                child: SizedBox(
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 3.h),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/image/png/quotation_icon-removebg-preview.png',
-                                          height: 17.sp,
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Text('Quotation'),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (StorageHelper.getId().toString() ==
-                                leadController
-                                    .addedDocumentLeadDataList[index].userId
-                                    .toString())
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // Get.to(() => LeadDetailUpdate(
-                                    //     leadId: leadController
-                                    //         .leadsListData[index].id,
-                                    //     leadDetails: leadController
-                                    //         .leadsListData[index]));
-                                  },
-                                  child: Container(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 15.w, top: 3.h, bottom: 3.h),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/image/png/update_icon-removebg-preview.png',
-                                            height: 17.sp,
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => LeadOverviewScreen(
+                                              leadId: leadController
+                                                  .addedDocumentLeadDataList[
+                                                      index]
+                                                  .id,
+                                              index: 5,
+                                            ));
+                                      },
+                                      child: SizedBox(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 3.h),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'assets/image/png/location-mark.png',
+                                                height: 17.sp,
+                                              ),
+                                              SizedBox(width: 3.w),
+                                              Text(visit),
+                                            ],
                                           ),
-                                          SizedBox(width: 3.w),
-                                          Text('Update'),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                          ],
-                        )
-                      ],
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => LeadOverviewScreen(
+                                              leadId: leadController
+                                                  .addedDocumentLeadDataList[
+                                                      index]
+                                                  .id,
+                                              index: 2,
+                                              leadNumber: leadController
+                                                  .addedDocumentLeadDataList[
+                                                      index]
+                                                  .leadNumber,
+                                            ));
+                                      },
+                                      child: SizedBox(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 3.h),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'assets/image/png/quotation_icon-removebg-preview.png',
+                                                height: 17.sp,
+                                              ),
+                                              SizedBox(width: 3.w),
+                                              Text('Quotation'),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (StorageHelper.getId().toString() ==
+                                      leadController
+                                          .addedDocumentLeadDataList[index]
+                                          .userId
+                                          .toString())
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          // Get.to(() => LeadDetailUpdate(
+                                          //     leadId: leadController
+                                          //         .leadsListData[index].id,
+                                          //     leadDetails: leadController
+                                          //         .leadsListData[index]));
+                                        },
+                                        child: Container(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 15.w,
+                                                top: 3.h,
+                                                bottom: 3.h),
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/image/png/update_icon-removebg-preview.png',
+                                                  height: 17.sp,
+                                                ),
+                                                SizedBox(width: 3.w),
+                                                Text('Update'),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }

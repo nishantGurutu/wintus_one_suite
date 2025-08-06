@@ -346,6 +346,7 @@ class LeadController extends GetxController {
 
       if (result != null && result.data != null) {
         isLeadLoading.value = false;
+        isLeadLoading.refresh();
         for (var onlineLead in result.data!) {
           if (onlineLead.phone != null &&
               onlineLead.phone!.isNotEmpty &&
@@ -520,6 +521,8 @@ class LeadController extends GetxController {
 
   RxList<LeadStatusData> leadStatusData = <LeadStatusData>[].obs;
   Rx<LeadStatusData?> selectedLeadStatusData = Rx<LeadStatusData?>(null);
+  Rx<LeadStatusData?> selectedLeadStatusDropdawnData =
+      Rx<LeadStatusData?>(null);
   Rx<LeadStatusData?> addselectedLeadStatusData = Rx<LeadStatusData?>(null);
   Rx<LeadStatusData?> selectedLeadStatusUpdateData = Rx<LeadStatusData?>(null);
   Future<void> statusListApi({required status}) async {
@@ -893,13 +896,15 @@ class LeadController extends GetxController {
     isDocumentUploading.value = false;
   }
 
+  var isSingleDocumentUploading = false.obs;
   Future<void> approveDocument({int? documentId, required leadId}) async {
-    isDocumentUploading.value = true;
+    isSingleDocumentUploading.value = true;
     final result = await LeadService().approveDocument(documentId);
     if (result != null) {
-      await leadDocumentList(leadId: leadId);
+      await leadDocumentList(leadId: leadId, from: "approve");
+      isSingleDocumentUploading.value = false;
     } else {}
-    isDocumentUploading.value = false;
+    isSingleDocumentUploading.value = false;
   }
 
   RxList<QuotationListData> quotationListData = <QuotationListData>[].obs;
@@ -936,6 +941,8 @@ class LeadController extends GetxController {
       isDocumentCheckBoxSelected.clear();
       if (result.data!.isNotEmpty) {
         documentTypeListData.assignAll(result.data!);
+        isDocumentTypeLoading.value = false;
+        isDocumentTypeLoading.refresh();
         documentIdList.addAll(List.filled(documentTypeListData.length, 0));
         documentUplodedList
             .addAll(List.filled(documentTypeListData.length, File('')));
@@ -949,12 +956,18 @@ class LeadController extends GetxController {
   RxList<UploadedDocumentData> leadDocumentListData =
       <UploadedDocumentData>[].obs;
   var isDocumentListLoading = false.obs;
-  Future<void> leadDocumentList({required int leadId}) async {
-    isDocumentListLoading.value = true;
+  Future<void> leadDocumentList(
+      {required int leadId, required String from}) async {
+    if (from == 'initstate') {
+      isDocumentListLoading.value = true;
+    }
     final result = await LeadService().leadDocumentList(leadId);
     if (result != null) {
       if (result.status == true) {
+        isDocumentCheckBoxSelected.clear();
         leadDocumentListData.assignAll(result.data!);
+        isDocumentListLoading.value = false;
+        isDocumentListLoading.refresh();
         isDocumentCheckBoxSelected
             .addAll(List.filled(leadDocumentListData.length, false));
         for (int i = 0; i < leadDocumentListData.length; i++) {
@@ -966,7 +979,6 @@ class LeadController extends GetxController {
         }
         isDocumentListLoading.value = false;
         documentTypeListData.refresh();
-        isDocumentListLoading.refresh();
       }
     } else {}
     isDocumentListLoading.value = false;
