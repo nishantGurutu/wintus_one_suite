@@ -150,26 +150,47 @@ class _LeadOverviewDocumentListBotomsheet
                                               ),
                                             ),
                                           ),
-                                          Obx(
-                                            () => Checkbox(
-                                              value: leadController
-                                                      .isDocumentCheckBoxSelected[
-                                                  index],
-                                              onChanged: (value) async {
-                                                await leadController
-                                                    .approveDocument(
-                                                  documentId: leadController
-                                                      .leadDocumentListData[
-                                                          index]
-                                                      .id,
-                                                  leadId: widget.leadId,
-                                                );
-                                                leadController
+                                          if (StorageHelper.getRoleName()
+                                                      .toString()
+                                                      .toLowerCase() ==
+                                                  "marketing manager" ||
+                                              StorageHelper.getRoleName()
+                                                      .toString()
+                                                      .toLowerCase() ==
+                                                  "branch head")
+                                            Obx(
+                                              () => Checkbox(
+                                                value: leadController
                                                         .isDocumentCheckBoxSelected[
-                                                    index] = value!;
-                                              },
-                                            ),
-                                          )
+                                                    index],
+                                                onChanged: (value) async {
+                                                  if (StorageHelper
+                                                                  .getRoleName()
+                                                              .toString()
+                                                              .toLowerCase() ==
+                                                          "marketing manager" &&
+                                                      leadController
+                                                              .leadDocumentListData[
+                                                                  index]
+                                                              .status
+                                                              .toString()
+                                                              .toLowerCase() ==
+                                                          "pending") {
+                                                    await leadController
+                                                        .approveDocument(
+                                                      documentId: leadController
+                                                          .leadDocumentListData[
+                                                              index]
+                                                          .id,
+                                                      leadId: widget.leadId,
+                                                    );
+                                                    leadController
+                                                            .isDocumentCheckBoxSelected[
+                                                        index] = value!;
+                                                  }
+                                                },
+                                              ),
+                                            )
                                         ],
                                       ),
                                       Divider(
@@ -317,33 +338,44 @@ class _LeadOverviewDocumentListBotomsheet
                         ),
                       ],
                     ),
+                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "branch head" ||
+                        StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "pa")
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "branch head" ||
+                        StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "pa")
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Remarks",
+                              style: TextStyle(
+                                  fontSize: 11.sp, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            width: 100.w,
+                            child: Text(
+                              'Upload Document',
+                              style: TextStyle(
+                                  fontSize: 11.sp, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
                     SizedBox(
                       height: 5.h,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "Remarks",
-                            style: TextStyle(
-                                fontSize: 11.sp, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Container(
-                          width: 100.w,
-                          child: Text(
-                            'Upload Document',
-                            style: TextStyle(
-                                fontSize: 11.sp, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    if (type == "approve")
+                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "branch head" ||
+                        StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "pa")
                       Row(
                         children: [
                           Expanded(
@@ -376,7 +408,7 @@ class _LeadOverviewDocumentListBotomsheet
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(10.r),
                                     child: Image.file(
-                                      leadController.leadpickedFile.value!,
+                                      leadController.leadpickedFile.value,
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) {
@@ -402,11 +434,139 @@ class _LeadOverviewDocumentListBotomsheet
                           ),
                         ],
                       ),
-                    if (type == "concern")
-                      SizedBox(
-                        height: 5.h,
+                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
+                        "pa")
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Work Order",
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Aditional Document',
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5.w,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    takeDocument();
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.r),
+                                      ),
+                                    ),
+                                    child: Obx(
+                                      () {
+                                        return ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                          child: Image.file(
+                                            leadController.leadpickedFile.value,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.r),
+                                                    border: Border.all(
+                                                        color:
+                                                            lightBorderColor)),
+                                                height: 40.h,
+                                                width: 100.w,
+                                                child: Image.asset(
+                                                  'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                                  height: 15.h,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5.w,
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    takeDocument();
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    // width: 100.w,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.r),
+                                      ),
+                                    ),
+                                    child: Obx(
+                                      () {
+                                        return ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                          child: Image.file(
+                                            leadController.leadpickedFile.value,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.r),
+                                                    border: Border.all(
+                                                        color:
+                                                            lightBorderColor)),
+                                                height: 40.h,
+                                                width: 100.w,
+                                                child: Image.asset(
+                                                  'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                                  height: 15.h,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    if (type == "concern")
+                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
+                        "marketing manager")
                       TaskCustomTextField(
                         controller: remarkControlelr,
                         focusedIndexNotifier: focusedIndexNotifier,
