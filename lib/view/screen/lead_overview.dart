@@ -106,153 +106,161 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
         backgroundColor: backgroundColor,
         elevation: 0,
       ),
-      body: Obx(
-        () => leadController.isLeadDetailsLoading.value == true &&
-                leadController.isFollowupsListLoading.value == true &&
-                leadController.isListVisitLoading.value == true
-            ? Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  Container(
-                    color: whiteColor,
-                    child: TabBar(
-                      isScrollable: true,
-                      controller: _tabController,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      tabs: [
-                        Tab(
-                          icon: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/image/svg/assignment_late.svg'),
-                              SizedBox(width: 5.w),
-                              Text(
-                                'Overview',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              )
-                            ],
+      body: SafeArea(
+        child: Obx(
+          () => leadController.isLeadDetailsLoading.value == true &&
+                  leadController.isFollowupsListLoading.value == true &&
+                  leadController.isListVisitLoading.value == true
+              ? Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    Container(
+                      color: whiteColor,
+                      child: TabBar(
+                        isScrollable: true,
+                        controller: _tabController,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        tabs: [
+                          Tab(
+                            icon: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                    'assets/image/svg/assignment_late.svg'),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  'Overview',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Tab(
-                          icon: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/image/svg/assignment_late.svg'),
-                              SizedBox(width: 5.w),
-                              Text(
-                                'Followups',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              )
-                            ],
+                          Tab(
+                            icon: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                    'assets/image/svg/assignment_late.svg'),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  'Followups',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Tab(
-                          icon: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/image/svg/done_all (1).svg'),
-                              SizedBox(width: 5.w),
-                              Text(
-                                'Quotation',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              )
-                            ],
+                          Tab(
+                            icon: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                    'assets/image/svg/done_all (1).svg'),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  'Quotation',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Tab(
-                          icon: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/image/svg/done_all (1).svg'),
-                              SizedBox(width: 5.w),
-                              Text(
-                                'Discussion',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              )
-                            ],
+                          Tab(
+                            icon: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                    'assets/image/svg/done_all (1).svg'),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  'Discussion',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Tab(
-                          icon: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/image/svg/done_all (1).svg'),
-                              SizedBox(width: 5.w),
-                              Text(
-                                'Notes',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              )
-                            ],
+                          Tab(
+                            icon: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                    'assets/image/svg/done_all (1).svg'),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  'Notes',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Tab(
-                          icon: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/image/svg/done_all (1).svg'),
-                              SizedBox(width: 5.w),
-                              Text(
-                                'Visits/meeting',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              )
-                            ],
+                          Tab(
+                            icon: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                    'assets/image/svg/done_all (1).svg'),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  'Visits/meeting',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        leadOverview(leadController.leadDetails.value),
-                        FollowUpList(
-                          leadController.followUpsListData,
-                          leadController.leadDetails.value,
-                          widget.leadId,
-                          leadController,
-                        ),
-                        QuotationListScreen(
-                          leadId: widget.leadId,
-                          leadNumber: widget.leadNumber,
-                          from: "overview",
-                          leadDetails: leadController.leadDetails,
-                        ),
-                        LeadDiscussionList(leadId: widget.leadId),
-                        LeadNoteScreen(
-                          leadId: widget.leadId,
-                          index: 0,
-                        ),
-                        Obx(
-                          () => GetMeetingList(
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          leadOverview(leadController.leadDetails.value),
+                          FollowUpList(
+                            leadController.followUpsListData,
+                            leadController.leadDetails.value,
+                            widget.leadId,
+                            leadController,
+                          ),
+                          QuotationListScreen(
                             leadId: widget.leadId,
-                            contactList: leadController.leadContactData,
-                            from: "lead",
-                            assignPeople: leadController
-                                    .leadDetails.value?.assignedToUsers ??
-                                [],
-                            addPeople:
-                                leadController.leadDetails.value?.addedUsers ??
-                                    [],
+                            leadNumber: widget.leadNumber,
+                            from: "overview",
+                            leadDetails: leadController.leadDetails,
                           ),
-                        ),
-                      ],
+                          LeadDiscussionList(leadId: widget.leadId),
+                          LeadNoteScreen(
+                            leadId: widget.leadId,
+                            index: 0,
+                          ),
+                          Obx(
+                            () => GetMeetingList(
+                              leadId: widget.leadId,
+                              contactList: leadController.leadContactData,
+                              from: "lead",
+                              assignPeople: leadController
+                                      .leadDetails.value?.assignedToUsers ??
+                                  [],
+                              addPeople: leadController
+                                      .leadDetails.value?.addedUsers ??
+                                  [],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }
@@ -533,7 +541,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                   borderRadius: BorderRadius.all(Radius.circular(10.r)),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 8.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -611,77 +619,6 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                             ),
                           ],
                         ),
-                      // Column(
-                      //   crossAxisAlignment: CrossAxisAlignment.start,
-                      //   children: [
-                      //     Text(
-                      //       'Document Approved by Marketing Manager :',
-                      //       style: TextStyle(
-                      //           fontSize: 14.sp, fontWeight: FontWeight.w500),
-                      //     ),
-                      //     SizedBox(height: 5.h),
-                      //     Container(
-                      //       child: Row(
-                      //         children: [
-                      //           Expanded(
-                      //               child: Text(
-                      //             'Name',
-                      //             style: TextStyle(
-                      //                 fontSize: 13.sp,
-                      //                 fontWeight: FontWeight.w500),
-                      //           )),
-                      //           Expanded(
-                      //               child: Text(
-                      //             'Date',
-                      //             style: TextStyle(
-                      //                 fontSize: 13.sp,
-                      //                 fontWeight: FontWeight.w500),
-                      //           )),
-                      //         ],
-                      //       ),
-                      //     ),
-                      //     SizedBox(
-                      //       height: 4.h,
-                      //     ),
-                      //     Container(
-                      //       height: 30.h,
-                      //       width: double.infinity,
-                      //       decoration: BoxDecoration(
-                      //         borderRadius: BorderRadius.all(
-                      //           Radius.circular(10.r),
-                      //         ),
-                      //       ),
-                      //       child: Row(
-                      //         children: [
-                      //           Expanded(
-                      //             child: Container(
-                      //               height: 30.h,
-                      //               decoration: BoxDecoration(
-                      //                   border: Border.all(
-                      //                       color: lightBorderColor)),
-                      //               child: Center(
-                      //                 child: Text(
-                      //                     '${leadDatavalue?.approvalData?[i].managerName ?? ""}'),
-                      //               ),
-                      //             ),
-                      //           ),
-                      //           Expanded(
-                      //             child: Container(
-                      //               height: 30.h,
-                      //               decoration: BoxDecoration(
-                      //                   border: Border.all(
-                      //                       color: lightBorderColor)),
-                      //               child: Center(
-                      //                 child: Text(
-                      //                     '${leadDatavalue?.approvalData?.first.managerTime ?? ""}'),
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
                       SizedBox(height: 10.h),
                       if (leadDatavalue?.approvalData?[i].branchheadStatus
                               .toString()
@@ -714,7 +651,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                             color: textColor,
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w400),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -739,9 +676,6 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                     ),
                                   ],
                                 ),
-                                // SizedBox(
-                                //   height: 4.h,
-                                // ),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
