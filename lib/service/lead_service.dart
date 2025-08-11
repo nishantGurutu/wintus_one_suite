@@ -1901,7 +1901,9 @@ class LeadService {
       if (legalStatus != null) {
         formDataMap['legalstatus'] = legalStatus;
       }
-      if (status != null) {
+      if (status != null &&
+          StorageHelper.getRoleName().toString().toLowerCase() ==
+              "branch head") {
         formDataMap['status'] = status;
       }
       if (legalRemark.isNotEmpty) {

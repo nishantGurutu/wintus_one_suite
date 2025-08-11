@@ -1,11 +1,11 @@
 class LeadDetailsModel {
   bool? status;
-  String? message;
+  dynamic message;
   LeadDetailsData? data;
 
   LeadDetailsModel({this.status, this.message, this.data});
 
-  LeadDetailsModel.fromJson(Map<String, dynamic> json) {
+  LeadDetailsModel.fromJson(Map<dynamic, dynamic> json) {
     status = json['status'];
     message = json['message'];
     data = json['data'] != null
@@ -13,8 +13,8 @@ class LeadDetailsModel {
         : null;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<dynamic, dynamic> toJson() {
+    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -110,7 +110,7 @@ class LeadDetailsData {
       this.addedUsers,
       this.approvalData});
 
-  LeadDetailsData.fromJson(Map<String, dynamic> json) {
+  LeadDetailsData.fromJson(Map<dynamic, dynamic> json) {
     id = json['id'];
     leadNumber = json['lead_number'];
     userId = json['user_id'];
@@ -169,8 +169,8 @@ class LeadDetailsData {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<dynamic, dynamic> toJson() {
+    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
     data['id'] = this.id;
     data['lead_number'] = this.leadNumber;
     data['user_id'] = this.userId;
@@ -225,20 +225,20 @@ class LeadDetailsData {
 }
 
 class AssignedToUsers {
-  int? id;
-  String? name;
-  String? image;
+  dynamic id;
+  dynamic name;
+  dynamic image;
 
   AssignedToUsers({this.id, this.name, this.image});
 
-  AssignedToUsers.fromJson(Map<String, dynamic> json) {
+  AssignedToUsers.fromJson(Map<dynamic, dynamic> json) {
     id = json['id'];
     name = json['name'];
     image = json['image'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<dynamic, dynamic> toJson() {
+    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['image'] = this.image;
@@ -247,17 +247,22 @@ class AssignedToUsers {
 }
 
 class ApprovalData {
-  int? id;
-  String? managerStatus;
-  String? managerRemarks;
-  String? managerName;
-  String? managerTime;
-  String? branchheadStatus;
-  String? branchheadRemarks;
-  String? brancheadTime;
-  String? branchheadAgreement;
-  String? branchheadName;
-  String? submittedAt;
+  dynamic id;
+  dynamic managerStatus;
+  dynamic managerRemarks;
+  dynamic managerName;
+  dynamic managerTime;
+  dynamic branchheadStatus;
+  dynamic branchheadRemarks;
+  dynamic brancheadTime;
+  dynamic branchheadAgreement;
+  dynamic branchheadName;
+  dynamic legalName;
+  dynamic legalRemarks;
+  dynamic legalWorkorder;
+  dynamic legalAdditionalAttachment;
+  dynamic legalTime;
+  dynamic submittedAt;
 
   ApprovalData(
       {this.id,
@@ -270,9 +275,14 @@ class ApprovalData {
       this.brancheadTime,
       this.branchheadAgreement,
       this.branchheadName,
+      this.legalName,
+      this.legalRemarks,
+      this.legalWorkorder,
+      this.legalAdditionalAttachment,
+      this.legalTime,
       this.submittedAt});
 
-  ApprovalData.fromJson(Map<String, dynamic> json) {
+  ApprovalData.fromJson(Map<dynamic, dynamic> json) {
     id = json['id'];
     managerStatus = json['manager_status'];
     managerRemarks = json['manager_remarks'];
@@ -283,11 +293,16 @@ class ApprovalData {
     brancheadTime = json['branchead_time'];
     branchheadAgreement = json['branchhead_agreement'];
     branchheadName = json['branchhead_name'];
+    legalName = json['legal_name'];
+    legalRemarks = json['legal_remarks'];
+    legalWorkorder = json['legal_workorder'];
+    legalAdditionalAttachment = json['legal_additional_attachment'];
+    legalTime = json['legal_time'];
     submittedAt = json['submitted_at'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<dynamic, dynamic> toJson() {
+    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
     data['id'] = this.id;
     data['manager_status'] = this.managerStatus;
     data['manager_remarks'] = this.managerRemarks;
@@ -298,6 +313,11 @@ class ApprovalData {
     data['branchead_time'] = this.brancheadTime;
     data['branchhead_agreement'] = this.branchheadAgreement;
     data['branchhead_name'] = this.branchheadName;
+    data['legal_name'] = this.legalName;
+    data['legal_remarks'] = this.legalRemarks;
+    data['legal_workorder'] = this.legalWorkorder;
+    data['legal_additional_attachment'] = this.legalAdditionalAttachment;
+    data['legal_time'] = this.legalTime;
     data['submitted_at'] = this.submittedAt;
     return data;
   }

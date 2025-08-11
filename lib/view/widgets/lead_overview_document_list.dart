@@ -11,12 +11,14 @@ import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/network_image_class.dart';
 import 'package:task_management/custom_widget/task_text_field.dart';
 import 'package:task_management/helper/storage_helper.dart';
+import 'package:task_management/model/lead_details_model.dart';
 
 class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
   final dynamic leadId;
   final dynamic quotationId;
+  final List<ApprovalData>? status;
   const LeadOverviewDocumentListBotomsheet(
-      {super.key, required this.leadId, this.quotationId});
+      {super.key, required this.leadId, this.quotationId, this.status});
 
   @override
   State<LeadOverviewDocumentListBotomsheet> createState() =>
@@ -203,18 +205,42 @@ class _LeadOverviewDocumentListBotomsheet
                                 },
                               ),
                             ),
-                      if (StorageHelper.getRoleName()
-                                  .toString()
-                                  .toLowerCase() ==
-                              "marketing manager" ||
-                          StorageHelper.getRoleName()
-                                  .toString()
-                                  .toLowerCase() ==
-                              "branch head" ||
-                          StorageHelper.getRoleName()
-                                  .toString()
-                                  .toLowerCase() ==
-                              "pa")
+                      if ((StorageHelper.getRoleName()
+                                      .toString()
+                                      .toLowerCase() ==
+                                  "marketing manager" &&
+                              widget.status?.first.managerStatus
+                                      .toString()
+                                      .toLowerCase() ==
+                                  'pending') ||
+                          (StorageHelper.getRoleName()
+                                      .toString()
+                                      .toLowerCase() ==
+                                  "branch head" &&
+                              widget.status?.first.branchheadStatus
+                                      .toString()
+                                      .toLowerCase() ==
+                                  'pending') ||
+                          (StorageHelper.getRoleName()
+                                      .toString()
+                                      .toLowerCase() ==
+                                  "pa" &&
+                              widget.status?.first.legalName
+                                      .toString()
+                                      .toLowerCase() ==
+                                  'null' &&
+                              widget.status?.first.legalName
+                                      .toString()
+                                      .toLowerCase() ==
+                                  'null' &&
+                              widget.status?.first.legalName
+                                      .toString()
+                                      .toLowerCase() ==
+                                  ''))
+                        // if(leadDatavalue?.approvalData?[i].managerStatus
+                        //     .toString()
+                        //     .toLowerCase() ==
+                        // "approved" )
                         Column(
                           children: [
                             SizedBox(
@@ -454,7 +480,6 @@ class _LeadOverviewDocumentListBotomsheet
                                 ),
                               ),
                               Expanded(
-                                // width: 100.w,
                                 child: Text(
                                   'Upload Document',
                                   style: TextStyle(
@@ -467,69 +492,13 @@ class _LeadOverviewDocumentListBotomsheet
                           SizedBox(
                             height: 5.h,
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TaskCustomTextField(
-                                  controller: legalRemarkControlelr,
-                                  focusedIndexNotifier: focusedIndexNotifier,
-                                  index: 1,
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  hintText: "Enter legal remarks",
-                                  data: "",
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5.w,
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    takeDocument(from: 'upload');
-                                  },
-                                  child: Container(
-                                    height: 40.h,
-                                    // width: 100.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.r),
-                                      ),
-                                    ),
-                                    child: Obx(
-                                      () {
-                                        return ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                          child: Image.file(
-                                            leadController.leadpickedFile.value,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.r),
-                                                    border: Border.all(
-                                                        color:
-                                                            lightBorderColor)),
-                                                height: 40.h,
-                                                width: 100.w,
-                                                child: Image.asset(
-                                                  'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                                  height: 15.h,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          TaskCustomTextField(
+                            controller: legalRemarkControlelr,
+                            focusedIndexNotifier: focusedIndexNotifier,
+                            index: 1,
+                            textCapitalization: TextCapitalization.sentences,
+                            hintText: "Enter legal remarks",
+                            data: "",
                           ),
                           SizedBox(
                             height: 5.h,
@@ -661,7 +630,6 @@ class _LeadOverviewDocumentListBotomsheet
                       ),
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
                         "marketing manager")
-                      // Row(children: [
                       TaskCustomTextField(
                         controller: remarkControlelr,
                         focusedIndexNotifier: focusedIndexNotifier,
@@ -670,77 +638,10 @@ class _LeadOverviewDocumentListBotomsheet
                         hintText: "Enter remarks",
                         data: "",
                       ),
-                    // SizedBox(width: 8.w),
-                    // Expanded(
-                    //   child: InkWell(
-                    //     onTap: () {
-                    //       takeDocument(from: "workorder");
-                    //     },
-                    //     child: Container(
-                    //       height: 40.h,
-                    //       decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.all(
-                    //           Radius.circular(10.r),
-                    //         ),
-                    //       ),
-                    //       child: Obx(
-                    //         () {
-                    //           return ClipRRect(
-                    //             borderRadius: BorderRadius.circular(10.r),
-                    //             child: Image.file(
-                    //               leadController.leadWorkpickedFile.value,
-                    //               fit: BoxFit.cover,
-                    //               errorBuilder:
-                    //                   (context, error, stackTrace) {
-                    //                 return Container(
-                    //                   decoration: BoxDecoration(
-                    //                       borderRadius:
-                    //                           BorderRadius.circular(10.r),
-                    //                       border: Border.all(
-                    //                           color: lightBorderColor)),
-                    //                   height: 40.h,
-                    //                   width: 100.w,
-                    //                   child: Image.asset(
-                    //                     'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                    //                     height: 15.h,
-                    //                   ),
-                    //                 );
-                    //               },
-                    //             ),
-                    //           );
-                    //         },
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    // ]),
                     SizedBox(height: 8.h),
                     InkWell(
                       onTap: () async {
                         debugPrint("Approve Button Clicked");
-                        // if (StorageHelper.getRoleName()
-                        //             .toString()
-                        //             .toLowerCase() ==
-                        //         "branch head" ||
-                        //     StorageHelper.getRoleName()
-                        //             .toString()
-                        //             .toLowerCase() ==
-                        //         "marketing manager") {
-                        // if (type == "approve" &&
-                        //     leadController
-                        //             .isBranchHeadManagerApproving.value ==
-                        //         false) {
-
-                        // await leadController.branchheadManagerApproving(
-                        //   leadId: widget.leadId,
-                        //   remark: remarkControlelr.text,
-                        //   status: type == "approve" ? 1 : 2,
-                        //   attachment: leadController.leadpickedFile.value,
-                        // );
-                        // } else if (StorageHelper.getRoleName()
-                        //         .toString()
-                        //         .toLowerCase() ==
-                        //     "pa") {
 
                         if (StorageHelper.getRoleName()
                                 .toString()
@@ -765,25 +666,6 @@ class _LeadOverviewDocumentListBotomsheet
                             legalStatus: type == "approve" ? 1 : 2,
                           );
                         }
-                        // else if (StorageHelper.getRoleName()
-                        //         .toString()
-                        //         .toLowerCase() ==
-                        //     "pa") {
-                        //   if (leadController
-                        //           .isMarketingManagerApproving.value ==
-                        //       false) {
-                        //     if (leadController
-                        //         .leadpickedFile.value.path.isNotEmpty) {
-                        //       await leadController.approveMarketingManager(
-                        //         leadId: widget.leadId,
-                        //         remark: remarkControlelr.text,
-                        //         status: type == "approve" ? 1 : 2,
-                        //       );
-                        //     } else {
-                        //       CustomToast()
-                        //           .showCustomToast('Please select attachment');
-                        //     }
-                        //   }
                       },
                       child: Container(
                         width: 130.w,

@@ -460,7 +460,7 @@ class LeadController extends GetxController {
     final result = await LeadService().sourseList();
     if (result != null) {
       sourceListData.assignAll(result.data!);
-
+      sourceListData.refresh();
       for (var val in result.data!) {
         await DatabaseHelper.instance.insertLeadSource(val);
       }
@@ -1460,9 +1460,8 @@ class LeadController extends GetxController {
     final result =
         await LeadService().markitingManagerApproving(leadId, remark, status);
     if (result != null) {
+      await leadDetailsApi(leadId: leadId);
       Get.back();
-      // Get.back();
-      // await followUpsListApi(leadId: leadId);
     } else {}
     isMarketingManagerApproving.value = false;
   }
@@ -1488,6 +1487,7 @@ class LeadController extends GetxController {
         legalRemark,
         legalStatus);
     if (result != null) {
+      await leadDetailsApi(leadId: leadId);
       Get.back();
       // Get.back();
       // await followUpsListApi(leadId: leadId);
@@ -1519,8 +1519,6 @@ class LeadController extends GetxController {
       Get.back();
       isCmoApproving.value = false;
       isCmoApproving.refresh();
-      // Get.back();
-      // await followUpsListApi(leadId: leadId);
     } else {}
     isCmoApproving.value = false;
   }
