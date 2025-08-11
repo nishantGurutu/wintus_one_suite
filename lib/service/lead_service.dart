@@ -1896,12 +1896,20 @@ class LeadService {
 
       final Map<String, dynamic> formDataMap = {
         'lead_id': leadId,
-        'branchhead_remarks': remark,
-        'status': status,
-        'legal_remarks': legalRemark,
-        'legalstatus': legalStatus,
       };
 
+      if (legalStatus != null) {
+        formDataMap['legalstatus'] = legalStatus;
+      }
+      if (status != null) {
+        formDataMap['status'] = status;
+      }
+      if (legalRemark.isNotEmpty) {
+        formDataMap['legal_remarks'] = legalRemark;
+      }
+      if (remark.isNotEmpty) {
+        formDataMap['branchhead_remarks'] = remark;
+      }
       if (attachment.path.isNotEmpty) {
         final fileName = attachment.path.split('/').last;
         formDataMap['branchhead_agreement'] = await MultipartFile.fromFile(
@@ -1923,6 +1931,10 @@ class LeadService {
           filename: fileName,
         );
       }
+
+      print("euh8 398ue93 e983ue93 ${leadId}");
+      print("euh8 398ue93 e983ue93 ${remark}");
+      print("euh8 398ue93 e983ue93 ${formDataMap}");
 
       final formData = FormData.fromMap(formDataMap);
 

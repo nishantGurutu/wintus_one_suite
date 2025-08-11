@@ -661,6 +661,7 @@ class _LeadOverviewDocumentListBotomsheet
                       ),
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
                         "marketing manager")
+                      // Row(children: [
                       TaskCustomTextField(
                         controller: remarkControlelr,
                         focusedIndexNotifier: focusedIndexNotifier,
@@ -669,6 +670,50 @@ class _LeadOverviewDocumentListBotomsheet
                         hintText: "Enter remarks",
                         data: "",
                       ),
+                    // SizedBox(width: 8.w),
+                    // Expanded(
+                    //   child: InkWell(
+                    //     onTap: () {
+                    //       takeDocument(from: "workorder");
+                    //     },
+                    //     child: Container(
+                    //       height: 40.h,
+                    //       decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.all(
+                    //           Radius.circular(10.r),
+                    //         ),
+                    //       ),
+                    //       child: Obx(
+                    //         () {
+                    //           return ClipRRect(
+                    //             borderRadius: BorderRadius.circular(10.r),
+                    //             child: Image.file(
+                    //               leadController.leadWorkpickedFile.value,
+                    //               fit: BoxFit.cover,
+                    //               errorBuilder:
+                    //                   (context, error, stackTrace) {
+                    //                 return Container(
+                    //                   decoration: BoxDecoration(
+                    //                       borderRadius:
+                    //                           BorderRadius.circular(10.r),
+                    //                       border: Border.all(
+                    //                           color: lightBorderColor)),
+                    //                   height: 40.h,
+                    //                   width: 100.w,
+                    //                   child: Image.asset(
+                    //                     'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                    //                     height: 15.h,
+                    //                   ),
+                    //                 );
+                    //               },
+                    //             ),
+                    //           );
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // ]),
                     SizedBox(height: 8.h),
                     InkWell(
                       onTap: () async {
@@ -696,19 +741,30 @@ class _LeadOverviewDocumentListBotomsheet
                         //         .toString()
                         //         .toLowerCase() ==
                         //     "pa") {
-                        await leadController.branchheadManagerApproving(
-                          leadId: widget.leadId,
-                          remark: remarkControlelr.text,
-                          status: type == "approve" ? 1 : 2,
-                          attachment: leadController.leadpickedFile.value,
-                          workAttachment:
-                              leadController.leadWorkpickedFile.value,
-                          aditional:
-                              leadController.leadAditionalpickedFile.value,
-                          legalRemark: legalRemarkControlelr.text,
-                          legalStatus: type == "approve" ? 1 : 2,
-                        );
 
+                        if (StorageHelper.getRoleName()
+                                .toString()
+                                .toLowerCase() ==
+                            "marketing manager") {
+                          await leadController.approveMarketingManager(
+                            leadId: widget.leadId,
+                            remark: remarkControlelr.text,
+                            status: type == "approve" ? 1 : 2,
+                          );
+                        } else {
+                          await leadController.branchheadManagerApproving(
+                            leadId: widget.leadId,
+                            remark: remarkControlelr.text,
+                            status: type == "approve" ? 1 : 2,
+                            attachment: leadController.leadpickedFile.value,
+                            workAttachment:
+                                leadController.leadWorkpickedFile.value,
+                            aditional:
+                                leadController.leadAditionalpickedFile.value,
+                            legalRemark: legalRemarkControlelr.text,
+                            legalStatus: type == "approve" ? 1 : 2,
+                          );
+                        }
                         // else if (StorageHelper.getRoleName()
                         //         .toString()
                         //         .toLowerCase() ==
