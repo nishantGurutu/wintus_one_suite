@@ -1104,7 +1104,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Obx(
                   () => TaskInfo(
                     totalTaskText,
-                    homeController.totalTask.value,
+                    "${homeController.homeDataModel.value?.totalTask ?? ''}",
                     totalTaskSvgIcon,
                     const Color.fromARGB(255, 76, 175, 175),
                     whiteColor,

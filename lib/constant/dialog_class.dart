@@ -82,8 +82,6 @@ class ShowDialogFunction {
 
   Future<void> dailyMessage(
       BuildContext context, eventData, DateTime dt, title) async {
-    final prefs = await SharedPreferences.getInstance();
-    // await _audioPlayer.play(AssetSource('mp3/emergency_alarm_69780.mp3'));
     return showDialog(
       barrierDismissible: false,
       context: context,

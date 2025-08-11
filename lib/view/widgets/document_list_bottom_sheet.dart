@@ -199,32 +199,58 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                             ),
                           ),
                           if (widget.from == "quotation")
-                            CustomButton(
-                              onPressed: () async {
-                                if (leadController.isDocumentUploading.value ==
-                                    false) {
+                            Obx(
+                              () => CustomButton(
+                                onPressed: () async {
                                   if (leadController
-                                      .documentUplodedList.isNotEmpty) {
-                                    await leadController.documentUploading(
-                                      documentId: leadController.documentIdList,
-                                      ducument:
-                                          leadController.documentUplodedList,
-                                      leadId: widget.leadId,
-                                      quotationId: widget.quotationId,
-                                    );
-                                  } else {
-                                    CustomToast()
-                                        .showCustomToast('Upload Document.');
+                                          .isDocumentUploading.value ==
+                                      false) {
+                                    if (leadController
+                                        .documentUplodedList.isNotEmpty) {
+                                      await leadController.documentUploading(
+                                        documentId:
+                                            leadController.documentIdList,
+                                        ducument:
+                                            leadController.documentUplodedList,
+                                        leadId: widget.leadId,
+                                        quotationId: widget.quotationId,
+                                      );
+                                    } else {
+                                      CustomToast()
+                                          .showCustomToast('Upload Document.');
+                                    }
                                   }
-                                }
-                              },
-                              text: Text(
-                                'Submit',
-                                style: changeTextColor(rubikBlack, whiteColor),
+                                },
+                                text:
+                                    leadController.isDocumentUploading.value ==
+                                            true
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              CircularProgressIndicator(
+                                                color: whiteColor,
+                                              ),
+                                              SizedBox(
+                                                width: 8.w,
+                                              ),
+                                              Text(
+                                                'Loading...',
+                                                style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    color: whiteColor),
+                                              )
+                                            ],
+                                          )
+                                        : Text(
+                                            'Submit',
+                                            style: changeTextColor(
+                                                rubikBlack, whiteColor),
+                                          ),
+                                color: primaryColor,
+                                height: 45.h,
+                                width: double.infinity,
                               ),
-                              color: primaryColor,
-                              height: 45.h,
-                              width: double.infinity,
                             ),
                           if (widget.from == "quotation")
                             SizedBox(

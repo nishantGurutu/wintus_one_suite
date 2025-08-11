@@ -6,7 +6,7 @@ import 'package:task_management/constant/style_constant.dart';
 
 class TaskInfo extends StatelessWidget {
   final String s;
-  final int totalTask;
+  final dynamic totalTask;
   final String icon;
   final Color color;
   final Color gradientColor1;

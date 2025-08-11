@@ -1874,7 +1874,14 @@ class LeadService {
   }
 
   Future<bool> branchHeadManagerApproving(
-      leadId, String remark, int status, File attachment) async {
+      leadId,
+      String remark,
+      int status,
+      File attachment,
+      File workAttachment,
+      File aditional,
+      String legalRemark,
+      int legalStatus) async {
     try {
       final token = StorageHelper.getToken();
       _dio.options.headers["Authorization"] = "Bearer $token";
@@ -1891,12 +1898,28 @@ class LeadService {
         'lead_id': leadId,
         'branchhead_remarks': remark,
         'status': status,
+        'legal_remarks': legalRemark,
+        'legalstatus': legalStatus,
       };
 
       if (attachment.path.isNotEmpty) {
         final fileName = attachment.path.split('/').last;
         formDataMap['branchhead_agreement'] = await MultipartFile.fromFile(
           attachment.path,
+          filename: fileName,
+        );
+      }
+      if (workAttachment.path.isNotEmpty) {
+        final fileName = workAttachment.path.split('/').last;
+        formDataMap['workorder'] = await MultipartFile.fromFile(
+          workAttachment.path,
+          filename: fileName,
+        );
+      }
+      if (aditional.path.isNotEmpty) {
+        final fileName = aditional.path.split('/').last;
+        formDataMap['additional_attachment'] = await MultipartFile.fromFile(
+          aditional.path,
           filename: fileName,
         );
       }

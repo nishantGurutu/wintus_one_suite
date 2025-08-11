@@ -9,6 +9,7 @@ import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/image_constant.dart';
 import 'package:task_management/constant/style_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
+import 'package:task_management/custom_widget/custom_text_convert.dart';
 import 'package:task_management/custom_widget/network_image_class.dart';
 import 'package:task_management/model/lead_details_model.dart';
 import 'package:task_management/model/lead_visit_list_model.dart';
@@ -82,7 +83,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: whiteColor,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
@@ -462,11 +463,26 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Document Uploaded || Successfully Added || Check and approved",
+              "Document Approval Workflow",
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
                 color: textColor,
+              ),
+            ),
+            SizedBox(height: 10.h),
+            Container(
+              decoration: BoxDecoration(
+                  color: Color(0xffE5FFF9),
+                  borderRadius: BorderRadius.all(Radius.circular(8.r))),
+              child: Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(8.sp),
+                  child: Text(
+                    '✅ Marketing Manager has approved the quotation on 6 Aug 2025 at 3:20 PM.',
+                    style: TextStyle(fontSize: 11.sp, color: Color(0xff434343)),
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 10.h),
@@ -515,15 +531,6 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                 decoration: BoxDecoration(
                   color: whiteColor,
                   borderRadius: BorderRadius.all(Radius.circular(10.r)),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: lightGreyColor.withOpacity(0.1),
-                  //     blurRadius: 6,
-                  //     spreadRadius: 5,
-                  //     blurStyle: BlurStyle.inner,
-                  //     offset: Offset(2, 2),
-                  //   ),
-                  // ],
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
@@ -535,222 +542,332 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                               .toLowerCase() !=
                           "pending")
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Document Approved by Marketing Manager :',
-                              style: TextStyle(
-                                  fontSize: 14.sp, fontWeight: FontWeight.w500),
-                            ),
-                            SizedBox(height: 5.h),
                             Container(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                    'Name',
-                                    style: TextStyle(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w500),
-                                  )),
-                                  Expanded(
-                                      child: Text(
-                                    'Date',
-                                    style: TextStyle(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w500),
-                                  )),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 4.h,
-                            ),
-                            Container(
-                              height: 30.h,
-                              width: double.infinity,
                               decoration: BoxDecoration(
+                                color: Color(0xffF5F7FF),
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(10.r),
+                                  Radius.circular(8.r),
                                 ),
                               ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: 30.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: lightBorderColor)),
-                                      child: Center(
-                                        child: Text(
-                                            '${leadDatavalue?.approvalData?[i].managerName ?? ""}'),
+                              child: Padding(
+                                padding: EdgeInsets.all(8.sp),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        text: "Marketing Manager",
+                                        style: TextStyle(
+                                            color: textColor,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text:
+                                                '  ${leadDatavalue?.approvalData?[i].managerName ?? ""}',
+                                            style: TextStyle(
+                                                color: textColor,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w400),
+                                          )
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 30.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: lightBorderColor)),
-                                      child: Center(
-                                        child: Text(
-                                            '${leadDatavalue?.approvalData?.first.managerTime ?? ""}'),
-                                      ),
+                                    SizedBox(
+                                      height: 4.h,
                                     ),
-                                  ),
-                                ],
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/image/svg/done_all (2).svg',
+                                          height: 20.h,
+                                        ),
+                                        SizedBox(
+                                          width: 5.w,
+                                        ),
+                                        Text(
+                                          'Approved',
+                                          style: TextStyle(
+                                              color: Color(0xff01A901),
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 4.h,
+                                    ),
+                                    Text(
+                                      '${leadDatavalue?.approvalData?[i].managerTime ?? ""}',
+                                      style: TextStyle(
+                                          color: Color(0xff747474),
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
                         ),
+                      // Column(
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     Text(
+                      //       'Document Approved by Marketing Manager :',
+                      //       style: TextStyle(
+                      //           fontSize: 14.sp, fontWeight: FontWeight.w500),
+                      //     ),
+                      //     SizedBox(height: 5.h),
+                      //     Container(
+                      //       child: Row(
+                      //         children: [
+                      //           Expanded(
+                      //               child: Text(
+                      //             'Name',
+                      //             style: TextStyle(
+                      //                 fontSize: 13.sp,
+                      //                 fontWeight: FontWeight.w500),
+                      //           )),
+                      //           Expanded(
+                      //               child: Text(
+                      //             'Date',
+                      //             style: TextStyle(
+                      //                 fontSize: 13.sp,
+                      //                 fontWeight: FontWeight.w500),
+                      //           )),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     SizedBox(
+                      //       height: 4.h,
+                      //     ),
+                      //     Container(
+                      //       height: 30.h,
+                      //       width: double.infinity,
+                      //       decoration: BoxDecoration(
+                      //         borderRadius: BorderRadius.all(
+                      //           Radius.circular(10.r),
+                      //         ),
+                      //       ),
+                      //       child: Row(
+                      //         children: [
+                      //           Expanded(
+                      //             child: Container(
+                      //               height: 30.h,
+                      //               decoration: BoxDecoration(
+                      //                   border: Border.all(
+                      //                       color: lightBorderColor)),
+                      //               child: Center(
+                      //                 child: Text(
+                      //                     '${leadDatavalue?.approvalData?[i].managerName ?? ""}'),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           Expanded(
+                      //             child: Container(
+                      //               height: 30.h,
+                      //               decoration: BoxDecoration(
+                      //                   border: Border.all(
+                      //                       color: lightBorderColor)),
+                      //               child: Center(
+                      //                 child: Text(
+                      //                     '${leadDatavalue?.approvalData?.first.managerTime ?? ""}'),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       SizedBox(height: 10.h),
                       if (leadDatavalue?.approvalData?[i].branchheadStatus
                               .toString()
                               .toLowerCase() !=
                           "pending")
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Document Approved by Branch Head :',
-                              style: TextStyle(
-                                  fontSize: 14.sp, fontWeight: FontWeight.w500),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xffF5F7FF),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.r),
                             ),
-                            SizedBox(height: 5.h),
-                            Container(
-                                child: Row(
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(8.sp),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                    child: Text(
-                                  'Name',
-                                  style: TextStyle(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                                Expanded(
-                                    child: Text(
-                                  'Date',
-                                  style: TextStyle(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                              ],
-                            )),
-                            SizedBox(
-                              height: 4.h,
-                            ),
-                            Container(
-                              height: 40.h,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10.r),
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: 40.h,
-                                      decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: lightBorderColor),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                            '${leadDatavalue?.approvalData?.first.branchheadName ?? ""}'),
-                                      ),
-                                    ),
+                                RichText(
+                                  text: TextSpan(
+                                    text: "Branch Head",
+                                    style: TextStyle(
+                                        color: textColor,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text:
+                                            '  ${leadDatavalue?.approvalData?[i].branchheadName ?? ""}',
+                                        style: TextStyle(
+                                            color: textColor,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400),
+                                      )
+                                    ],
                                   ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 40.h,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: lightBorderColor)),
-                                      child: Center(
-                                        child: Text(
-                                            '${leadDatavalue?.approvalData?.first.brancheadTime ?? ""}'),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10.h,
-                            ),
-                            Text(
-                              'Attachment',
-                              style: TextStyle(
-                                  fontSize: 14.sp, fontWeight: FontWeight.w500),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Container(
-                              height: 80.h,
-                              width: 150.w,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: lightBorderColor,
                                 ),
-                              ),
-                              child: (leadDatavalue?.approvalData?.first
-                                          .branchheadAgreement !=
-                                      null)
-                                  ? ((leadDatavalue?.approvalData?.first
-                                                      .branchheadAgreement ??
-                                                  "")
-                                              .toLowerCase()
-                                              .endsWith('.png') ||
-                                          (leadDatavalue?.approvalData?.first
-                                                      .branchheadAgreement ??
-                                                  "")
-                                              .toLowerCase()
-                                              .endsWith('.jpg') ||
-                                          (leadDatavalue?.approvalData!.first
-                                                      .branchheadAgreement ??
-                                                  '')
-                                              .toString()
-                                              .toLowerCase()
-                                              .endsWith('.jpeg'))
-                                      ? Image.network(
-                                          leadDatavalue?.approvalData?.first
-                                                  .branchheadAgreement ??
-                                              '',
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Center(
-                                          child: InkWell(
-                                            onTap: () {
-                                              launchUrl(Uri.parse(leadDatavalue
-                                                      ?.approvalData
-                                                      ?.first
-                                                      .branchheadAgreement ??
-                                                  ""));
-                                            },
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.insert_drive_file,
-                                                    size: 30),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  'View File',
-                                                  style: TextStyle(
-                                                      fontSize: 12.sp),
-                                                ),
-                                              ],
-                                            ),
+                                SizedBox(
+                                  height: 4.h,
+                                ),
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/image/svg/done_all (2).svg',
+                                      height: 20.h,
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    Text(
+                                      'Approved',
+                                      style: TextStyle(
+                                          color: Color(0xff01A901),
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                                // SizedBox(
+                                //   height: 4.h,
+                                // ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${leadDatavalue?.approvalData?[i].brancheadTime ?? ""}',
+                                      style: TextStyle(
+                                          color: Color(0xff747474),
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        isBranchHeadViewSelected.value =
+                                            !isBranchHeadViewSelected.value;
+                                      },
+                                      child: Container(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 6.w, vertical: 5.h),
+                                          child: Text(
+                                            'View',
+                                            style: TextStyle(
+                                                color: Color(0xff1B2A64),
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500),
                                           ),
-                                        )
-                                  : Center(child: Text('No File')),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (isBranchHeadViewSelected.value == true)
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Attachment',
+                                        style: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Container(
+                                        height: 80.h,
+                                        width: 150.w,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: lightBorderColor,
+                                          ),
+                                        ),
+                                        child: (leadDatavalue
+                                                    ?.approvalData
+                                                    ?.first
+                                                    .branchheadAgreement !=
+                                                null)
+                                            ? ((leadDatavalue
+                                                                ?.approvalData
+                                                                ?.first
+                                                                .branchheadAgreement ??
+                                                            "")
+                                                        .toLowerCase()
+                                                        .endsWith('.png') ||
+                                                    (leadDatavalue
+                                                                ?.approvalData
+                                                                ?.first
+                                                                .branchheadAgreement ??
+                                                            "")
+                                                        .toLowerCase()
+                                                        .endsWith('.jpg') ||
+                                                    (leadDatavalue
+                                                                ?.approvalData!
+                                                                .first
+                                                                .branchheadAgreement ??
+                                                            '')
+                                                        .toString()
+                                                        .toLowerCase()
+                                                        .endsWith('.jpeg'))
+                                                ? Image.network(
+                                                    leadDatavalue
+                                                            ?.approvalData
+                                                            ?.first
+                                                            .branchheadAgreement ??
+                                                        '',
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Center(
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        launchUrl(Uri.parse(
+                                                            leadDatavalue
+                                                                    ?.approvalData
+                                                                    ?.first
+                                                                    .branchheadAgreement ??
+                                                                ""));
+                                                      },
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                              Icons
+                                                                  .insert_drive_file,
+                                                              size: 30),
+                                                          SizedBox(height: 5),
+                                                          Text(
+                                                            'View File',
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                    12.sp),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                            : Center(child: Text('No File')),
+                                      ),
+                                    ],
+                                  ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       SizedBox(
                         height: 10.h,
@@ -765,6 +882,8 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
       ),
     );
   }
+
+  RxBool isBranchHeadViewSelected = false.obs;
 
   Widget leadInfo(LeadDetailsData? leadDataValue) {
     return Column(
@@ -1203,29 +1322,54 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                   i++)
                                 Padding(
                                   padding: EdgeInsets.symmetric(vertical: 4.h),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 35.h,
-                                        width: 35.w,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(8.r),
-                                          ),
-                                        ),
-                                        child: Image.asset(
-                                          backgroundLogo,
-                                          fit: BoxFit.cover,
-                                        ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffF5F7FF),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8.r),
                                       ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        '${leadController.leadContactData[i].name ?? ""}',
-                                        style: TextStyle(
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.w400),
-                                      )
-                                    ],
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8.w, vertical: 8.h),
+                                      child: Row(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                height: 33.h,
+                                                width: 33.w,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xffFF5959),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(17.r),
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    '${CustomTextConvert().getNameChar(leadController.leadContactData[i].name ?? '')}',
+                                                    style: TextStyle(
+                                                        fontSize: 16.sp,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: whiteColor),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 8.w),
+                                              Text(
+                                                '${leadController.leadContactData[i].name ?? ""}',
+                                                style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                             ],

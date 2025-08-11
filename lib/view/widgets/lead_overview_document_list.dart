@@ -129,12 +129,13 @@ class _LeadOverviewDocumentListBotomsheet
                                                   isNetwork: true);
                                             },
                                             child: Container(
-                                                width: 40.w,
-                                                height: 30.h,
-                                                child: Icon(
-                                                  Icons.download,
-                                                  size: 30.sp,
-                                                )),
+                                              width: 40.w,
+                                              height: 30.h,
+                                              child: Icon(
+                                                Icons.download,
+                                                size: 30.sp,
+                                              ),
+                                            ),
                                           ),
                                           InkWell(
                                             onTap: () {},
@@ -164,6 +165,8 @@ class _LeadOverviewDocumentListBotomsheet
                                                         .isDocumentCheckBoxSelected[
                                                     index],
                                                 onChanged: (value) async {
+                                                  print(
+                                                      'iuy83 38e78e ${leadController.leadDocumentListData[index].status}');
                                                   if (StorageHelper
                                                                   .getRoleName()
                                                               .toString()
@@ -173,9 +176,8 @@ class _LeadOverviewDocumentListBotomsheet
                                                               .leadDocumentListData[
                                                                   index]
                                                               .status
-                                                              .toString()
-                                                              .toLowerCase() ==
-                                                          "pending") {
+                                                              .toString() ==
+                                                          "0") {
                                                     await leadController
                                                         .approveDocument(
                                                       documentId: leadController
@@ -294,9 +296,12 @@ class _LeadOverviewDocumentListBotomsheet
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final TextEditingController remarkControlelr = TextEditingController();
+  final TextEditingController legalRemarkControlelr = TextEditingController();
   ValueNotifier<int?> focusedIndexNotifier = ValueNotifier<int?>(null);
   Future<void> documentApprovedDialog(BuildContext context, String type) async {
     leadController.leadpickedFile.value = File('');
+    leadController.leadWorkpickedFile.value = File('');
+    leadController.leadAditionalpickedFile.value = File('');
     return showDialog(
       barrierDismissible: false,
       context: context,
@@ -339,103 +344,7 @@ class _LeadOverviewDocumentListBotomsheet
                       ],
                     ),
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "branch head" ||
-                        StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "pa")
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "branch head" ||
-                        StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "pa")
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "Remarks",
-                              style: TextStyle(
-                                  fontSize: 11.sp, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          Container(
-                            width: 100.w,
-                            child: Text(
-                              'Upload Document',
-                              style: TextStyle(
-                                  fontSize: 11.sp, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "branch head" ||
-                        StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "pa")
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TaskCustomTextField(
-                              controller: remarkControlelr,
-                              focusedIndexNotifier: focusedIndexNotifier,
-                              index: 1,
-                              textCapitalization: TextCapitalization.sentences,
-                              hintText: "Enter remarks",
-                              data: "",
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              takeDocument();
-                            },
-                            child: Container(
-                              height: 40.h,
-                              width: 100.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10.r),
-                                ),
-                              ),
-                              child: Obx(
-                                () {
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    child: Image.file(
-                                      leadController.leadpickedFile.value,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.r),
-                                              border: Border.all(
-                                                  color: lightBorderColor)),
-                                          height: 40.h,
-                                          width: 100.w,
-                                          child: Image.asset(
-                                            'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                            height: 15.h,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                        "pa")
+                        "branch head")
                       Column(
                         children: [
                           SizedBox(
@@ -446,15 +355,16 @@ class _LeadOverviewDocumentListBotomsheet
                             children: [
                               Expanded(
                                 child: Text(
-                                  "Work Order",
+                                  "Remarks",
                                   style: TextStyle(
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w500),
                                 ),
                               ),
-                              Expanded(
+                              Container(
+                                width: 100.w,
                                 child: Text(
-                                  'Aditional Document',
+                                  'Upload Document',
                                   style: TextStyle(
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w500),
@@ -463,53 +373,111 @@ class _LeadOverviewDocumentListBotomsheet
                             ],
                           ),
                           SizedBox(
-                            height: 5.w,
+                            height: 5.h,
                           ),
                           Row(
                             children: [
                               Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    takeDocument();
-                                  },
-                                  child: Container(
-                                    height: 40.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.r),
-                                      ),
-                                    ),
-                                    child: Obx(
-                                      () {
-                                        return ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                          child: Image.file(
-                                            leadController.leadpickedFile.value,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.r),
-                                                    border: Border.all(
-                                                        color:
-                                                            lightBorderColor)),
-                                                height: 40.h,
-                                                width: 100.w,
-                                                child: Image.asset(
-                                                  'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                                  height: 15.h,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        );
-                                      },
+                                child: TaskCustomTextField(
+                                  controller: remarkControlelr,
+                                  focusedIndexNotifier: focusedIndexNotifier,
+                                  index: 1,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  hintText: "Enter remarks",
+                                  data: "",
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5.w,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  takeDocument(from: 'upload');
+                                },
+                                child: Container(
+                                  height: 40.h,
+                                  width: 100.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.r),
                                     ),
                                   ),
+                                  child: Obx(
+                                    () {
+                                      return ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10.r),
+                                        child: Image.file(
+                                          leadController.leadpickedFile.value,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.r),
+                                                  border: Border.all(
+                                                      color: lightBorderColor)),
+                                              height: 40.h,
+                                              width: 100.w,
+                                              child: Image.asset(
+                                                'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                                height: 15.h,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
+                        "pa")
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Legal Remarks",
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              Expanded(
+                                // width: 100.w,
+                                child: Text(
+                                  'Upload Document',
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TaskCustomTextField(
+                                  controller: legalRemarkControlelr,
+                                  focusedIndexNotifier: focusedIndexNotifier,
+                                  index: 1,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  hintText: "Enter legal remarks",
+                                  data: "",
                                 ),
                               ),
                               SizedBox(
@@ -518,7 +486,7 @@ class _LeadOverviewDocumentListBotomsheet
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
-                                    takeDocument();
+                                    takeDocument(from: 'upload');
                                   },
                                   child: Container(
                                     height: 40.h,
@@ -563,6 +531,132 @@ class _LeadOverviewDocumentListBotomsheet
                               ),
                             ],
                           ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Work Order",
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Aditional Document',
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5.w,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    takeDocument(from: "workorder");
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.r),
+                                      ),
+                                    ),
+                                    child: Obx(
+                                      () {
+                                        return ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                          child: Image.file(
+                                            leadController
+                                                .leadWorkpickedFile.value,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.r),
+                                                    border: Border.all(
+                                                        color:
+                                                            lightBorderColor)),
+                                                height: 40.h,
+                                                width: 100.w,
+                                                child: Image.asset(
+                                                  'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                                  height: 15.h,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5.w,
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    takeDocument(from: "aditional");
+                                  },
+                                  child: Container(
+                                    height: 40.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.r),
+                                      ),
+                                    ),
+                                    child: Obx(
+                                      () {
+                                        return ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                          child: Image.file(
+                                            leadController
+                                                .leadAditionalpickedFile.value,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.r),
+                                                    border: Border.all(
+                                                        color:
+                                                            lightBorderColor)),
+                                                height: 40.h,
+                                                width: 100.w,
+                                                child: Image.asset(
+                                                  'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                                  height: 15.h,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
@@ -579,44 +673,61 @@ class _LeadOverviewDocumentListBotomsheet
                     InkWell(
                       onTap: () async {
                         debugPrint("Approve Button Clicked");
-                        if (StorageHelper.getRoleName()
-                                .toString()
-                                .toLowerCase() ==
-                            "branch head") {
-                          if (type == "approve" &&
-                              leadController
-                                      .isBranchHeadManagerApproving.value ==
-                                  false) {
-                            if (leadController
-                                .leadpickedFile.value.path.isNotEmpty) {
-                              await leadController.branchheadManagerApproving(
-                                leadId: widget.leadId,
-                                remark: remarkControlelr.text,
-                                status: type == "approve" ? 1 : 2,
-                                attachment: leadController.leadpickedFile.value,
-                              );
-                            } else {
-                              CustomToast()
-                                  .showCustomToast('Please select attachment');
-                            }
-                          } else if (type != "approve") {
-                            await leadController.branchheadManagerApproving(
-                              leadId: widget.leadId,
-                              remark: remarkControlelr.text,
-                              status: type == "approve" ? 1 : 2,
-                              attachment: leadController.leadpickedFile.value,
-                            );
-                          }
-                        } else {
-                          if (leadController
-                                  .isMarketingManagerApproving.value ==
-                              false) {
-                            await leadController.approveMarketingManager(
-                                leadId: widget.leadId,
-                                remark: remarkControlelr.text,
-                                status: type == "approve" ? 1 : 2);
-                          }
-                        }
+                        // if (StorageHelper.getRoleName()
+                        //             .toString()
+                        //             .toLowerCase() ==
+                        //         "branch head" ||
+                        //     StorageHelper.getRoleName()
+                        //             .toString()
+                        //             .toLowerCase() ==
+                        //         "marketing manager") {
+                        // if (type == "approve" &&
+                        //     leadController
+                        //             .isBranchHeadManagerApproving.value ==
+                        //         false) {
+
+                        // await leadController.branchheadManagerApproving(
+                        //   leadId: widget.leadId,
+                        //   remark: remarkControlelr.text,
+                        //   status: type == "approve" ? 1 : 2,
+                        //   attachment: leadController.leadpickedFile.value,
+                        // );
+                        // } else if (StorageHelper.getRoleName()
+                        //         .toString()
+                        //         .toLowerCase() ==
+                        //     "pa") {
+                        await leadController.branchheadManagerApproving(
+                          leadId: widget.leadId,
+                          remark: remarkControlelr.text,
+                          status: type == "approve" ? 1 : 2,
+                          attachment: leadController.leadpickedFile.value,
+                          workAttachment:
+                              leadController.leadWorkpickedFile.value,
+                          aditional:
+                              leadController.leadAditionalpickedFile.value,
+                          legalRemark: legalRemarkControlelr.text,
+                          legalStatus: type == "approve" ? 1 : 2,
+                        );
+
+                        // else if (StorageHelper.getRoleName()
+                        //         .toString()
+                        //         .toLowerCase() ==
+                        //     "pa") {
+                        //   if (leadController
+                        //           .isMarketingManagerApproving.value ==
+                        //       false) {
+                        //     if (leadController
+                        //         .leadpickedFile.value.path.isNotEmpty) {
+                        //       await leadController.approveMarketingManager(
+                        //         leadId: widget.leadId,
+                        //         remark: remarkControlelr.text,
+                        //         status: type == "approve" ? 1 : 2,
+                        //       );
+                        //     } else {
+                        //       CustomToast()
+                        //           .showCustomToast('Please select attachment');
+                        //     }
+                        //   }
                       },
                       child: Container(
                         width: 130.w,
@@ -649,7 +760,7 @@ class _LeadOverviewDocumentListBotomsheet
     );
   }
 
-  Future<void> takeDocument() async {
+  Future<void> takeDocument({required String from}) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.any,
@@ -667,7 +778,13 @@ class _LeadOverviewDocumentListBotomsheet
         }
 
         final File file = File(filePath);
-        leadController.leadpickedFile.value = File(file.path);
+        if (from == 'upload') {
+          leadController.leadpickedFile.value = File(file.path);
+        } else if (from == 'workorder') {
+          leadController.leadWorkpickedFile.value = File(file.path);
+        } else if (from == "aditional") {
+          leadController.leadAditionalpickedFile.value = File(file.path);
+        }
         leadController.profilePicPath.value = file.path.toString();
         // leadController.documentIdList.add();
         // leadController.documentUplodedList

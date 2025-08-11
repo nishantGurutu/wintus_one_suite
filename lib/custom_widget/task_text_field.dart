@@ -131,15 +131,15 @@ class _TaskCustomTextFieldState extends State<TaskCustomTextField> {
             counterText: "",
             border: OutlineInputBorder(
               borderSide: BorderSide(color: lightBorderColor),
-              borderRadius: BorderRadius.all(Radius.circular(14.r)),
+              borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: lightBorderColor),
-              borderRadius: BorderRadius.all(Radius.circular(14.r)),
+              borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: secondaryColor),
-              borderRadius: BorderRadius.all(Radius.circular(14.r)),
+              borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),

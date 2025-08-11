@@ -1027,6 +1027,8 @@ class LeadController extends GetxController {
 
   var profilePicPath = "".obs;
   Rx<File> leadpickedFile = File('').obs;
+  Rx<File> leadWorkpickedFile = File('').obs;
+  Rx<File> leadAditionalpickedFile = File('').obs;
   var isLeadNoteAdding = false.obs;
   Future<void> addLeadNote(
       String text, String jsonEncode, String value, int leadId) async {
@@ -1470,16 +1472,57 @@ class LeadController extends GetxController {
       {required leadId,
       required String remark,
       required int status,
-      required File attachment}) async {
+      required File attachment,
+      required File workAttachment,
+      required File aditional,
+      required String legalRemark,
+      required int legalStatus}) async {
     isBranchHeadManagerApproving.value = true;
-    final result = await LeadService()
-        .branchHeadManagerApproving(leadId, remark, status, attachment);
+    final result = await LeadService().branchHeadManagerApproving(
+        leadId,
+        remark,
+        status,
+        attachment,
+        workAttachment,
+        aditional,
+        legalRemark,
+        legalStatus);
     if (result != null) {
       Get.back();
       // Get.back();
       // await followUpsListApi(leadId: leadId);
     } else {}
     isBranchHeadManagerApproving.value = false;
+  }
+
+  var isCmoApproving = false.obs;
+  Future<void> cmoApproving(
+      {required leadId,
+      required String remark,
+      required int status,
+      required File attachment,
+      required File workAttachment,
+      required File aditional,
+      required String legalRemark,
+      required int legalStatus}) async {
+    isCmoApproving.value = true;
+    final result = await LeadService().branchHeadManagerApproving(
+        leadId,
+        remark,
+        status,
+        attachment,
+        workAttachment,
+        aditional,
+        legalRemark,
+        legalStatus);
+    if (result != null) {
+      Get.back();
+      isCmoApproving.value = false;
+      isCmoApproving.refresh();
+      // Get.back();
+      // await followUpsListApi(leadId: leadId);
+    } else {}
+    isCmoApproving.value = false;
   }
 
   RxList<String> timeList = <String>[

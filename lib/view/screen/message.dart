@@ -103,6 +103,16 @@ class _MessageScreenState extends State<MessageScreen> {
     }
   }
 
+  void scrollToIndex(int index) {
+    double itemHeight = 60.0;
+
+    _scrollController.animateTo(
+      itemHeight * index,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
+
   RxBool isCreatedDateShow = false.obs;
 
   final imojiscrollController = ScrollController();
@@ -479,18 +489,13 @@ class _MessageScreenState extends State<MessageScreen> {
                                                                             chat.attachment.toString().contains(".m4a")
                                                                                 ? CustomAudioPlayer(
                                                                                     audioUrl: chat.attachment!,
-                                                                                    chatId: chat.id.toString(),
+                                                                                    chatId: index.toString(),
                                                                                   )
-                                                                                : Container(
-                                                                                    constraints: BoxConstraints(
-                                                                                      maxHeight: MediaQuery.of(context).size.width * 0.7,
-                                                                                    ),
-                                                                                    child: InkWell(
-                                                                                      onTap: () {
-                                                                                        openFile(chat.attachment!);
-                                                                                      },
-                                                                                      child: getFilePreview(chat.attachment!),
-                                                                                    ),
+                                                                                : InkWell(
+                                                                                    onTap: () {
+                                                                                      openFile(chat.attachment!);
+                                                                                    },
+                                                                                    child: getFilePreview(chat.attachment!),
                                                                                   ),
                                                                           ],
                                                                         ),
@@ -733,6 +738,12 @@ class _MessageScreenState extends State<MessageScreen> {
                                                 textCapitalization:
                                                     TextCapitalization
                                                         .sentences,
+                                                keyboardType:
+                                                    TextInputType.multiline,
+                                                textInputAction:
+                                                    TextInputAction.newline,
+                                                minLines: 1,
+                                                maxLines: null,
                                                 decoration: InputDecoration(
                                                   prefixIcon: InkWell(
                                                     onTap: () {
@@ -797,7 +808,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                                           vertical: 8.h,
                                                           horizontal: 0.w),
                                                 ),
-                                              ),
+                                              )
                                             ],
                                           ),
                                         ),
@@ -1056,11 +1067,14 @@ class _MessageScreenState extends State<MessageScreen> {
         child: url.toString().contains('https')
             ? Image.network(
                 url,
+                fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
                     Icon(Icons.broken_image),
               )
             : Image.file(
-                File(url),
+                File(
+                  url,
+                ),
                 errorBuilder: (context, error, stackTrace) =>
                     Icon(Icons.broken_image),
               ),
