@@ -287,7 +287,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: whiteColor,
+                  color: Color(0xffF5F7FF),
                   borderRadius: BorderRadius.all(
                     Radius.circular(10.r),
                   ),
@@ -393,7 +393,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                 Container(
                                   width: 65.w,
                                   decoration: BoxDecoration(
-                                    color: meetingBoxColor,
+                                    color: Color(0xff725CDE),
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(8.r),
                                     ),
@@ -1844,14 +1844,16 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: blueColor),
+                                border: Border.all(
+                                  color: Color(0xff1B2A64),
+                                ),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.r)),
                               ),
                               child: Center(
                                 child: Icon(
                                   Icons.add,
-                                  color: blueColor,
+                                  color: Color(0xff1B2A64),
                                 ),
                               ),
                             ),
@@ -1863,7 +1865,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                               style: TextStyle(
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w500,
-                                  color: blueColor),
+                                  color: Color(0xff1B2A64)),
                             ),
                           ],
                         ),
