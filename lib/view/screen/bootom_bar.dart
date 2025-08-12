@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 import 'package:task_management/component/location_handler.dart';
 import 'package:task_management/constant/color_constant.dart';
@@ -78,9 +79,32 @@ class _BottomNavigationBarExampleState
   var profilePicPath = ''.obs;
   final HomeController homeController = Get.put(HomeController());
   final LeadController leadController = Get.put(LeadController());
+
+  AppUpdateInfo? _updateInfo;
+
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((info) {
+      setState(() {
+        _updateInfo = info;
+      });
+    }).catchError((e) {
+      showSnack(e.toString());
+    });
+  }
+
+  void showSnack(String text) {
+    if (_scaffoldKey.currentContext != null) {
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(text)));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    checkForUpdate();
     callApi();
   }
 
