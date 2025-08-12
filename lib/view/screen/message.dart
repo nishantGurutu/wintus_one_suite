@@ -125,7 +125,7 @@ class _MessageScreenState extends State<MessageScreen> {
         curve: Curves.easeInOut,
         alignment: 0.3,
       ).then((_) {
-        highlightMessage(messageId); // trigger highlight
+        highlightMessage(messageId);
       });
     }
   }

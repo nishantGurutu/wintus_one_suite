@@ -79,111 +79,6 @@ class _NotificationPageState extends State<NotificationPage> {
               color: textColor, fontSize: 21, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
-        // actions: [
-        //   Obx(() => notificationController.isAllSelect.value == true ||
-        //           notificationController.isUnreadSelected.value == true &&
-        //               notificationController.notificationSelectList
-        //                   .contains(true) ||
-        //           notificationController.isReadSelected.value == true &&
-        //               notificationController.readNotificationSelectList
-        //                   .contains(true)
-        //       ? InkWell(
-        //           onTap: () {
-        //             if (notificationController.isNotificationDeleting.value ==
-        //                 false) {
-        //               notificationController.deleteNotificationListApi(
-        //                 notificationController.notificationSelectidList,
-        //                 notificationController.notificationSelectTypeList,
-        //               );
-        //             }
-        //           },
-        //           child: Icon(Icons.delete),
-        //         )
-        //       : SizedBox()),
-        //   SizedBox(
-        //     width: 5.w,
-        //   ),
-        //   Padding(
-        //     padding: EdgeInsets.only(right: 12.w),
-        //     child: Row(
-        //       children: [
-        //         Text(
-        //           'Select All',
-        //           style: TextStyle(
-        //             fontSize: 16,
-        //             fontWeight: FontWeight.w500,
-        //           ),
-        //         ),
-        //         Obx(
-        //           () => Checkbox(
-        //             value: notificationController.isAllSelect.value,
-        //             onChanged: (value) {
-        //               notificationController.isAllSelect.value = value!;
-        //               if (notificationController.isUnreadSelected.value ==
-        //                   true) {
-        //                 notificationController.notificationSelectList.assignAll(
-        //                   List<bool>.filled(
-        //                       notificationController.notificationList.length,
-        //                       value),
-        //                 );
-        //               } else {
-        //                 notificationController.readNotificationSelectList
-        //                     .assignAll(
-        //                   List<bool>.filled(
-        //                       notificationController
-        //                           .readNotificationList.length,
-        //                       value),
-        //                 );
-        //               }
-        //               if (value) {
-        //                 if (notificationController.isUnreadSelected.value ==
-        //                     true) {
-        //                   // Unread notification
-        //                   notificationController.notificationSelectidList
-        //                       .assignAll(
-        //                     notificationController.notificationList
-        //                         .map((e) => e['id'].toString())
-        //                         .toList(),
-        //                   );
-        //                 } else {
-        //                   // Read notification
-        //                   notificationController.notificationSelectidList
-        //                       .assignAll(
-        //                     notificationController.readNotificationList
-        //                         .map((e) => e['id'].toString())
-        //                         .toList(),
-        //                   );
-        //                 }
-        //                 if (notificationController.isUnreadSelected.value ==
-        //                     true) {
-        //                   // Unread notification
-        //                   notificationController.notificationSelectTypeList
-        //                       .assignAll(
-        //                     notificationController.readNotificationList
-        //                         .map((e) => e['type'].toString())
-        //                         .toList(),
-        //                   );
-        //                 } else {
-        //                   // Read notification
-        //                   notificationController.notificationSelectTypeList
-        //                       .assignAll(
-        //                     notificationController.readNotificationList
-        //                         .map((e) => e['type'].toString())
-        //                         .toList(),
-        //                   );
-        //                 }
-        //               } else {
-        //                 notificationController.notificationSelectidList.clear();
-        //                 notificationController.notificationSelectTypeList
-        //                     .clear();
-        //               }
-        //             },
-        //           ),
-        //         )
-        //       ],
-        //     ),
-        //   ),
-        // ],
         actions: [
           Obx(() => (notificationController.notificationSelectList
                       .contains(true) ||
@@ -192,7 +87,6 @@ class _NotificationPageState extends State<NotificationPage> {
               ? InkWell(
                   onTap: () {
                     if (!notificationController.isNotificationDeleting.value) {
-                      // Combine IDs and types from both lists
                       final selectedIds = <String>[
                         ...notificationController.notificationSelectidList,
                         ...notificationController.readNotificationSelectList
@@ -449,9 +343,34 @@ class _NotificationPageState extends State<NotificationPage> {
                       ),
                     ),
                     Obx(
-                      () =>
-                          notificationController.isUnreadSelected.value == true
+                      () => notificationController.isUnreadSelected.value ==
+                              true
+                          ? notificationController.notificationList.isEmpty
                               ? Expanded(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/image/png/notification_icon.png',
+                                          height: 50.h,
+                                        ),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                        Text(
+                                          "No unread data found",
+                                          style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: textColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : Expanded(
                                   child: ListView.separated(
                                     controller: _scrollController,
                                     itemCount: notificationController
@@ -680,6 +599,31 @@ class _NotificationPageState extends State<NotificationPage> {
                                         height: 0.h,
                                       );
                                     },
+                                  ),
+                                )
+                          : notificationController.readNotificationList.isEmpty
+                              ? Expanded(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/image/png/notification_icon.png',
+                                          height: 50.h,
+                                        ),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                        Text(
+                                          "No read data found",
+                                          style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: textColor),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 )
                               : Expanded(

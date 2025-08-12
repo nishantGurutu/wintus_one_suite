@@ -34,7 +34,10 @@ class NotificationController extends GetxController {
       print("notification kj98u99n ${result['totalnotification']}");
       unreadNotificationCount.value = 0;
       unreadNotificationCount.value = result['unreadcount'] ?? 0;
-
+      if (type == 'delete') {
+        readNotificationList.clear();
+        readNotificationSelectList.clear();
+      }
       if (type.toString() == '') {
         isAllSelect.value = false;
         notificationList.clear();
@@ -84,7 +87,7 @@ class NotificationController extends GetxController {
     if (result != null) {
       CustomToast().showCustomToast(result['message']);
       pageValue.value = 1;
-      await notificationListApi('');
+      await notificationListApi('delete');
 
       isNotificationDeleting.value = false;
     } else {

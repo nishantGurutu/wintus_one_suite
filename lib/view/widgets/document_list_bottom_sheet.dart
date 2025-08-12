@@ -205,8 +205,10 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                                   if (leadController
                                           .isDocumentUploading.value ==
                                       false) {
-                                    if (leadController
-                                        .documentUplodedList.isNotEmpty) {
+                                    bool hasEmptyFiles = leadController
+                                        .documentUplodedList
+                                        .any((file) => file.path.isEmpty);
+                                    if (!hasEmptyFiles) {
                                       await leadController.documentUploading(
                                         documentId:
                                             leadController.documentIdList,
@@ -216,8 +218,8 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                                         quotationId: widget.quotationId,
                                       );
                                     } else {
-                                      CustomToast()
-                                          .showCustomToast('Upload Document.');
+                                      CustomToast().showCustomToast(
+                                          'Upload all Document.');
                                     }
                                   }
                                 },
