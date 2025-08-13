@@ -865,15 +865,25 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                         SizedBox(
                                           height: 4.h,
                                         ),
+                                        Text(
+                                          '${leadDatavalue?.approvalData?[i].brancheadTime ?? ""}',
+                                          style: TextStyle(
+                                              color: Color(0xff747474),
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        SizedBox(
+                                          height: 4.h,
+                                        ),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              '${leadDatavalue?.approvalData?[i].managerTime ?? ""}',
+                                              'Remark : ${leadDatavalue?.approvalData?[i].branchheadRemarks ?? ""}',
                                               style: TextStyle(
                                                   color: Color(0xff747474),
-                                                  fontSize: 10.sp,
+                                                  fontSize: 14.sp,
                                                   fontWeight: FontWeight.w400),
                                             ),
                                             GestureDetector(
@@ -1095,15 +1105,25 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                     SizedBox(
                                       height: 4.h,
                                     ),
+                                    Text(
+                                      '${leadDatavalue?.approvalData?[i].legalTime ?? ""}',
+                                      style: TextStyle(
+                                          color: Color(0xff747474),
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    SizedBox(
+                                      height: 4.h,
+                                    ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '${leadDatavalue?.approvalData?[i].legalTime ?? ""}',
+                                          'Remark : ${leadDatavalue?.approvalData?[i].legalRemarks ?? ""}',
                                           style: TextStyle(
                                               color: Color(0xff747474),
-                                              fontSize: 10.sp,
+                                              fontSize: 14.sp,
                                               fontWeight: FontWeight.w400),
                                         ),
                                         GestureDetector(
