@@ -1898,12 +1898,11 @@ class LeadService {
         'lead_id': leadId,
       };
 
-      if (legalStatus != null) {
+      if (StorageHelper.getRoleName().toString().toLowerCase() == "pa") {
         formDataMap['legalstatus'] = legalStatus;
       }
-      if (status != null &&
-          StorageHelper.getRoleName().toString().toLowerCase() ==
-              "branch head") {
+      if (StorageHelper.getRoleName().toString().toLowerCase() ==
+          "branch head") {
         formDataMap['status'] = status;
       }
       if (legalRemark.isNotEmpty) {

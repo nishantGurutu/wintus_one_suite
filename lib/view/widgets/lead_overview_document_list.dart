@@ -120,15 +120,63 @@ class _LeadOverviewDocumentListBotomsheet
                                                   fontWeight: FontWeight.w500),
                                             ),
                                           ),
+                                          // InkWell(
+                                          //   onTap: () {
+                                          //     DownloadFile().saveToDownloads(
+                                          //         leadController
+                                          //                 .leadDocumentListData[
+                                          //                     index]
+                                          //                 .fileUrl ??
+                                          //             "",
+                                          //         isNetwork: true);
+                                          //   },
+                                          //   child: Container(
+                                          //     width: 40.w,
+                                          //     height: 30.h,
+                                          //     child: Icon(
+                                          //       Icons.download,
+                                          //       size: 30.sp,
+                                          //     ),
+                                          //   ),
+                                          // ),
                                           InkWell(
-                                            onTap: () {
-                                              DownloadFile().saveToDownloads(
-                                                  leadController
-                                                          .leadDocumentListData[
-                                                              index]
-                                                          .fileUrl ??
-                                                      "",
-                                                  isNetwork: true);
+                                            onTap: () async {
+                                              showDialog(
+                                                context: context,
+                                                barrierDismissible: false,
+                                                builder: (context) {
+                                                  return Container(
+                                                    child: AlertDialog(
+                                                      backgroundColor:
+                                                          whiteColor,
+                                                      content: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          CircularProgressIndicator(),
+                                                          SizedBox(width: 16),
+                                                          Text(
+                                                              "Downloading..."),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+
+                                              // Start download
+                                              await DownloadFile()
+                                                  .saveToDownloads(
+                                                leadController
+                                                        .leadDocumentListData[
+                                                            index]
+                                                        .fileUrl ??
+                                                    "",
+                                                isNetwork: true,
+                                              );
+
+                                              Navigator.pop(context);
                                             },
                                             child: Container(
                                               width: 40.w,
@@ -160,7 +208,11 @@ class _LeadOverviewDocumentListBotomsheet
                                               StorageHelper.getRoleName()
                                                       .toString()
                                                       .toLowerCase() ==
-                                                  "branch head")
+                                                  "branch head" ||
+                                              StorageHelper.getRoleName()
+                                                      .toString()
+                                                      .toLowerCase() ==
+                                                  "pa")
                                             Obx(
                                               () => Checkbox(
                                                 value: leadController
@@ -175,11 +227,14 @@ class _LeadOverviewDocumentListBotomsheet
                                                               .toLowerCase() ==
                                                           "marketing manager" &&
                                                       leadController
-                                                              .leadDocumentListData[
-                                                                  index]
-                                                              .status
-                                                              .toString() ==
-                                                          "0") {
+                                                              .leadDetails
+                                                              .value
+                                                              ?.approvalData
+                                                              ?.first
+                                                              .managerStatus
+                                                              .toString()
+                                                              .toLowerCase() ==
+                                                          'pending') {
                                                     await leadController
                                                         .approveDocument(
                                                       documentId: leadController
@@ -205,14 +260,16 @@ class _LeadOverviewDocumentListBotomsheet
                                 },
                               ),
                             ),
-                      if ((StorageHelper.getRoleName()
-                                      .toString()
-                                      .toLowerCase() ==
-                                  "marketing manager" &&
-                              widget.status?.first.managerStatus
-                                      .toString()
-                                      .toLowerCase() ==
-                                  'pending') ||
+                      if (StorageHelper.getRoleName()
+                                  .toString()
+                                  .toLowerCase() ==
+                              "marketing manager"
+                          //      &&
+                          // widget.status?.first.managerStatus
+                          //         .toString()
+                          //         .toLowerCase() ==
+                          //     'pending')
+                          ||
                           (StorageHelper.getRoleName()
                                       .toString()
                                       .toLowerCase() ==
@@ -225,22 +282,7 @@ class _LeadOverviewDocumentListBotomsheet
                                       .toString()
                                       .toLowerCase() ==
                                   "pa" &&
-                              widget.status?.first.legalName
-                                      .toString()
-                                      .toLowerCase() ==
-                                  'null' &&
-                              widget.status?.first.legalName
-                                      .toString()
-                                      .toLowerCase() ==
-                                  'null' &&
-                              widget.status?.first.legalName
-                                      .toString()
-                                      .toLowerCase() ==
-                                  ''))
-                        // if(leadDatavalue?.approvalData?[i].managerStatus
-                        //     .toString()
-                        //     .toLowerCase() ==
-                        // "approved" )
+                              widget.status?.first.legalStatus == 0))
                         Column(
                           children: [
                             SizedBox(
@@ -265,7 +307,11 @@ class _LeadOverviewDocumentListBotomsheet
                                     height: 40.h,
                                     width: 150.w,
                                     decoration: BoxDecoration(
-                                      color: primaryButtonColor,
+                                      color: !leadController
+                                              .isDocumentCheckBoxSelected
+                                              .contains(false)
+                                          ? primaryButtonColor
+                                          : lightGreyColor,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(8.r),
                                       ),
@@ -328,6 +374,8 @@ class _LeadOverviewDocumentListBotomsheet
     leadController.leadpickedFile.value = File('');
     leadController.leadWorkpickedFile.value = File('');
     leadController.leadAditionalpickedFile.value = File('');
+    legalRemarkControlelr.clear();
+    remarkControlelr.clear();
     return showDialog(
       barrierDismissible: false,
       context: context,

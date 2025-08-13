@@ -1119,222 +1119,227 @@ class _ProjectState extends State<Project> with SingleTickerProviderStateMixin {
       ),
       width: double.infinity,
       height: 600.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 15.h,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  assignedTaskText2,
-                  style:
-                      TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 15.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    assignedTaskText2,
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: responsiblePersonList.length,
+                  reverse: false,
+                  itemBuilder: (context, index) {
+                    String initialsName = '';
+                    if (index < responsiblePersonList.length) {
+                      List<String> nameList = responsiblePersonList[index]
+                          .name
+                          .toString()
+                          .split(' ');
+                      initialsName = nameList.map((word) => word[0]).join();
+                    }
+                    return index == 0
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 50.h,
+                                width: 50.w,
+                                decoration: BoxDecoration(
+                                  color: thirdPrimryColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(25.r),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    initials,
+                                    style: TextStyle(
+                                        fontSize: 24, color: primaryColor),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 8.w,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    self,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: secondaryColor,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 3.h,
+                                  ),
+                                  Text(
+                                    "${StorageHelper.getName()}",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Spacer(),
+                              Padding(
+                                padding: EdgeInsets.only(top: 10.h),
+                                child: Obx(
+                                  () => SizedBox(
+                                    height: 20.h,
+                                    width: 20.w,
+                                    child: Checkbox(
+                                      value: taskController
+                                              .responsiblePersonSelectedCheckBox[
+                                          index],
+                                      onChanged: (value) {
+                                        taskController
+                                                .responsiblePersonSelectedCheckBox[
+                                            index] = value!;
+                                        if (taskController.assignedUserId
+                                            .contains(StorageHelper.getId()
+                                                .toString())) {
+                                          taskController.assignedUserId.remove(
+                                              StorageHelper.getId().toString());
+                                        } else {
+                                          taskController.assignedUserId.add(
+                                              StorageHelper.getId().toString());
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 50.h,
+                                width: 50.w,
+                                decoration: BoxDecoration(
+                                  color: thirdPrimryColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(25.r),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    initialsName,
+                                    style: TextStyle(
+                                        fontSize: 24, color: primaryColor),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 8.w,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${responsiblePersonList[index].name}",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Spacer(),
+                              Padding(
+                                padding: EdgeInsets.only(top: 10.h),
+                                child: Obx(
+                                  () => SizedBox(
+                                    height: 20.h,
+                                    width: 20.w,
+                                    child: Checkbox(
+                                      value: taskController
+                                              .responsiblePersonSelectedCheckBox[
+                                          index],
+                                      onChanged: (value) {
+                                        taskController
+                                                .responsiblePersonSelectedCheckBox[
+                                            index] = value!;
+                                        if (taskController.assignedUserId
+                                            .contains(
+                                                responsiblePersonList[index]
+                                                    .id
+                                                    .toString())) {
+                                          taskController.assignedUserId.remove(
+                                              responsiblePersonList[index]
+                                                  .id
+                                                  .toString());
+                                        } else {
+                                          taskController.assignedUserId.add(
+                                              responsiblePersonList[index]
+                                                  .id
+                                                  .toString());
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      height: 10.h,
+                    );
+                  },
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            Expanded(
-              child: ListView.separated(
-                itemCount: responsiblePersonList.length,
-                reverse: false,
-                itemBuilder: (context, index) {
-                  String initialsName = '';
-                  if (index < responsiblePersonList.length) {
-                    List<String> nameList =
-                        responsiblePersonList[index].name.toString().split(' ');
-                    initialsName = nameList.map((word) => word[0]).join();
-                  }
-                  return index == 0
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 50.h,
-                              width: 50.w,
-                              decoration: BoxDecoration(
-                                color: thirdPrimryColor,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(25.r),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  initials,
-                                  style: TextStyle(
-                                      fontSize: 24, color: primaryColor),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 8.w,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  self,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: secondaryColor,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 3.h,
-                                ),
-                                Text(
-                                  "${StorageHelper.getName()}",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: EdgeInsets.only(top: 10.h),
-                              child: Obx(
-                                () => SizedBox(
-                                  height: 20.h,
-                                  width: 20.w,
-                                  child: Checkbox(
-                                    value: taskController
-                                            .responsiblePersonSelectedCheckBox[
-                                        index],
-                                    onChanged: (value) {
-                                      taskController
-                                              .responsiblePersonSelectedCheckBox[
-                                          index] = value!;
-                                      if (taskController.assignedUserId
-                                          .contains(StorageHelper.getId()
-                                              .toString())) {
-                                        taskController.assignedUserId.remove(
-                                            StorageHelper.getId().toString());
-                                      } else {
-                                        taskController.assignedUserId.add(
-                                            StorageHelper.getId().toString());
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 50.h,
-                              width: 50.w,
-                              decoration: BoxDecoration(
-                                color: thirdPrimryColor,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(25.r),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  initialsName,
-                                  style: TextStyle(
-                                      fontSize: 24, color: primaryColor),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 8.w,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${responsiblePersonList[index].name}",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: EdgeInsets.only(top: 10.h),
-                              child: Obx(
-                                () => SizedBox(
-                                  height: 20.h,
-                                  width: 20.w,
-                                  child: Checkbox(
-                                    value: taskController
-                                            .responsiblePersonSelectedCheckBox[
-                                        index],
-                                    onChanged: (value) {
-                                      taskController
-                                              .responsiblePersonSelectedCheckBox[
-                                          index] = value!;
-                                      if (taskController.assignedUserId
-                                          .contains(responsiblePersonList[index]
-                                              .id
-                                              .toString())) {
-                                        taskController.assignedUserId.remove(
-                                            responsiblePersonList[index]
-                                                .id
-                                                .toString());
-                                      } else {
-                                        taskController.assignedUserId.add(
-                                            responsiblePersonList[index]
-                                                .id
-                                                .toString());
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    height: 10.h,
-                  );
-                },
               ),
-            ),
-            SizedBox(
-              height: 15.h,
-            ),
-            CustomButton(
-              onPressed: () {
-                // if (_formKey.currentState!.validate()) {
-                //   if (registerController.isLoginLoading.value != true) {
-                //     registerController.userLogin(
-                //         emailTextEditingController.text,
-                //         passwordTextEditingController.text,
-                //         deviceTokenToSendPushNotification);
-                //   }
-                // }
-                Get.back();
-              },
-              text: Text(
-                done,
-                style: changeTextColor(rubikBlack, whiteColor),
+              SizedBox(
+                height: 15.h,
               ),
-              color: primaryColor,
-              height: 45.h,
-              width: double.infinity,
-            ),
-            SizedBox(
-              height: 15.h,
-            ),
-          ],
+              CustomButton(
+                onPressed: () {
+                  // if (_formKey.currentState!.validate()) {
+                  //   if (registerController.isLoginLoading.value != true) {
+                  //     registerController.userLogin(
+                  //         emailTextEditingController.text,
+                  //         passwordTextEditingController.text,
+                  //         deviceTokenToSendPushNotification);
+                  //   }
+                  // }
+                  Get.back();
+                },
+                text: Text(
+                  done,
+                  style: changeTextColor(rubikBlack, whiteColor),
+                ),
+                color: primaryColor,
+                height: 45.h,
+                width: double.infinity,
+              ),
+              SizedBox(
+                height: 15.h,
+              ),
+            ],
+          ),
         ),
       ),
     );

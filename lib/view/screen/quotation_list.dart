@@ -141,40 +141,65 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (context) => Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    child: DocumentListBotomsheet(
-                                      from: "quotation",
-                                      leadId: widget.leadId,
-                                      quotationId: leadController
-                                          .quotationListData[index].id,
+                            Obx(
+                              () => GestureDetector(
+                                onTap: () {
+                                  if ((leadController.leadDetails.value
+                                              ?.approvalData ??
+                                          [])
+                                      .isEmpty) {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (context) => Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: DocumentListBotomsheet(
+                                          from: "quotation",
+                                          leadId: widget.leadId,
+                                          quotationId: leadController
+                                              .quotationListData[index].id,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: 30.h,
+                                  width: 140.w,
+                                  decoration: BoxDecoration(
+                                    color: (leadController.leadDetails.value
+                                                    ?.approvalData ??
+                                                [])
+                                            .isEmpty
+                                        ? lightBlue
+                                        : greenColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.r),
                                     ),
                                   ),
-                                );
-                              },
-                              child: Container(
-                                height: 30.h,
-                                width: 140.w,
-                                decoration: BoxDecoration(
-                                  color: lightBlue,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10.r),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    "Accept",
-                                    style: TextStyle(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w500),
+                                  child: Center(
+                                    child: Text(
+                                      (leadController.leadDetails.value
+                                                      ?.approvalData ??
+                                                  [])
+                                              .isEmpty
+                                          ? "Accept"
+                                          : "Accepted",
+                                      style: TextStyle(
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: (leadController
+                                                          .leadDetails
+                                                          .value
+                                                          ?.approvalData ??
+                                                      [])
+                                                  .isEmpty
+                                              ? textColor
+                                              : whiteColor),
+                                    ),
                                   ),
                                 ),
                               ),

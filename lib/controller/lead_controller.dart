@@ -890,6 +890,7 @@ class LeadController extends GetxController {
       quotationId,
     );
     if (result != null) {
+      await leadDetailsApi(leadId: leadId);
       Get.back();
       selectedLeadStatusUpdateData.value = null;
     } else {}
@@ -1462,6 +1463,7 @@ class LeadController extends GetxController {
     if (result != null) {
       await leadDetailsApi(leadId: leadId);
       Get.back();
+      Get.back();
     } else {}
     isMarketingManagerApproving.value = false;
   }
@@ -1489,7 +1491,7 @@ class LeadController extends GetxController {
     if (result != null) {
       await leadDetailsApi(leadId: leadId);
       Get.back();
-      // Get.back();
+      Get.back();
       // await followUpsListApi(leadId: leadId);
     } else {}
     isBranchHeadManagerApproving.value = false;

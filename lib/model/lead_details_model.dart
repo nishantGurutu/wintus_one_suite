@@ -1,11 +1,11 @@
 class LeadDetailsModel {
   bool? status;
-  dynamic message;
+  String? message;
   LeadDetailsData? data;
 
   LeadDetailsModel({this.status, this.message, this.data});
 
-  LeadDetailsModel.fromJson(Map<dynamic, dynamic> json) {
+  LeadDetailsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
     data = json['data'] != null
@@ -13,8 +13,8 @@ class LeadDetailsModel {
         : null;
   }
 
-  Map<dynamic, dynamic> toJson() {
-    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
@@ -110,7 +110,7 @@ class LeadDetailsData {
       this.addedUsers,
       this.approvalData});
 
-  LeadDetailsData.fromJson(Map<dynamic, dynamic> json) {
+  LeadDetailsData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     leadNumber = json['lead_number'];
     userId = json['user_id'];
@@ -169,8 +169,8 @@ class LeadDetailsData {
     }
   }
 
-  Map<dynamic, dynamic> toJson() {
-    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['lead_number'] = this.leadNumber;
     data['user_id'] = this.userId;
@@ -231,14 +231,14 @@ class AssignedToUsers {
 
   AssignedToUsers({this.id, this.name, this.image});
 
-  AssignedToUsers.fromJson(Map<dynamic, dynamic> json) {
+  AssignedToUsers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     image = json['image'];
   }
 
-  Map<dynamic, dynamic> toJson() {
-    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['image'] = this.image;
@@ -258,6 +258,7 @@ class ApprovalData {
   dynamic branchheadAgreement;
   dynamic branchheadName;
   dynamic legalName;
+  dynamic legalStatus;
   dynamic legalRemarks;
   dynamic legalWorkorder;
   dynamic legalAdditionalAttachment;
@@ -276,13 +277,14 @@ class ApprovalData {
       this.branchheadAgreement,
       this.branchheadName,
       this.legalName,
+      this.legalStatus,
       this.legalRemarks,
       this.legalWorkorder,
       this.legalAdditionalAttachment,
       this.legalTime,
       this.submittedAt});
 
-  ApprovalData.fromJson(Map<dynamic, dynamic> json) {
+  ApprovalData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     managerStatus = json['manager_status'];
     managerRemarks = json['manager_remarks'];
@@ -294,6 +296,7 @@ class ApprovalData {
     branchheadAgreement = json['branchhead_agreement'];
     branchheadName = json['branchhead_name'];
     legalName = json['legal_name'];
+    legalStatus = json['legal_status'];
     legalRemarks = json['legal_remarks'];
     legalWorkorder = json['legal_workorder'];
     legalAdditionalAttachment = json['legal_additional_attachment'];
@@ -301,8 +304,8 @@ class ApprovalData {
     submittedAt = json['submitted_at'];
   }
 
-  Map<dynamic, dynamic> toJson() {
-    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['manager_status'] = this.managerStatus;
     data['manager_remarks'] = this.managerRemarks;
@@ -314,6 +317,7 @@ class ApprovalData {
     data['branchhead_agreement'] = this.branchheadAgreement;
     data['branchhead_name'] = this.branchheadName;
     data['legal_name'] = this.legalName;
+    data['legal_status'] = this.legalStatus;
     data['legal_remarks'] = this.legalRemarks;
     data['legal_workorder'] = this.legalWorkorder;
     data['legal_additional_attachment'] = this.legalAdditionalAttachment;
