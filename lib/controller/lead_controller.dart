@@ -333,6 +333,8 @@ class LeadController extends GetxController {
     isLeadUpdating.value = false;
   }
 
+  RxInt pageCountValue = 1.obs;
+  RxInt prePageCount = 1.obs;
   var isLeadLoading = false.obs;
   RxList<LeadListData> leadsListData = <LeadListData>[].obs;
   RxList<LeadStatusData> selectedStatusPerLead = <LeadStatusData>[].obs;
@@ -340,78 +342,80 @@ class LeadController extends GetxController {
   Future<void> leadsList(int? id, String leadTypeValue) async {
     isLeadLoading.value = true;
     try {
-      final result = await LeadService().leadsListApi(id, leadTypeValue);
-      final offlineLeads = await DatabaseHelper.instance.getLeads();
-      final db = await DatabaseHelper.instance.database;
+      final result = await LeadService()
+          .leadsListApi(id, leadTypeValue, pageCountValue.value);
+      if (result!.data != null) {
+        List<LeadListData> leadData = result.data!.toList();
+        final offlineLeads = await DatabaseHelper.instance.getLeads();
+        final db = await DatabaseHelper.instance.database;
 
-      if (result != null && result.data != null) {
-        isLeadLoading.value = false;
-        isLeadLoading.refresh();
-        for (var onlineLead in result.data!) {
-          if (onlineLead.phone != null &&
-              onlineLead.phone!.isNotEmpty &&
-              onlineLead.leadName != null &&
-              onlineLead.leadName!.isNotEmpty) {
-            final matchingLeads = await db.query(
-              'leads',
-              where: 'phone = ? AND lead_name = ?',
-              whereArgs: [
-                onlineLead.phone!.trim(),
-                onlineLead.leadName!.trim(),
-              ],
-            );
-            for (var matchingLead in matchingLeads) {
-              final leadId = matchingLead['id'] as int;
-              final deleteResult =
-                  await DatabaseHelper.instance.deleteLead(leadId);
-              if (deleteResult > 0) {
-                CustomToast().showCustomToast(
-                  'Offline lead with phone ${onlineLead.phone} removed.',
-                );
-                debugPrint(
-                  'Offline lead with phone ${onlineLead.phone} removed.',
-                );
-              } else {
-                CustomToast().showCustomToast(
-                  'Failed to delete offline lead with phone ${onlineLead.phone} and name ${onlineLead.leadName}.',
-                );
-                debugPrint(
-                    "Failed to delete offline lead with phone ${onlineLead.phone} and name ${onlineLead.leadName}.");
+        if (result != null && result.data != null) {
+          isLeadLoading.value = false;
+          isLeadLoading.refresh();
+          for (var onlineLead in result.data!) {
+            if (onlineLead.phone != null &&
+                onlineLead.phone!.isNotEmpty &&
+                onlineLead.leadName != null &&
+                onlineLead.leadName!.isNotEmpty) {
+              final matchingLeads = await db.query(
+                'leads',
+                where: 'phone = ? AND lead_name = ?',
+                whereArgs: [
+                  onlineLead.phone!.trim(),
+                  onlineLead.leadName!.trim(),
+                ],
+              );
+              for (var matchingLead in matchingLeads) {
+                final leadId = matchingLead['id'] as int;
+                final deleteResult =
+                    await DatabaseHelper.instance.deleteLead(leadId);
+                if (deleteResult > 0) {
+                  CustomToast().showCustomToast(
+                    'Offline lead with phone ${onlineLead.phone} removed.',
+                  );
+                  debugPrint(
+                    'Offline lead with phone ${onlineLead.phone} removed.',
+                  );
+                } else {
+                  CustomToast().showCustomToast(
+                    'Failed to delete offline lead with phone ${onlineLead.phone} and name ${onlineLead.leadName}.',
+                  );
+                  debugPrint(
+                      "Failed to delete offline lead with phone ${onlineLead.phone} and name ${onlineLead.leadName}.");
+                }
               }
             }
           }
         }
-      }
 
-      final updatedOfflineLeads = await DatabaseHelper.instance.getLeads();
+        final updatedOfflineLeads = await DatabaseHelper.instance.getLeads();
 
-      leadsListData.clear();
-      leadsListData.addAll(
-        updatedOfflineLeads.map((e) => LeadListData.fromJson(e)).toList(),
-      );
-      if (result != null && result.data != null) {
-        leadsListData.addAll(result.data!.reversed.toList());
-      }
-      leadsListData.refresh();
+        leadsListData.addAll(
+          updatedOfflineLeads.map((e) => LeadListData.fromJson(e)).toList(),
+        );
+        if (result != null && result.data != null) {
+          leadsListData.addAll(result.data!.reversed.toList());
+        }
+        leadsListData.refresh();
+        selectedStatusPerLead.clear();
+        selectedStatusPerLead.addAll(
+          List<LeadStatusData>.filled(leadsListData.length, LeadStatusData()),
+        );
 
-      selectedStatusPerLead.clear();
-      selectedStatusPerLead.addAll(
-        List<LeadStatusData>.filled(leadsListData.length, LeadStatusData()),
-      );
-
-      for (int i = 0; i < leadsListData.length; i++) {
-        for (int j = 0; j < leadStatusData.length; j++) {
-          if (leadsListData[i].status == leadStatusData[j].id) {
-            selectedStatusPerLead[i] = leadStatusData[j];
-            break;
+        for (int i = 0; i < leadsListData.length; i++) {
+          for (int j = 0; j < leadStatusData.length; j++) {
+            if (leadsListData[i].status == leadStatusData[j].id) {
+              selectedStatusPerLead[i] = leadStatusData[j];
+              break;
+            }
           }
         }
-      }
-      for (int i = 0; i < leadsListData.length; i++) {
-        for (int j = 0; j < leadStatusData.length; j++) {
-          if (leadsListData[i].status == leadStatusData[j].id) {
-            selectedStatusPerLead[i] = leadStatusData[j];
-            break;
+        for (int i = 0; i < leadsListData.length; i++) {
+          for (int j = 0; j < leadStatusData.length; j++) {
+            if (leadsListData[i].status == leadStatusData[j].id) {
+              selectedStatusPerLead[i] = leadStatusData[j];
+              break;
+            }
           }
         }
       }

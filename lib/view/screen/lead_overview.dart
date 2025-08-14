@@ -11,6 +11,7 @@ import 'package:task_management/constant/style_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/custom_text_convert.dart';
 import 'package:task_management/custom_widget/network_image_class.dart';
+import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/lead_details_model.dart';
 import 'package:task_management/model/lead_visit_list_model.dart';
 import 'package:task_management/view/screen/lead_note.dart';
@@ -22,6 +23,7 @@ import 'package:task_management/view/widgets/customAudioPlayer.dart';
 import 'package:task_management/view/widgets/followup_list.dart';
 import 'package:task_management/view/widgets/lead_discussion_list.dart';
 import 'package:task_management/view/widgets/lead_overview_document_list.dart';
+import 'package:task_management/view/widgets/work_order_document_approve.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:task_management/helper/sos_pusher.dart';
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
@@ -550,7 +552,12 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                           child: Padding(
                             padding: EdgeInsets.all(8.sp),
                             child: Text(
-                              '✅ Document successfully uploaded & wating for marketing manager approval.',
+                              StorageHelper.getRoleName()
+                                          .toString()
+                                          .toLowerCase() ==
+                                      'marketing manager'
+                                  ? "✅ Document successfully uploaded by ${leadController.leadDetails.value?.ownerName ?? ""}, waiting for your approval."
+                                  : '✅ Document successfully uploaded & wating for marketing manager approval.',
                               style: TextStyle(
                                   fontSize: 11.sp, color: Color(0xff434343)),
                             ),
@@ -574,7 +581,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                           child: Padding(
                             padding: EdgeInsets.all(8.sp),
                             child: Text(
-                              '✅ Marketing Manager has approved the quotation on ${leadDatavalue?.approvalData?[i].managerTime}.',
+                              '✅ Marketing Manager has approved the quotation on ${leadDatavalue?.approvalData?[i].managerTime ?? ""}.',
                               style: TextStyle(
                                   fontSize: 11.sp, color: Color(0xff434343)),
                             ),
@@ -927,86 +934,97 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                               SizedBox(
                                                 height: 5.h,
                                               ),
-                                              Container(
-                                                height: 80.h,
-                                                width: 150.w,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: lightBorderColor,
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Get.to(() => WorkOrderDocumentApprove(
+                                                      documentUrl: leadDatavalue
+                                                              ?.approvalData
+                                                              ?.first
+                                                              .branchheadAgreement ??
+                                                          ''));
+                                                },
+                                                child: Container(
+                                                  height: 80.h,
+                                                  width: 150.w,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: lightBorderColor,
+                                                    ),
                                                   ),
-                                                ),
-                                                child: (leadDatavalue
-                                                            ?.approvalData
-                                                            ?.first
-                                                            .branchheadAgreement !=
-                                                        null)
-                                                    ? ((leadDatavalue
-                                                                        ?.approvalData
-                                                                        ?.first
-                                                                        .branchheadAgreement ??
-                                                                    "")
-                                                                .toLowerCase()
-                                                                .endsWith(
-                                                                    '.png') ||
-                                                            (leadDatavalue
-                                                                        ?.approvalData
-                                                                        ?.first
-                                                                        .branchheadAgreement ??
-                                                                    "")
-                                                                .toLowerCase()
-                                                                .endsWith(
-                                                                    '.jpg') ||
-                                                            (leadDatavalue
-                                                                        ?.approvalData!
-                                                                        .first
-                                                                        .branchheadAgreement ??
-                                                                    '')
-                                                                .toString()
-                                                                .toLowerCase()
-                                                                .endsWith(
-                                                                    '.jpeg'))
-                                                        ? Image.network(
-                                                            leadDatavalue
-                                                                    ?.approvalData
-                                                                    ?.first
-                                                                    .branchheadAgreement ??
-                                                                '',
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                        : Center(
-                                                            child: InkWell(
-                                                              onTap: () {
-                                                                launchUrl(Uri.parse(
-                                                                    leadDatavalue
-                                                                            ?.approvalData
-                                                                            ?.first
-                                                                            .branchheadAgreement ??
-                                                                        ""));
-                                                              },
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Icon(
-                                                                      Icons
-                                                                          .insert_drive_file,
-                                                                      size: 30),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          5),
-                                                                  Text(
-                                                                    'View File',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12.sp),
-                                                                  ),
-                                                                ],
+                                                  child: (leadDatavalue
+                                                              ?.approvalData
+                                                              ?.first
+                                                              .branchheadAgreement !=
+                                                          null)
+                                                      ? ((leadDatavalue
+                                                                          ?.approvalData
+                                                                          ?.first
+                                                                          .branchheadAgreement ??
+                                                                      "")
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      '.png') ||
+                                                              (leadDatavalue
+                                                                          ?.approvalData
+                                                                          ?.first
+                                                                          .branchheadAgreement ??
+                                                                      "")
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      '.jpg') ||
+                                                              (leadDatavalue
+                                                                          ?.approvalData!
+                                                                          .first
+                                                                          .branchheadAgreement ??
+                                                                      '')
+                                                                  .toString()
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      '.jpeg'))
+                                                          ? Image.network(
+                                                              leadDatavalue
+                                                                      ?.approvalData
+                                                                      ?.first
+                                                                      .branchheadAgreement ??
+                                                                  '',
+                                                              fit: BoxFit.cover,
+                                                            )
+                                                          : Center(
+                                                              child: InkWell(
+                                                                onTap: () {
+                                                                  launchUrl(Uri.parse(leadDatavalue
+                                                                          ?.approvalData
+                                                                          ?.first
+                                                                          .branchheadAgreement ??
+                                                                      ""));
+                                                                },
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .insert_drive_file,
+                                                                        size:
+                                                                            30),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            5),
+                                                                    Text(
+                                                                      'View File',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12.sp),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            ),
-                                                          )
-                                                    : Center(
-                                                        child: Text('No File')),
+                                                            )
+                                                      : Center(
+                                                          child:
+                                                              Text('No File')),
+                                                ),
                                               ),
                                             ],
                                           ),

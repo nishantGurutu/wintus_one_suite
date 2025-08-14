@@ -35,6 +35,8 @@ class _LeadListState extends State<LeadList> {
   @override
   void initState() {
     super.initState();
+    leadController.pageCountValue.value = 1;
+    _scrollController.addListener(_scrollListener);
     Future.microtask(() {
       apiCalling();
     });
@@ -100,6 +102,7 @@ class _LeadListState extends State<LeadList> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_scrollListener);
     Future.microtask(() {
       leadController.selectedLeadStatusData.value = null;
       leadController.selectedLeadStatusUpdateData.value = null;
@@ -107,6 +110,17 @@ class _LeadListState extends State<LeadList> {
       leadController.selectedLeadStatusData.value = null;
     });
     super.dispose();
+  }
+
+  ScrollController _scrollController = ScrollController();
+  Future<void> _scrollListener() async {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      leadController.pageCountValue.value += 1;
+      await leadController.leadsList(
+          leadController.selectedLeadStatusData.value?.id,
+          leadController.selectedLeadType.value);
+    }
   }
 
   @override
@@ -554,6 +568,7 @@ class _LeadListState extends State<LeadList> {
               ),
             )
           : ListView.builder(
+              controller: _scrollController,
               itemCount: leadController.leadsListData.length,
               itemBuilder: (context, index) {
                 return Padding(

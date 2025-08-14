@@ -491,11 +491,6 @@ class _FollowUpListState extends State<FollowUpList> {
                             personid: widget.leadController.selectdePersonIds,
                             followupId: id,
                           );
-                          // addPeople(
-                          //     personid: leadController
-                          //         .selectedResponsiblePersonData.value?.id,
-                          //     leadId: id,
-                          //     from: from);
                         }
                       },
                       color: primaryButtonColor,

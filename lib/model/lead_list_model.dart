@@ -2,8 +2,9 @@ class LeedListModel {
   bool? status;
   String? message;
   List<LeadListData>? data;
+  Pagination? pagination;
 
-  LeedListModel({this.status, this.message, this.data});
+  LeedListModel({this.status, this.message, this.data, this.pagination});
 
   LeedListModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -14,6 +15,9 @@ class LeedListModel {
         data!.add(new LeadListData.fromJson(v));
       });
     }
+    pagination = json['pagination'] != null
+        ? new Pagination.fromJson(json['pagination'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -23,12 +27,15 @@ class LeedListModel {
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
+    if (this.pagination != null) {
+      data['pagination'] = this.pagination!.toJson();
+    }
     return data;
   }
 }
 
 class LeadListData {
-  int? id;
+  dynamic id;
   dynamic leadNumber;
   dynamic userId;
   dynamic leadName;
@@ -113,7 +120,7 @@ class LeadListData {
     userId = json['user_id'];
     leadName = json['lead_name'];
     leadType = json['lead_type'];
-    company = json['company_name'] ?? json['company'];
+    company = json['company'];
     phone = json['phone'];
     email = json['email'];
     source = json['source'];
@@ -124,8 +131,8 @@ class LeadListData {
     description = json['description'];
     regionalOfc = json['regional_ofc'];
     referenceDetails = json['reference_details'];
-    image = json['image_path'] ?? json['image'];
-    audio = json['audio_path'] ?? json['audio'];
+    image = json['image'];
+    audio = json['audio'];
     type = json['type'];
     addressType = json['address_type'];
     addressLine1 = json['address_line1'];
@@ -188,6 +195,31 @@ class LeadListData {
     data['source_name'] = this.sourceName;
     data['status_name'] = this.statusName;
     data['owner_name'] = this.ownerName;
+    return data;
+  }
+}
+
+class Pagination {
+  dynamic lastPage;
+  dynamic perPage;
+  dynamic total;
+  dynamic currentPage;
+
+  Pagination({this.currentPage, this.lastPage, this.perPage, this.total});
+
+  Pagination.fromJson(Map<String, dynamic> json) {
+    currentPage = json['current_page'];
+    lastPage = json['last_page'];
+    perPage = json['per_page'];
+    total = json['total'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['current_page'] = this.currentPage;
+    data['last_page'] = this.lastPage;
+    data['per_page'] = this.perPage;
+    data['total'] = this.total;
     return data;
   }
 }

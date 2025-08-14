@@ -2,345 +2,148 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
-import 'package:task_management/constant/custom_toast.dart';
-import 'package:task_management/constant/download.dart' show DownloadFile;
 import 'package:task_management/controller/lead_controller.dart';
-import 'package:task_management/custom_widget/network_image_class.dart';
 import 'package:task_management/custom_widget/task_text_field.dart';
 import 'package:task_management/helper/storage_helper.dart';
-import 'package:task_management/model/lead_details_model.dart';
 
-class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
-  final dynamic leadId;
-  final dynamic quotationId;
-  final List<ApprovalData>? status;
-  const LeadOverviewDocumentListBotomsheet(
-      {super.key, required this.leadId, this.quotationId, this.status});
+class WorkOrderDocumentApprove extends StatefulWidget {
+  final dynamic documentUrl;
+  const WorkOrderDocumentApprove({super.key, required this.documentUrl});
 
   @override
-  State<LeadOverviewDocumentListBotomsheet> createState() =>
-      _LeadOverviewDocumentListBotomsheet();
+  State<WorkOrderDocumentApprove> createState() =>
+      _WorkOrderDocumentApproveState();
 }
 
-class _LeadOverviewDocumentListBotomsheet
-    extends State<LeadOverviewDocumentListBotomsheet> {
+class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
   final LeadController leadController = Get.find();
-
-  @override
-  void initState() {
-    print('wjh838e3 e3uey38 4ue48 ${widget.leadId}');
-    leadController.leadDocumentList(leadId: widget.leadId, from: 'initstate');
-    leadController.leadpickedFile.value = File("");
-    leadController.profilePicPath.value = "";
-    super.initState();
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-    leadController.isDocumentCheckBoxSelected.clear();
-    leadController.leadpickedFile.value = File("");
-    leadController.profilePicPath.value = "";
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r)),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Color(0xFF000000),
+            size: 20,
+          ),
+        ),
+        title: const Text(
+          "Leads Overview",
+          style: TextStyle(
+            color: Color(0xFF000000),
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: backgroundColor,
+        elevation: 0,
       ),
-      width: double.infinity,
-      height: 620.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w),
-        child: SafeArea(
-          child: Obx(
-            () => leadController.isDocumentListLoading.value == true
-                ? Center(child: CircularProgressIndicator())
-                : Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Document List",
-                            style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                                color: textColor),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: SizedBox(
-                              width: 25.w,
-                              height: 35.h,
-                              child: SvgPicture.asset(
-                                  'assets/images/svg/cancel.svg'),
-                            ),
-                          )
-                        ],
-                      ),
-                      leadController.leadDocumentListData.isEmpty
-                          ? Expanded(
-                              child: Center(
-                                child: Text(
-                                  'No uploaded document found',
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: textColor),
-                                ),
-                              ),
-                            )
-                          : Expanded(
-                              child: ListView.builder(
-                                itemCount:
-                                    leadController.leadDocumentListData.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              "${index + 1}. ${leadController.leadDocumentListData[index].fileName ?? ''}",
-                                              style: TextStyle(
-                                                  fontSize: 14.sp,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () async {
-                                              showDialog(
-                                                context: context,
-                                                barrierDismissible: false,
-                                                builder: (context) {
-                                                  return Container(
-                                                    child: AlertDialog(
-                                                      backgroundColor:
-                                                          whiteColor,
-                                                      content: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          CircularProgressIndicator(),
-                                                          SizedBox(width: 16),
-                                                          Text(
-                                                              "Downloading..."),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-
-                                              // Start download
-                                              await DownloadFile()
-                                                  .saveToDownloads(
-                                                leadController
-                                                        .leadDocumentListData[
-                                                            index]
-                                                        .fileUrl ??
-                                                    "",
-                                                isNetwork: true,
-                                              );
-
-                                              Navigator.pop(context);
-                                            },
-                                            child: Container(
-                                              width: 40.w,
-                                              height: 30.h,
-                                              child: Icon(
-                                                Icons.download,
-                                                size: 30.sp,
-                                              ),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {},
-                                            child: Container(
-                                              width: 40.w,
-                                              height: 40.h,
-                                              child: NetworkImageWidget(
-                                                imageurl: leadController
-                                                    .leadDocumentListData[index]
-                                                    .fileUrl,
-                                                height: 40.h,
-                                                width: 40.w,
-                                              ),
-                                            ),
-                                          ),
-                                          if (StorageHelper.getRoleName()
-                                                      .toString()
-                                                      .toLowerCase() ==
-                                                  "marketing manager" ||
-                                              StorageHelper.getRoleName()
-                                                      .toString()
-                                                      .toLowerCase() ==
-                                                  "branch head" ||
-                                              StorageHelper.getRoleName()
-                                                      .toString()
-                                                      .toLowerCase() ==
-                                                  "pa")
-                                            Obx(
-                                              () => Checkbox(
-                                                value: leadController
-                                                        .isDocumentCheckBoxSelected[
-                                                    index],
-                                                onChanged: (value) async {
-                                                  print(
-                                                      'iuy83 38e78e ${leadController.leadDocumentListData[index].status}');
-                                                  if (StorageHelper
-                                                                  .getRoleName()
-                                                              .toString()
-                                                              .toLowerCase() ==
-                                                          "marketing manager" &&
-                                                      leadController
-                                                              .leadDetails
-                                                              .value
-                                                              ?.approvalData
-                                                              ?.first
-                                                              .managerStatus
-                                                              .toString()
-                                                              .toLowerCase() ==
-                                                          'pending') {
-                                                    await leadController
-                                                        .approveDocument(
-                                                      documentId: leadController
-                                                          .leadDocumentListData[
-                                                              index]
-                                                          .id,
-                                                      leadId: widget.leadId,
-                                                    );
-                                                    leadController
-                                                            .isDocumentCheckBoxSelected[
-                                                        index] = value!;
-                                                  }
-                                                },
-                                              ),
-                                            )
-                                        ],
-                                      ),
-                                      Divider(
-                                        thickness: 1,
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                      if (StorageHelper.getRoleName()
-                                  .toString()
-                                  .toLowerCase() ==
-                              "marketing manager"
-                          //      &&
-                          // widget.status?.first.managerStatus
-                          //         .toString()
-                          //         .toLowerCase() ==
-                          //     'pending')
-                          ||
-                          (StorageHelper.getRoleName()
-                                      .toString()
-                                      .toLowerCase() ==
-                                  "branch head" &&
-                              widget.status?.first.branchheadStatus
-                                      .toString()
-                                      .toLowerCase() ==
-                                  'pending') ||
-                          (StorageHelper.getRoleName()
-                                      .toString()
-                                      .toLowerCase() ==
-                                  "pa" &&
-                              widget.status?.first.legalStatus == 0))
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    if (!leadController
-                                        .isDocumentCheckBoxSelected
-                                        .contains(false)) {
-                                      documentApprovedDialog(
-                                          context, "approve");
-                                    } else {
-                                      CustomToast().showCustomToast(
-                                          "All document not approved.");
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 40.h,
-                                    width: 150.w,
-                                    decoration: BoxDecoration(
-                                      color: !leadController
-                                              .isDocumentCheckBoxSelected
-                                              .contains(false)
-                                          ? primaryButtonColor
-                                          : lightGreyColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8.r),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Approve',
-                                        style: TextStyle(
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: whiteColor),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    documentApprovedDialog(context, "concern");
-                                  },
-                                  child: Container(
-                                    height: 40.h,
-                                    width: 150.w,
-                                    decoration: BoxDecoration(
-                                      color: redColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8.r),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Raise Concern',
-                                        style: TextStyle(
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: whiteColor),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10.h,
-                            ),
-                          ],
+      backgroundColor: whiteColor,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Column(
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.network(
+                      widget.documentUrl,
+                      width: double.infinity,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              // CustomButton(
+              //   onPressed: () {
+              //     documentApprovedDialog(context, "approve");
+              //   },
+              //   text: Text(
+              //     'Approve',
+              //     style: TextStyle(
+              //         fontSize: 14.sp,
+              //         fontWeight: FontWeight.w500,
+              //         color: whiteColor),
+              //   ),
+              //   width: double.infinity,
+              //   color: primaryButtonColor,
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      // if (!leadController.isDocumentCheckBoxSelected
+                      //     .contains(false)) {
+                      documentApprovedDialog(context, "approve");
+                      // } else {
+                      //   CustomToast()
+                      //       .showCustomToast("All document not approved.");
+                      // }
+                    },
+                    child: Container(
+                      height: 40.h,
+                      width: 150.w,
+                      decoration: BoxDecoration(
+                        color: !leadController.isDocumentCheckBoxSelected
+                                .contains(false)
+                            ? primaryButtonColor
+                            : lightGreyColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.r),
                         ),
-                    ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Approve',
+                          style: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                              color: whiteColor),
+                        ),
+                      ),
+                    ),
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      documentApprovedDialog(context, "concern");
+                    },
+                    child: Container(
+                      height: 40.h,
+                      width: 150.w,
+                      decoration: BoxDecoration(
+                        color: redColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.r),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Raise Concern',
+                          style: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                              color: whiteColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10.h,
+              )
+            ],
           ),
         ),
       ),
@@ -676,24 +479,24 @@ class _LeadOverviewDocumentListBotomsheet
                                 .toString()
                                 .toLowerCase() ==
                             "marketing manager") {
-                          await leadController.approveMarketingManager(
-                            leadId: widget.leadId,
-                            remark: remarkControlelr.text,
-                            status: type == "approve" ? 1 : 2,
-                          );
+                          // await leadController.approveMarketingManager(
+                          //   leadId: widget.leadId,
+                          //   remark: remarkControlelr.text,
+                          //   status: type == "approve" ? 1 : 2,
+                          // );
                         } else {
-                          await leadController.branchheadManagerApproving(
-                            leadId: widget.leadId,
-                            remark: remarkControlelr.text,
-                            status: type == "approve" ? 1 : 2,
-                            attachment: leadController.leadpickedFile.value,
-                            workAttachment:
-                                leadController.leadWorkpickedFile.value,
-                            aditional:
-                                leadController.leadAditionalpickedFile.value,
-                            legalRemark: legalRemarkControlelr.text,
-                            legalStatus: type == "approve" ? 1 : 2,
-                          );
+                          // await leadController.branchheadManagerApproving(
+                          //   leadId: widget.leadId,
+                          //   remark: remarkControlelr.text,
+                          //   status: type == "approve" ? 1 : 2,
+                          //   attachment: leadController.leadpickedFile.value,
+                          //   workAttachment:
+                          //       leadController.leadWorkpickedFile.value,
+                          //   aditional:
+                          //       leadController.leadAditionalpickedFile.value,
+                          //   legalRemark: legalRemarkControlelr.text,
+                          //   legalStatus: type == "approve" ? 1 : 2,
+                          // );
                         }
                       },
                       child: Container(

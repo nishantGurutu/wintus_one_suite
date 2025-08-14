@@ -237,7 +237,8 @@ class LeadService {
     }
   }
 
-  Future<LeedListModel?> leadsListApi(int? id, String leadTypeValue) async {
+  Future<LeedListModel?> leadsListApi(
+      int? id, String leadTypeValue, int pageCountValue) async {
     try {
       final token = StorageHelper.getToken();
       print("Token wiuye873 38798e3s79j9used: $id");
@@ -260,11 +261,11 @@ class LeadService {
 
       print("kjdh8743 3iu843 ${leadSelectedtype}");
       var url =
-          "${ApiConstant.baseUrl + ApiConstant.leads_list}?user_id=$userId";
+          "${ApiConstant.baseUrl + ApiConstant.leads_list}?user_id=$userId&&page=$pageCountValue";
       final response = await _dio.get(
         ((id == null || id == "null") &&
                 (leadSelectedtype.isEmpty || leadSelectedtype == ""))
-            ? '${ApiConstant.baseUrl + ApiConstant.leads_list}?user_id=$userId'
+            ? '${ApiConstant.baseUrl + ApiConstant.leads_list}?user_id=$userId&&page=$pageCountValue'
             : ((id != null || id != "null") &&
                     (leadSelectedtype.isEmpty || leadSelectedtype == ""))
                 ? "$url&status=$id"
