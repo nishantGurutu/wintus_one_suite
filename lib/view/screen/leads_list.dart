@@ -92,8 +92,11 @@ class _LeadListState extends State<LeadList> {
     } else if (widget.status == "lost") {
       await leadController.offLineStatusdata(status: widget.status);
     }
-    if (StorageHelper.getRoleName() != null &&
-        StorageHelper.getRoleName() != '') {
+    if (StorageHelper.getRoleName().toString().toLowerCase() ==
+            "marketing manager" ||
+        StorageHelper.getRoleName().toString().toLowerCase() == "branch head" ||
+        StorageHelper.getRoleName().toString().toLowerCase() == "pa" ||
+        StorageHelper.getRoleName().toString().toLowerCase() == "chairman") {
       await leadController.addedDocumentLeadList();
     }
     isLoading.value = false;

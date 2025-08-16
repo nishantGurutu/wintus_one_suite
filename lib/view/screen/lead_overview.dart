@@ -606,7 +606,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                           child: Padding(
                             padding: EdgeInsets.all(8.sp),
                             child: Text(
-                              '❗ Branch Head raised a concern: "Quotation is unsigned.',
+                              '❗ Marketing Manager raised a concern: "${leadDatavalue?.approvalData?[i].managerRemarks ?? ""}',
                               style: TextStyle(
                                   fontSize: 11.sp, color: Color(0xff434343)),
                             ),
@@ -830,7 +830,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                   ),
                                                   Expanded(
                                                     child: Text(
-                                                      'Concern Raised : "Quotation amount missing"',
+                                                      'Concern Raised : "${leadDatavalue?.approvalData?[i].branchheadRemarks ?? ""}"',
                                                       style: TextStyle(
                                                           color: leadDatavalue
                                                                       ?.approvalData?[
@@ -873,25 +873,15 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                         SizedBox(
                                           height: 4.h,
                                         ),
-                                        Text(
-                                          '${leadDatavalue?.approvalData?[i].brancheadTime ?? ""}',
-                                          style: TextStyle(
-                                              color: Color(0xff747474),
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        SizedBox(
-                                          height: 4.h,
-                                        ),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'Remark : ${leadDatavalue?.approvalData?[i].branchheadRemarks ?? ""}',
+                                              '${leadDatavalue?.approvalData?[i].brancheadTime ?? ""}',
                                               style: TextStyle(
                                                   color: Color(0xff747474),
-                                                  fontSize: 14.sp,
+                                                  fontSize: 10.sp,
                                                   fontWeight: FontWeight.w400),
                                             ),
                                             GestureDetector(
@@ -919,6 +909,53 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                             ),
                                           ],
                                         ),
+                                        SizedBox(
+                                          height: 4.h,
+                                        ),
+                                        if (leadDatavalue?.approvalData?[i]
+                                                .branchheadStatus
+                                                .toString()
+                                                .toLowerCase() !=
+                                            "rejected")
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Remark : ${leadDatavalue?.approvalData?[i].branchheadRemarks ?? ""}',
+                                                style: TextStyle(
+                                                    color: Color(0xff747474),
+                                                    fontSize: 14.sp,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  isBranchHeadViewSelected
+                                                          .value =
+                                                      !isBranchHeadViewSelected
+                                                          .value;
+                                                },
+                                                child: Container(
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 6.w,
+                                                            vertical: 5.h),
+                                                    child: Text(
+                                                      'View',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xff1B2A64),
+                                                          fontSize: 14.sp,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         if (isBranchHeadViewSelected.value ==
                                             true)
                                           Column(
@@ -937,13 +974,21 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                               ),
                                               GestureDetector(
                                                 onTap: () {
-                                                  Get.to(() => WorkOrderDocumentApprove(
-                                                      documentUrl: leadDatavalue
+                                                  if (!(leadDatavalue
                                                               ?.approvalData
                                                               ?.first
                                                               .branchheadAgreement ??
-                                                          '',
-                                                      leadId: widget.leadId));
+                                                          "")
+                                                      .toString()
+                                                      .contains('https')) {
+                                                    Get.to(() => WorkOrderDocumentApprove(
+                                                        documentUrl: leadDatavalue
+                                                                ?.approvalData
+                                                                ?.first
+                                                                .branchheadAgreement ??
+                                                            '',
+                                                        leadId: widget.leadId));
+                                                  }
                                                 },
                                                 child: Container(
                                                   height: 80.h,
@@ -993,13 +1038,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                             )
                                                           : Center(
                                                               child: InkWell(
-                                                                onTap: () {
-                                                                  // launchUrl(Uri.parse(leadDatavalue
-                                                                  //         ?.approvalData
-                                                                  //         ?.first
-                                                                  //         .branchheadAgreement ??
-                                                                  //     ""));
-                                                                },
+                                                                onTap: () {},
                                                                 child: Column(
                                                                   mainAxisAlignment:
                                                                       MainAxisAlignment
@@ -1132,7 +1171,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                           ),
                                           Expanded(
                                             child: Text(
-                                              'Concern Raised : "Quotation amount missing"',
+                                              'Concern Raised : "${leadDatavalue?.approvalData?[i].legalRemarks ?? ""}"',
                                               style: TextStyle(
                                                   color: Color(0xffFF2929),
                                                   fontSize: 12.sp,

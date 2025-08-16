@@ -1184,7 +1184,7 @@ class LeadService {
     }
   }
 
-  Future<bool> approveDocument(int? documentId) async {
+  Future<bool> approveDocument(int? documentId, int status) async {
     try {
       final token = StorageHelper.getToken();
       _dio.options.headers["Authorization"] = "Bearer $token";
@@ -1199,6 +1199,7 @@ class LeadService {
 
       final Map<String, dynamic> formDataMap = {
         "document_id": documentId,
+        "status": status,
       };
 
       final formData = FormData.fromMap(formDataMap);

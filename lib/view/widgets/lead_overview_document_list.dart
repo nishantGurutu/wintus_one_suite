@@ -114,11 +114,44 @@ class _LeadOverviewDocumentListBotomsheet
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              "${index + 1}. ${leadController.leadDocumentListData[index].fileName ?? ''}",
+                                              "${index + 1}. ${leadController.leadDocumentListData[index].status ?? ''}",
                                               style: TextStyle(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w500),
                                             ),
+                                          ),
+                                          Obx(
+                                            () => leadController
+                                                        .leadDocumentListData[
+                                                            index]
+                                                        .status ==
+                                                    0
+                                                ? InkWell(
+                                                    onTap: () async {
+                                                      await leadController
+                                                          .documentUploading(
+                                                        documentId:
+                                                            leadController
+                                                                .documentIdList,
+                                                        ducument: leadController
+                                                            .documentUplodedList,
+                                                        leadId: widget.leadId,
+                                                        quotationId:
+                                                            widget.quotationId,
+                                                      );
+
+                                                      // Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      width: 40.w,
+                                                      height: 30.h,
+                                                      child: Icon(
+                                                        Icons.upload,
+                                                        size: 30.sp,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : SizedBox(),
                                           ),
                                           InkWell(
                                             onTap: () async {
@@ -221,6 +254,13 @@ class _LeadOverviewDocumentListBotomsheet
                                                               index]
                                                           .id,
                                                       leadId: widget.leadId,
+                                                      status: leadController
+                                                                  .leadDocumentListData[
+                                                                      index]
+                                                                  .status ==
+                                                              0
+                                                          ? 1
+                                                          : 0,
                                                     );
                                                     leadController
                                                             .isDocumentCheckBoxSelected[
@@ -307,30 +347,33 @@ class _LeadOverviewDocumentListBotomsheet
                                     ),
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    documentApprovedDialog(context, "concern");
-                                  },
-                                  child: Container(
-                                    height: 40.h,
-                                    width: 150.w,
-                                    decoration: BoxDecoration(
-                                      color: redColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8.r),
+                                if (leadController.isDocumentCheckBoxSelected
+                                    .contains(false))
+                                  GestureDetector(
+                                    onTap: () {
+                                      documentApprovedDialog(
+                                          context, "concern");
+                                    },
+                                    child: Container(
+                                      height: 40.h,
+                                      width: 150.w,
+                                      decoration: BoxDecoration(
+                                        color: redColor,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(8.r),
+                                        ),
                                       ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Raise Concern',
-                                        style: TextStyle(
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: whiteColor),
+                                      child: Center(
+                                        child: Text(
+                                          'Raise Concern',
+                                          style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: whiteColor),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
                               ],
                             ),
                             SizedBox(

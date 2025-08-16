@@ -894,11 +894,12 @@ class LeadController extends GetxController {
   RxList<int> documentIdList = <int>[].obs;
   RxList<File> documentUplodedList = <File>[].obs;
   var isDocumentUploading = false.obs;
-  Future<void> documentUploading(
-      {required RxList<int> documentId,
-      required RxList<File> ducument,
-      required leadId,
-      required quotationId}) async {
+  Future<void> documentUploading({
+    required RxList<int> documentId,
+    required RxList<File> ducument,
+    required leadId,
+    required quotationId,
+  }) async {
     isDocumentUploading.value = true;
     final result = await LeadService().documentUploading(
       documentId,
@@ -915,9 +916,10 @@ class LeadController extends GetxController {
   }
 
   var isSingleDocumentUploading = false.obs;
-  Future<void> approveDocument({int? documentId, required leadId}) async {
+  Future<void> approveDocument(
+      {int? documentId, required leadId, required int status}) async {
     isSingleDocumentUploading.value = true;
-    final result = await LeadService().approveDocument(documentId);
+    final result = await LeadService().approveDocument(documentId, status);
     if (result != null) {
       await leadDocumentList(leadId: leadId, from: "approve");
       isSingleDocumentUploading.value = false;
