@@ -548,7 +548,8 @@ class _AddLeadsState extends State<AddLeads> {
                                                   .value
                                                   ?.id,
                                               leadController
-                                                  .selectedLeadType.value);
+                                                  .selectedLeadType.value,
+                                              '');
                                         }
                                         attachment = File('');
                                         leadController.pickedFile.value =

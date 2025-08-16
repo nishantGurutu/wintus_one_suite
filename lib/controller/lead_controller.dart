@@ -281,7 +281,8 @@ class LeadController extends GetxController {
     );
     if (result != null) {
       Get.back();
-      await leadsList(selectedLeadStatusData.value?.id, selectedLeadType.value);
+      await leadsList(
+          selectedLeadStatusData.value?.id, selectedLeadType.value, '');
     } else {}
     isLeadAdding.value = false;
   }
@@ -315,7 +316,8 @@ class LeadController extends GetxController {
         id: id);
     if (result) {
       Get.back();
-      await leadsList(selectedLeadStatusData.value?.id, selectedLeadType.value);
+      await leadsList(
+          selectedLeadStatusData.value?.id, selectedLeadType.value, '');
     } else {}
     isLeadUpdating.value = false;
   }
@@ -328,7 +330,8 @@ class LeadController extends GetxController {
     final result = await LeadService().assignFollowup(personid, followupId);
     if (result) {
       Get.back();
-      await leadsList(selectedLeadStatusData.value?.id, selectedLeadType.value);
+      await leadsList(
+          selectedLeadStatusData.value?.id, selectedLeadType.value, '');
     } else {}
     isLeadUpdating.value = false;
   }
@@ -339,11 +342,15 @@ class LeadController extends GetxController {
   RxList<LeadListData> leadsListData = <LeadListData>[].obs;
   RxList<LeadStatusData> selectedStatusPerLead = <LeadStatusData>[].obs;
 
-  Future<void> leadsList(int? id, String leadTypeValue) async {
+  Future<void> leadsList(int? id, String leadTypeValue, String from) async {
     isLeadLoading.value = true;
     try {
-      final result = await LeadService()
-          .leadsListApi(id, leadTypeValue, pageCountValue.value);
+      final result = await LeadService().leadsListApi(
+        id,
+        leadTypeValue,
+        pageCountValue.value,
+        from,
+      );
       if (result!.data != null) {
         List<LeadListData> leadData = result.data!.toList();
         final offlineLeads = await DatabaseHelper.instance.getLeads();
@@ -352,6 +359,9 @@ class LeadController extends GetxController {
         if (result != null && result.data != null) {
           isLeadLoading.value = false;
           isLeadLoading.refresh();
+          if (from == '') {
+            leadsListData.clear();
+          }
           for (var onlineLead in result.data!) {
             if (onlineLead.phone != null &&
                 onlineLead.phone!.isNotEmpty &&
@@ -497,7 +507,8 @@ class LeadController extends GetxController {
         }
       }
       print('lead selected id from home ${selectedLeadStatusData.value?.id}');
-      await leadsList(selectedLeadStatusData.value?.id, selectedLeadType.value);
+      await leadsList(
+          selectedLeadStatusData.value?.id, selectedLeadType.value, '');
     }
   }
 
@@ -550,7 +561,7 @@ class LeadController extends GetxController {
         }
         print('lead selected id from home ${selectedLeadStatusData.value?.id}');
         await leadsList(
-            selectedLeadStatusData.value?.id, selectedLeadType.value);
+            selectedLeadStatusData.value?.id, selectedLeadType.value, '');
       }
       isStatusListLoading.value = false;
     } else {}
@@ -854,7 +865,8 @@ class LeadController extends GetxController {
     if (result != null) {
       Get.back();
       selectedLeadStatusUpdateData.value = null;
-      await leadsList(selectedLeadStatusData.value?.id, selectedLeadType.value);
+      await leadsList(
+          selectedLeadStatusData.value?.id, selectedLeadType.value, '');
     } else {}
     isStatusUpdating.value = false;
   }
@@ -1020,7 +1032,7 @@ class LeadController extends GetxController {
 
       if (result != null) {
         await leadsList(
-            selectedLeadStatusData.value?.id, selectedLeadType.value);
+            selectedLeadStatusData.value?.id, selectedLeadType.value, '');
         debugPrint("Offline lead ${lead.leadName} synced successfully.");
       } else {
         debugPrint("Failed to sync offline lead: ${lead.leadName}");

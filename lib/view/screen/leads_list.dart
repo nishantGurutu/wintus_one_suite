@@ -119,7 +119,8 @@ class _LeadListState extends State<LeadList> {
       leadController.pageCountValue.value += 1;
       await leadController.leadsList(
           leadController.selectedLeadStatusData.value?.id,
-          leadController.selectedLeadType.value);
+          leadController.selectedLeadType.value,
+          'scroll');
     }
   }
 
@@ -349,13 +350,16 @@ class _LeadListState extends State<LeadList> {
                                         onChanged: (String? value) async {
                                           leadController
                                               .selectedLeadType.value = value!;
+                                          print(
+                                              'udey euygdyetftd ${leadController.selectedLeadType.value}');
                                           await leadController.leadsList(
                                               leadController
                                                   .selectedLeadStatusData
                                                   .value
                                                   ?.id,
                                               leadController
-                                                  .selectedLeadType.value);
+                                                  .selectedLeadType.value,
+                                              '');
                                         },
                                         buttonStyleData: ButtonStyleData(
                                           height: 50,
@@ -473,7 +477,8 @@ class _LeadListState extends State<LeadList> {
                                                   .value
                                                   ?.id,
                                               leadController
-                                                  .selectedLeadType.value);
+                                                  .selectedLeadType.value,
+                                              '');
                                         },
                                         buttonStyleData: ButtonStyleData(
                                           height: 50,
@@ -487,7 +492,7 @@ class _LeadListState extends State<LeadList> {
                                           ),
                                         ),
                                         hint: Text(
-                                          'Select Lead Type'.tr,
+                                          'Select Lead Status'.tr,
                                           style: TextStyle(
                                             decoration: TextDecoration.none,
                                             fontFamily: 'Roboto',

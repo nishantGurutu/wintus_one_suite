@@ -10,7 +10,9 @@ import 'package:task_management/helper/storage_helper.dart';
 
 class WorkOrderDocumentApprove extends StatefulWidget {
   final dynamic documentUrl;
-  const WorkOrderDocumentApprove({super.key, required this.documentUrl});
+  final dynamic leadId;
+  const WorkOrderDocumentApprove(
+      {super.key, required this.documentUrl, required this.leadId});
 
   @override
   State<WorkOrderDocumentApprove> createState() =>
@@ -34,7 +36,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
           ),
         ),
         title: const Text(
-          "Leads Overview",
+          "Workorder Document",
           style: TextStyle(
             color: Color(0xFF000000),
             fontFamily: 'Poppins',
@@ -78,68 +80,69 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
               //   width: double.infinity,
               //   color: primaryButtonColor,
               // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      // if (!leadController.isDocumentCheckBoxSelected
-                      //     .contains(false)) {
-                      documentApprovedDialog(context, "approve");
-                      // } else {
-                      //   CustomToast()
-                      //       .showCustomToast("All document not approved.");
-                      // }
-                    },
-                    child: Container(
-                      height: 40.h,
-                      width: 150.w,
-                      decoration: BoxDecoration(
-                        color: !leadController.isDocumentCheckBoxSelected
-                                .contains(false)
-                            ? primaryButtonColor
-                            : lightGreyColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.r),
+              if (StorageHelper.getRoleName().toString().toLowerCase() == "pa")
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        // if (!leadController.isDocumentCheckBoxSelected
+                        //     .contains(false)) {
+                        documentApprovedDialog(context, "approve");
+                        // } else {
+                        //   CustomToast()
+                        //       .showCustomToast("All document not approved.");
+                        // }
+                      },
+                      child: Container(
+                        height: 40.h,
+                        width: 150.w,
+                        decoration: BoxDecoration(
+                          color: !leadController.isDocumentCheckBoxSelected
+                                  .contains(false)
+                              ? primaryButtonColor
+                              : lightGreyColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.r),
+                          ),
                         ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Approve',
-                          style: TextStyle(
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w500,
-                              color: whiteColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      documentApprovedDialog(context, "concern");
-                    },
-                    child: Container(
-                      height: 40.h,
-                      width: 150.w,
-                      decoration: BoxDecoration(
-                        color: redColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.r),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Raise Concern',
-                          style: TextStyle(
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w500,
-                              color: whiteColor),
+                        child: Center(
+                          child: Text(
+                            'Approve',
+                            style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                                color: whiteColor),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                    GestureDetector(
+                      onTap: () {
+                        documentApprovedDialog(context, "concern");
+                      },
+                      child: Container(
+                        height: 40.h,
+                        width: 150.w,
+                        decoration: BoxDecoration(
+                          color: redColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.r),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Raise Concern',
+                            style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                                color: whiteColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               SizedBox(
                 height: 10.h,
               )
@@ -394,10 +397,17 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                                                             lightBorderColor)),
                                                 height: 40.h,
                                                 width: 100.w,
-                                                child: Image.asset(
-                                                  'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                                  height: 15.h,
-                                                ),
+                                                child: leadController
+                                                        .leadWorkpickedFile
+                                                        .value
+                                                        .toString()
+                                                        .contains('.pdf')
+                                                    ? Image.asset(
+                                                        'assets/image/png/pdf.png')
+                                                    : Image.asset(
+                                                        'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                                        height: 15.h,
+                                                      ),
                                               );
                                             },
                                           ),
@@ -443,10 +453,17 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                                                             lightBorderColor)),
                                                 height: 40.h,
                                                 width: 100.w,
-                                                child: Image.asset(
-                                                  'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                                  height: 15.h,
-                                                ),
+                                                child: leadController
+                                                        .leadAditionalpickedFile
+                                                        .value
+                                                        .toString()
+                                                        .contains('.pdf')
+                                                    ? Image.asset(
+                                                        'assets/image/png/pdf.png')
+                                                    : Image.asset(
+                                                        'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                                        height: 15.h,
+                                                      ),
                                               );
                                             },
                                           ),
@@ -479,24 +496,19 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                                 .toString()
                                 .toLowerCase() ==
                             "marketing manager") {
-                          // await leadController.approveMarketingManager(
-                          //   leadId: widget.leadId,
-                          //   remark: remarkControlelr.text,
-                          //   status: type == "approve" ? 1 : 2,
-                          // );
                         } else {
-                          // await leadController.branchheadManagerApproving(
-                          //   leadId: widget.leadId,
-                          //   remark: remarkControlelr.text,
-                          //   status: type == "approve" ? 1 : 2,
-                          //   attachment: leadController.leadpickedFile.value,
-                          //   workAttachment:
-                          //       leadController.leadWorkpickedFile.value,
-                          //   aditional:
-                          //       leadController.leadAditionalpickedFile.value,
-                          //   legalRemark: legalRemarkControlelr.text,
-                          //   legalStatus: type == "approve" ? 1 : 2,
-                          // );
+                          await leadController.branchheadManagerApproving(
+                            leadId: widget.leadId,
+                            remark: remarkControlelr.text,
+                            status: type == "approve" ? 1 : 2,
+                            attachment: leadController.leadpickedFile.value,
+                            workAttachment:
+                                leadController.leadWorkpickedFile.value,
+                            aditional:
+                                leadController.leadAditionalpickedFile.value,
+                            legalRemark: legalRemarkControlelr.text,
+                            legalStatus: type == "approve" ? 1 : 2,
+                          );
                         }
                       },
                       child: Container(
@@ -560,7 +572,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
         // leadController.documentUplodedList
         //     .add(leadController.leadpickedFile.value);
         print(
-            'selected file path from device is ${leadController.leadpickedFile.value}');
+            'selected file path from device is ${leadController.leadAditionalpickedFile.value}');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('No file selected.')),
