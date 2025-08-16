@@ -12,6 +12,7 @@ import 'package:task_management/custom_widget/network_image_class.dart';
 import 'package:task_management/custom_widget/task_text_field.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/lead_details_model.dart';
+import 'package:task_management/view/widgets/image_screen.dart';
 
 class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
   final dynamic leadId;
@@ -41,7 +42,10 @@ class _LeadOverviewDocumentListBotomsheet
   @override
   dispose() {
     super.dispose();
+    leadController.documentIdList.clear();
+    leadController.documentTypeListData.clear();
     leadController.isDocumentCheckBoxSelected.clear();
+    leadController.documentUplodedList.clear();
     leadController.leadpickedFile.value = File("");
     leadController.profilePicPath.value = "";
   }
@@ -128,19 +132,31 @@ class _LeadOverviewDocumentListBotomsheet
                                                     0
                                                 ? InkWell(
                                                     onTap: () async {
-                                                      await leadController
-                                                          .documentUploading(
-                                                        documentId:
-                                                            leadController
-                                                                .documentIdList,
-                                                        ducument: leadController
-                                                            .documentUplodedList,
-                                                        leadId: widget.leadId,
-                                                        quotationId:
-                                                            widget.quotationId,
-                                                      );
-
-                                                      // Navigator.pop(context);
+                                                      leadController
+                                                              .documentIdList[
+                                                          index] = leadController
+                                                              .leadDocumentListData[
+                                                                  index]
+                                                              .id ??
+                                                          0;
+                                                      takeDocument2(
+                                                          index: index,
+                                                          documentId: leadController
+                                                                  .leadDocumentListData[
+                                                                      index]
+                                                                  .id ??
+                                                              0);
+                                                      // await leadController
+                                                      //     .documentUploading(
+                                                      //   documentId:
+                                                      //       leadController
+                                                      //           .documentIdList,
+                                                      //   ducument: leadController
+                                                      //       .documentUplodedList,
+                                                      //   leadId: widget.leadId,
+                                                      //   quotationId:
+                                                      //       widget.quotationId,
+                                                      // );
                                                     },
                                                     child: Container(
                                                       width: 40.w,
@@ -199,76 +215,120 @@ class _LeadOverviewDocumentListBotomsheet
                                               ),
                                             ),
                                           ),
-                                          InkWell(
-                                            onTap: () {},
-                                            child: Container(
-                                              width: 40.w,
-                                              height: 40.h,
-                                              child: NetworkImageWidget(
-                                                imageurl: leadController
-                                                    .leadDocumentListData[index]
-                                                    .fileUrl,
-                                                height: 40.h,
-                                                width: 40.w,
-                                              ),
-                                            ),
+                                          Obx(
+                                            () => leadController
+                                                    .documentUplodedList[index]
+                                                    .path
+                                                    .isNotEmpty
+                                                ? InkWell(
+                                                    onTap: () {
+                                                      Get.to(
+                                                        () => ImageScreen(
+                                                          file: leadController
+                                                                  .documentUplodedList[
+                                                              index],
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      height: 40.h,
+                                                      width: 40.w,
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color:
+                                                                lightBorderColor),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8.r)),
+                                                      ),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.r)),
+                                                        child: Image.file(
+                                                          leadController
+                                                                  .documentUplodedList[
+                                                              index],
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : InkWell(
+                                                    onTap: () {},
+                                                    child: Container(
+                                                      width: 40.w,
+                                                      height: 40.h,
+                                                      child: NetworkImageWidget(
+                                                        imageurl: leadController
+                                                            .leadDocumentListData[
+                                                                index]
+                                                            .fileUrl,
+                                                        height: 40.h,
+                                                        width: 40.w,
+                                                      ),
+                                                    ),
+                                                  ),
                                           ),
-                                          if (StorageHelper.getRoleName()
-                                                      .toString()
-                                                      .toLowerCase() ==
-                                                  "marketing manager" ||
-                                              StorageHelper.getRoleName()
-                                                      .toString()
-                                                      .toLowerCase() ==
-                                                  "branch head" ||
-                                              StorageHelper.getRoleName()
-                                                      .toString()
-                                                      .toLowerCase() ==
-                                                  "pa")
-                                            Obx(
-                                              () => Checkbox(
-                                                value: leadController
-                                                        .isDocumentCheckBoxSelected[
-                                                    index],
-                                                onChanged: (value) async {
-                                                  print(
-                                                      'iuy83 38e78e ${leadController.leadDocumentListData[index].status}');
-                                                  if (StorageHelper
-                                                                  .getRoleName()
-                                                              .toString()
-                                                              .toLowerCase() ==
-                                                          "marketing manager" &&
-                                                      leadController
-                                                              .leadDetails
-                                                              .value
-                                                              ?.approvalData
-                                                              ?.first
-                                                              .managerStatus
-                                                              .toString()
-                                                              .toLowerCase() ==
-                                                          'pending') {
-                                                    await leadController
-                                                        .approveDocument(
-                                                      documentId: leadController
-                                                          .leadDocumentListData[
-                                                              index]
-                                                          .id,
-                                                      leadId: widget.leadId,
-                                                      status: leadController
-                                                                  .leadDocumentListData[
-                                                                      index]
-                                                                  .status ==
-                                                              0
-                                                          ? 1
-                                                          : 0,
-                                                    );
-                                                    leadController
-                                                            .isDocumentCheckBoxSelected[
-                                                        index] = value!;
-                                                  }
-                                                },
-                                              ),
-                                            )
+                                          // if (StorageHelper.getRoleName()
+                                          //             .toString()
+                                          //             .toLowerCase() ==
+                                          //         "marketing manager" ||
+                                          //     StorageHelper.getRoleName()
+                                          //             .toString()
+                                          //             .toLowerCase() ==
+                                          //         "branch head" ||
+                                          //     StorageHelper.getRoleName()
+                                          //             .toString()
+                                          //             .toLowerCase() ==
+                                          //         "pa")
+                                          Obx(
+                                            () => Checkbox(
+                                              value: leadController
+                                                      .isDocumentCheckBoxSelected[
+                                                  index],
+                                              onChanged: (value) async {
+                                                if (StorageHelper.getRoleName()
+                                                                .toString()
+                                                                .toLowerCase() ==
+                                                            "marketing manager" &&
+                                                        leadController
+                                                                .leadDetails
+                                                                .value
+                                                                ?.approvalData
+                                                                ?.first
+                                                                .managerStatus
+                                                                .toString()
+                                                                .toLowerCase() ==
+                                                            'pending' ||
+                                                    StorageHelper.getRoleName()
+                                                            .toString()
+                                                            .toLowerCase() ==
+                                                        "branch head") {
+                                                  await leadController
+                                                      .approveDocument(
+                                                    documentId: leadController
+                                                        .leadDocumentListData[
+                                                            index]
+                                                        .id,
+                                                    leadId: widget.leadId,
+                                                    status: leadController
+                                                                .leadDocumentListData[
+                                                                    index]
+                                                                .status ==
+                                                            0
+                                                        ? 1
+                                                        : 0,
+                                                  );
+                                                  leadController
+                                                          .isDocumentCheckBoxSelected[
+                                                      index] = value!;
+                                                }
+                                              },
+                                            ),
+                                          )
                                         ],
                                       ),
                                       Divider(
@@ -387,6 +447,45 @@ class _LeadOverviewDocumentListBotomsheet
         ),
       ),
     );
+  }
+
+  Future<void> takeDocument2({required int index, int? documentId}) async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.any,
+        allowMultiple: false,
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        String? filePath = result.files.single.path;
+
+        if (filePath == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: File path is null')),
+          );
+          return;
+        }
+
+        final File file = File(filePath);
+        leadController.documentUplodedList[index] = file;
+        leadController.documentUplodedList.refresh();
+        await leadController.documentUploading(
+          documentId: leadController.documentIdList,
+          ducument: leadController.documentUplodedList,
+          leadId: widget.leadId,
+          quotationId: widget.quotationId,
+        );
+        print('File selected for index $index: ${file.path}');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No file selected.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error uploading file: $e')),
+      );
+    }
   }
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();

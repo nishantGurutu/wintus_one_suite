@@ -37,6 +37,8 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
   @override
   dispose() {
     super.dispose();
+    leadController.documentIdList.clear();
+    leadController.documentTypeListData.clear();
     leadController.leadpickedFile.value = File("");
     leadController.documentUplodedList.clear();
     leadController.documentUplodedList.clear();

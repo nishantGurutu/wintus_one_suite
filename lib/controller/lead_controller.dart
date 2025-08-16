@@ -988,8 +988,13 @@ class LeadController extends GetxController {
         leadDocumentListData.assignAll(result.data!);
         isDocumentListLoading.value = false;
         isDocumentListLoading.refresh();
+// leadController.documentUplodedList
+        documentUplodedList
+            .addAll(List.filled(leadDocumentListData.length, File('')));
+        documentIdList.addAll(List.filled(leadDocumentListData.length, 0));
         isDocumentCheckBoxSelected
             .addAll(List.filled(leadDocumentListData.length, false));
+        documentIdList.addAll(List.filled(leadDocumentListData.length, 0));
         for (int i = 0; i < leadDocumentListData.length; i++) {
           if (leadDocumentListData[i].status == 1) {
             isDocumentCheckBoxSelected[i] = true;
