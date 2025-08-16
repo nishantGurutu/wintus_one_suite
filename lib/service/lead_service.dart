@@ -563,7 +563,7 @@ class LeadService {
     }
   }
 
-  Future<LeadStatusListModel?> deleteLeadApi() async {
+  Future<LeadStatusListModel?> deleteLeadApi(leadId) async {
     try {
       final token = StorageHelper.getToken();
       print("Token used: $token");
@@ -577,7 +577,7 @@ class LeadService {
       ));
 
       final response = await _dio.delete(
-        ApiConstant.baseUrl + ApiConstant.delete_lead,
+        "${ApiConstant.baseUrl + ApiConstant.delete_lead}/$leadId",
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

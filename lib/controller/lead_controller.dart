@@ -583,11 +583,12 @@ class LeadController extends GetxController {
   }
 
   var isStatusListDeleting = false.obs;
-  Future<void> deleteLeadApi() async {
+  Future<void> deleteLeadApi({required leadId}) async {
     isStatusListDeleting.value = true;
-    final result = await LeadService().statusListApi();
+    final result = await LeadService().deleteLeadApi(leadId);
     if (result != null) {
-      leadStatusData.assignAll(result.data!);
+      await leadsList(
+          selectedLeadStatusData.value?.id, selectedLeadType.value, '');
     } else {}
     isStatusListDeleting.value = false;
   }

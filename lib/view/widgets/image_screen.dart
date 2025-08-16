@@ -135,7 +135,23 @@ class NetworkImageScreen extends StatelessWidget {
       ),
       body: Container(
         color: backgroundColor,
-        child: Center(child: Image.network(file.toString())),
+        child: Center(
+            child: Image.network(
+          file.toString(),
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              child: Center(
+                child: Text(
+                  'No Document available',
+                  style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      color: textColor),
+                ),
+              ),
+            );
+          },
+        )),
       ),
     );
   }

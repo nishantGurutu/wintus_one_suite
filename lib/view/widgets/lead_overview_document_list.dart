@@ -145,8 +145,6 @@ class _LeadOverviewDocumentListBotomsheet
                                                   );
                                                 },
                                               );
-
-                                              // Start download
                                               await DownloadFile()
                                                   .saveToDownloads(
                                                 leadController
@@ -257,13 +255,14 @@ class _LeadOverviewDocumentListBotomsheet
                                   "branch head" &&
                               widget.status?.first.branchheadStatus
                                       .toString()
-                                      .toLowerCase() ==
-                                  'pending') ||
-                          (StorageHelper.getRoleName()
-                                      .toString()
-                                      .toLowerCase() ==
-                                  "pa" &&
-                              widget.status?.first.legalStatus == 0))
+                                      .toLowerCase() !=
+                                  'approve'))
+                        //         ||
+                        // (StorageHelper.getRoleName()
+                        //             .toString()
+                        //             .toLowerCase() ==
+                        //         "pa" &&
+                        //     widget.status?.first.legalStatus == 0))
                         Column(
                           children: [
                             SizedBox(

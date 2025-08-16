@@ -636,21 +636,19 @@ class _LeadListState extends State<LeadList> {
                                       itemBuilder: (context) {
                                         return [
                                           PopupMenuItem(
-                                            onTap: () {
-                                              Get.to(() => UpdateLeads(
-                                                  leadListData: leadController
-                                                      .leadsListData[index]));
+                                            onTap: () async {
+                                              if (leadController
+                                                      .isStatusListDeleting
+                                                      .value ==
+                                                  false) {
+                                                await leadController
+                                                    .deleteLeadApi(
+                                                        leadId: leadController
+                                                            .leadsListData[
+                                                                index]
+                                                            .id);
+                                              }
                                             },
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.edit),
-                                                SizedBox(width: 3.w),
-                                                Text(edit),
-                                              ],
-                                            ),
-                                          ),
-                                          PopupMenuItem(
-                                            onTap: () {},
                                             child: Row(
                                               children: [
                                                 Icon(Icons.delete),

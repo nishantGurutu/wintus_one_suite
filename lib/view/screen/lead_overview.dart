@@ -695,7 +695,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                   ),
                                                   Expanded(
                                                     child: Text(
-                                                      'Concern Raised : "Quotation amount missing"',
+                                                      'Concern Raised : "${leadDatavalue?.approvalData?[i].managerRemarks}"',
                                                       style: TextStyle(
                                                           color: leadDatavalue
                                                                       ?.approvalData?[
@@ -994,11 +994,11 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                           : Center(
                                                               child: InkWell(
                                                                 onTap: () {
-                                                                  launchUrl(Uri.parse(leadDatavalue
-                                                                          ?.approvalData
-                                                                          ?.first
-                                                                          .branchheadAgreement ??
-                                                                      ""));
+                                                                  // launchUrl(Uri.parse(leadDatavalue
+                                                                  //         ?.approvalData
+                                                                  //         ?.first
+                                                                  //         .branchheadAgreement ??
+                                                                  //     ""));
                                                                 },
                                                                 child: Column(
                                                                   mainAxisAlignment:
@@ -1014,7 +1014,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                         height:
                                                                             5),
                                                                     Text(
-                                                                      'View File',
+                                                                      'No File',
                                                                       style: TextStyle(
                                                                           fontSize:
                                                                               12.sp),
@@ -1028,6 +1028,25 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                               Text('No File')),
                                                 ),
                                               ),
+                                              if (StorageHelper.getRoleName()
+                                                      .toString()
+                                                      .toLowerCase() ==
+                                                  "pa")
+                                                Column(
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 5.h,
+                                                    ),
+                                                    Text(
+                                                      "Click on attachment & Approve",
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: textColor),
+                                                    ),
+                                                  ],
+                                                ),
                                             ],
                                           ),
                                       ],
