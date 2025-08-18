@@ -1487,7 +1487,7 @@ class _LeadListState extends State<LeadList> {
                                                               .selectedStatusPerLeadforDocumentLead[
                                                           index])
                                                   ? leadController
-                                                          .selectedStatusPerLead[
+                                                          .selectedStatusPerLeadforDocumentLead[
                                                       index]
                                                   : null,
                                               onChanged:
@@ -1511,28 +1511,28 @@ class _LeadListState extends State<LeadList> {
                                                       BorderRadius.circular(
                                                           5.r),
                                                   color: leadController
-                                                              .selectedStatusPerLead[
+                                                              .selectedStatusPerLeadforDocumentLead[
                                                                   index]
                                                               .name
                                                               ?.toLowerCase() ==
                                                           "new lead"
                                                       ? Colors.blue
                                                       : leadController
-                                                                  .selectedStatusPerLead[
+                                                                  .selectedStatusPerLeadforDocumentLead[
                                                                       index]
                                                                   .name
                                                                   ?.toLowerCase() ==
                                                               "pl"
                                                           ? Colors.yellow
                                                           : leadController
-                                                                      .selectedStatusPerLead[
+                                                                      .selectedStatusPerLeadforDocumentLead[
                                                                           index]
                                                                       .name
                                                                       ?.toLowerCase() ==
                                                                   "spl"
                                                               ? Colors.purple
                                                               : leadController
-                                                                          .selectedStatusPerLead[
+                                                                          .selectedStatusPerLeadforDocumentLead[
                                                                               index]
                                                                           .name
                                                                           ?.toLowerCase() ==
@@ -1540,14 +1540,14 @@ class _LeadListState extends State<LeadList> {
                                                                   ? Colors
                                                                       .orange
                                                                   : leadController
-                                                                              .selectedStatusPerLead[
+                                                                              .selectedStatusPerLeadforDocumentLead[
                                                                                   index]
                                                                               .name
                                                                               ?.toLowerCase() ==
                                                                           "won"
                                                                       ? Colors
                                                                           .green
-                                                                      : leadController.selectedStatusPerLead[index].name?.toLowerCase() ==
+                                                                      : leadController.selectedStatusPerLeadforDocumentLead[index].name?.toLowerCase() ==
                                                                               "lost"
                                                                           ? Colors
                                                                               .red
