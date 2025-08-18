@@ -1049,20 +1049,27 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                               ),
                                               GestureDetector(
                                                 onTap: () {
-                                                  if (!(leadDatavalue
+                                                  if ((leadDatavalue
                                                               ?.approvalData
                                                               ?.first
                                                               .branchheadAgreement ??
                                                           "")
                                                       .toString()
                                                       .contains('https')) {
-                                                    Get.to(() => WorkOrderDocumentApprove(
-                                                        documentUrl: leadDatavalue
-                                                                ?.approvalData
-                                                                ?.first
-                                                                .branchheadAgreement ??
-                                                            '',
-                                                        leadId: widget.leadId));
+                                                    Get.to(() =>
+                                                        WorkOrderDocumentApprove(
+                                                          documentUrl: leadDatavalue
+                                                                  ?.approvalData
+                                                                  ?.first
+                                                                  .branchheadAgreement ??
+                                                              '',
+                                                          leadId: widget.leadId,
+                                                          legalStatus:
+                                                              leadDatavalue
+                                                                  ?.approvalData?[
+                                                                      i]
+                                                                  .legalStatus,
+                                                        ));
                                                   }
                                                 },
                                                 child: Container(
@@ -1339,10 +1346,22 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                               Expanded(
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    OpenFileClass().openUrl(
-                                                        leadDatavalue
-                                                            ?.approvalData?[i]
-                                                            .legalWorkorder);
+                                                    // OpenFileClass().openUrl(
+                                                    //     leadDatavalue
+                                                    //         ?.approvalData?[i]
+                                                    //         .legalWorkorder);
+                                                    Get.to(() =>
+                                                        WorkOrderDocumentApprove(
+                                                          documentUrl: leadDatavalue
+                                                              ?.approvalData?[i]
+                                                              .legalWorkorder,
+                                                          leadId: widget.leadId,
+                                                          legalStatus:
+                                                              leadDatavalue
+                                                                  ?.approvalData?[
+                                                                      i]
+                                                                  .legalStatus,
+                                                        ));
                                                   },
                                                   child: Container(
                                                     height: 80.h,
@@ -1546,13 +1565,296 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                 ),
                               ),
                             ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
+                          // SizedBox(
+                          //   height: 10.h,
+                          // ),
                         ],
                       ),
                     ),
                   ),
+                  if (leadDatavalue?.approvalData?[i].ceoStatus.toString() ==
+                          "1" ||
+                      leadDatavalue?.approvalData?[i].ceoStatus.toString() ==
+                          "2")
+                    Container(
+                      decoration: BoxDecoration(
+                        color: leadDatavalue?.approvalData?[i].ceoStatus == 1
+                            ? Color(0xffF5F7FF)
+                            : Color(0xffFFEEEE),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.r),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(8.sp),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                text: "CEO",
+                                style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text:
+                                        '  ${leadDatavalue?.approvalData?[i].ceoName ?? ""}',
+                                    style: TextStyle(
+                                        color: textColor,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w400),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 4.h,
+                            ),
+                            if (leadDatavalue?.approvalData?[i].ceoStatus == 1)
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/image/svg/done_all (2).svg',
+                                    height: 20.h,
+                                  ),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  Text(
+                                    'Approved',
+                                    style: TextStyle(
+                                        color: Color(0xff01A901),
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
+                            if (leadDatavalue?.approvalData?[i].ceoStatus == 2)
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/image/svg/sd_card_alert.svg',
+                                    height: 14.h,
+                                  ),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Concern Raised : "${leadDatavalue?.approvalData?[i].ceoRemarks ?? ""}"',
+                                      style: TextStyle(
+                                          color: Color(0xffFF2929),
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            SizedBox(
+                              height: 4.h,
+                            ),
+                            Text(
+                              '${leadDatavalue?.approvalData?[i].ceoRemarksTime ?? ""}',
+                              style: TextStyle(
+                                  color: Color(0xff747474),
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            SizedBox(
+                              height: 4.h,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Remark : ${leadDatavalue?.approvalData?[i].ceoRemarks ?? ""}',
+                                  style: TextStyle(
+                                      color: Color(0xff747474),
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    isCeoViewSelected.value =
+                                        !isCeoViewSelected.value;
+                                  },
+                                  child: Container(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 6.w, vertical: 5.h),
+                                      child: Text(
+                                        'View',
+                                        style: TextStyle(
+                                            color: Color(0xff1B2A64),
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (isCeoViewSelected.value == true)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Attachment',
+                                    style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(child: Text('Workorder')),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Expanded(child: Text('')),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Expanded(child: Text(''))
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            // OpenFileClass().openUrl(
+                                            //     leadDatavalue
+                                            //         ?.approvalData?[i]
+                                            //         .legalWorkorder);
+                                            Get.to(
+                                                () => WorkOrderDocumentApprove(
+                                                      documentUrl: leadDatavalue
+                                                          ?.approvalData?[i]
+                                                          .ceoAttachment,
+                                                      leadId: widget.leadId,
+                                                      legalStatus: leadDatavalue
+                                                          ?.approvalData?[i]
+                                                          .ceoStatus,
+                                                    ));
+                                          },
+                                          child: Container(
+                                            height: 80.h,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: lightBorderColor,
+                                              ),
+                                            ),
+                                            child: (leadDatavalue
+                                                        ?.approvalData?[i]
+                                                        .ceoAttachment !=
+                                                    null)
+                                                ? ((leadDatavalue?.approvalData?[i].ceoAttachment ?? "")
+                                                            .toLowerCase()
+                                                            .endsWith('.png') ||
+                                                        (leadDatavalue?.approvalData?[i].ceoAttachment ?? "")
+                                                            .toLowerCase()
+                                                            .endsWith('.jpg') ||
+                                                        (leadDatavalue?.approvalData![i].ceoAttachment ?? "" ?? '')
+                                                            .toString()
+                                                            .toLowerCase()
+                                                            .endsWith('.jpeg'))
+                                                    ? Image.network(
+                                                        leadDatavalue
+                                                                ?.approvalData?[
+                                                                    i]
+                                                                .ceoAttachment ??
+                                                            "",
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : (leadDatavalue?.approvalData![i].ceoAttachment ?? "" ?? '')
+                                                            .toString()
+                                                            .toLowerCase()
+                                                            .endsWith('pdf')
+                                                        ? Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    vertical:
+                                                                        5.h),
+                                                            child: Image.asset(
+                                                                'assets/image/png/pdf.png'),
+                                                          )
+                                                        : (leadDatavalue?.approvalData![i].ceoAttachment ?? "" ?? '')
+                                                                .toString()
+                                                                .toLowerCase()
+                                                                .endsWith(
+                                                                    'docx')
+                                                            ? Padding(
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        vertical:
+                                                                            5.h),
+                                                                child: Image.asset(
+                                                                    'assets/image/png/docs.jpeg'),
+                                                              )
+                                                            : (leadDatavalue?.approvalData![i].ceoAttachment ??
+                                                                        "" ??
+                                                                        '')
+                                                                    .toString()
+                                                                    .toLowerCase()
+                                                                    .endsWith('.jpeg')
+                                                                ? Image.asset('assets/image/png/pdf.png')
+                                                                : Center(
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Icon(
+                                                                            Icons
+                                                                                .insert_drive_file,
+                                                                            size:
+                                                                                30.sp),
+                                                                        SizedBox(
+                                                                            height:
+                                                                                5.h),
+                                                                        Text(
+                                                                          'No File',
+                                                                          style:
+                                                                              TextStyle(fontSize: 12.sp),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                : Center(
+                                                    child: Text('No File'),
+                                                  ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Expanded(
+                                        child: Container(),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Expanded(
+                                        child: Container(),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             SizedBox(height: 10.h),
@@ -1564,6 +1866,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
 
   RxBool isBranchHeadViewSelected = false.obs;
   RxBool isItViewSelected = false.obs;
+  RxBool isCeoViewSelected = false.obs;
 
   Widget leadInfo(LeadDetailsData? leadDataValue) {
     return Column(

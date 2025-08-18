@@ -11,8 +11,12 @@ import 'package:task_management/helper/storage_helper.dart';
 class WorkOrderDocumentApprove extends StatefulWidget {
   final dynamic documentUrl;
   final dynamic leadId;
+  final dynamic legalStatus;
   const WorkOrderDocumentApprove(
-      {super.key, required this.documentUrl, required this.leadId});
+      {super.key,
+      required this.documentUrl,
+      required this.leadId,
+      required this.legalStatus});
 
   @override
   State<WorkOrderDocumentApprove> createState() =>
@@ -45,6 +49,20 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
         ),
         backgroundColor: backgroundColor,
         elevation: 0,
+        actions: [
+          if (widget.legalStatus == 2 &&
+              StorageHelper.getRoleName().toString().toLowerCase() ==
+                  "branch head")
+            GestureDetector(
+              onTap: () {
+                documentApprovedDialog(context, "approve");
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                child: Icon(Icons.edit),
+              ),
+            )
+        ],
       ),
       backgroundColor: whiteColor,
       body: SafeArea(
@@ -66,21 +84,44 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
               SizedBox(
                 height: 10.h,
               ),
-              // CustomButton(
-              //   onPressed: () {
-              //     documentApprovedDialog(context, "approve");
-              //   },
-              //   text: Text(
-              //     'Approve',
-              //     style: TextStyle(
-              //         fontSize: 14.sp,
-              //         fontWeight: FontWeight.w500,
-              //         color: whiteColor),
+              // if (widget.legalStatus == 2)
+              //   GestureDetector(
+              //     onTap: () {
+              //       // if (!leadController.isDocumentCheckBoxSelected
+              //       //     .contains(false)) {
+              //       documentApprovedDialog(context, "approve");
+              //       // } else {
+              //       //   CustomToast()
+              //       //       .showCustomToast("All document not approved.");
+              //       // }
+              //     },
+              //     child: Container(
+              //       height: 40.h,
+              //       width: 150.w,
+              //       decoration: BoxDecoration(
+              //         color: !leadController.isDocumentCheckBoxSelected
+              //                 .contains(false)
+              //             ? primaryButtonColor
+              //             : lightGreyColor,
+              //         borderRadius: BorderRadius.all(
+              //           Radius.circular(8.r),
+              //         ),
+              //       ),
+              //       child: Center(
+              //         child: Text(
+              //           'Approve',
+              //           style: TextStyle(
+              //               fontSize: 13.sp,
+              //               fontWeight: FontWeight.w500,
+              //               color: whiteColor),
+              //         ),
+              //       ),
+              //     ),
               //   ),
-              //   width: double.infinity,
-              //   color: primaryButtonColor,
-              // ),
-              if (StorageHelper.getRoleName().toString().toLowerCase() == "pa")
+              if (StorageHelper.getRoleName().toString().toLowerCase() ==
+                      "pa" ||
+                  StorageHelper.getRoleName().toString().toLowerCase() ==
+                      "chairman")
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -205,7 +246,9 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                       ],
                     ),
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                        "branch head")
+                            "branch head" ||
+                        StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "chairman")
                       Column(
                         children: [
                           SizedBox(
@@ -496,6 +539,16 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                                 .toString()
                                 .toLowerCase() ==
                             "marketing manager") {
+                        } else if (StorageHelper.getRoleName()
+                                .toString()
+                                .toLowerCase() ==
+                            "chairman") {
+                          await leadController.ceoApproving(
+                            leadId: widget.leadId,
+                            remark: remarkControlelr.text,
+                            status: type == "approve" ? 1 : 2,
+                            attachment: leadController.leadpickedFile.value,
+                          );
                         } else {
                           await leadController.branchheadManagerApproving(
                             leadId: widget.leadId,

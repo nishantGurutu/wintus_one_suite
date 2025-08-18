@@ -239,6 +239,7 @@ class ApiConstant {
       "manager-approve-lead-document";
   static const String branchhead_approve_lead_document =
       "branchhead-approve-lead-document";
+  static const String ceo_approve_lead_document = "ceo-approve-lead-document";
   static const String download_employee_report = "download-employee-report";
   static const String change_lead_followup_status =
       "change-lead-followup-status";

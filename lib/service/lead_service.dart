@@ -2014,6 +2014,64 @@ class LeadService {
     }
   }
 
+  Future<bool> ceoApproving(
+      leadId, String remark, int status, File attachment) async {
+    try {
+      final token = StorageHelper.getToken();
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.options.contentType = 'multipart/form-data';
+
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+      print('uyd8uw83 e387 ${remark}');
+      print('uyd8uw83 e387 ${status}');
+      print('uyd8uw83 e387 ${attachment}');
+
+      final Map<String, dynamic> formDataMap = {
+        'lead_id': leadId,
+        'status': status,
+        'ceo_remarks': remark,
+      };
+
+      if (attachment.path.isNotEmpty) {
+        final fileName = attachment.path.split('/').last;
+        formDataMap['attachment'] = await MultipartFile.fromFile(
+          attachment.path,
+          filename: fileName,
+        );
+      }
+
+      print("euh8 398ue93 e983ue93 ${leadId}");
+      print("euh8 398ue93 e983ue93 ${remark}");
+      print("euh8 398ue93 e983ue93 ${formDataMap}");
+
+      final formData = FormData.fromMap(formDataMap);
+
+      final response = await _dio.post(
+        ApiConstant.baseUrl + ApiConstant.ceo_approve_lead_document,
+        data: formData,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        CustomToast().showCustomToast(response.data['message']);
+        return true;
+      } else {
+        print("Error: ${response.data}");
+        CustomToast().showCustomToast("Failed to add lead");
+        return false;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return false;
+    }
+  }
+
   Future<bool> storeLeadRemark(String remark, quotationId) async {
     try {
       final token = StorageHelper.getToken();

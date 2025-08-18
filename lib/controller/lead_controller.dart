@@ -1541,6 +1541,24 @@ class LeadController extends GetxController {
     isBranchHeadManagerApproving.value = false;
   }
 
+  var isCeoApproving = false.obs;
+  Future<void> ceoApproving(
+      {required leadId,
+      required String remark,
+      required int status,
+      required File attachment}) async {
+    isBranchHeadManagerApproving.value = true;
+    final result =
+        await LeadService().ceoApproving(leadId, remark, status, attachment);
+    if (result != null) {
+      await leadDetailsApi(leadId: leadId);
+      Get.back();
+      Get.back();
+      // await followUpsListApi(leadId: leadId);
+    } else {}
+    isBranchHeadManagerApproving.value = false;
+  }
+
   var isCmoApproving = false.obs;
   Future<void> cmoApproving(
       {required leadId,

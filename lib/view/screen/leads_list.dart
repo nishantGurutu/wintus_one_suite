@@ -205,7 +205,11 @@ class _LeadListState extends State<LeadList> {
                             StorageHelper.getRoleName()
                                     .toString()
                                     .toLowerCase() ==
-                                "pa")
+                                "pa" ||
+                            StorageHelper.getRoleName()
+                                    .toString()
+                                    .toLowerCase() ==
+                                "chairman")
                           Column(
                             children: [
                               SizedBox(
