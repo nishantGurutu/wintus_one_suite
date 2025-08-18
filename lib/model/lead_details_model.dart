@@ -225,9 +225,9 @@ class LeadDetailsData {
 }
 
 class AssignedToUsers {
-  dynamic id;
-  dynamic name;
-  dynamic image;
+  int? id;
+  String? name;
+  String? image;
 
   AssignedToUsers({this.id, this.name, this.image});
 
@@ -248,7 +248,10 @@ class AssignedToUsers {
 
 class ApprovalData {
   dynamic id;
+  dynamic quotationId;
   dynamic managerStatus;
+  dynamic isManagerStatus;
+  dynamic isBranchheadStatus;
   dynamic managerRemarks;
   dynamic managerName;
   dynamic managerTime;
@@ -258,16 +261,24 @@ class ApprovalData {
   dynamic branchheadAgreement;
   dynamic branchheadName;
   dynamic legalName;
+  dynamic ceoName;
   dynamic legalStatus;
   dynamic legalRemarks;
+  dynamic ceoRemarks;
+  dynamic ceoRemarksTime;
+  dynamic ceoStatus;
   dynamic legalWorkorder;
   dynamic legalAdditionalAttachment;
+  dynamic ceoAttachment;
   dynamic legalTime;
   dynamic submittedAt;
 
   ApprovalData(
       {this.id,
+      this.quotationId,
       this.managerStatus,
+      this.isManagerStatus,
+      this.isBranchheadStatus,
       this.managerRemarks,
       this.managerName,
       this.managerTime,
@@ -277,16 +288,24 @@ class ApprovalData {
       this.branchheadAgreement,
       this.branchheadName,
       this.legalName,
+      this.ceoName,
       this.legalStatus,
       this.legalRemarks,
+      this.ceoRemarks,
+      this.ceoRemarksTime,
+      this.ceoStatus,
       this.legalWorkorder,
       this.legalAdditionalAttachment,
+      this.ceoAttachment,
       this.legalTime,
       this.submittedAt});
 
   ApprovalData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    quotationId = json['quotation_id'];
     managerStatus = json['manager_status'];
+    isManagerStatus = json['is_manager_status'];
+    isBranchheadStatus = json['is_branchhead_status'];
     managerRemarks = json['manager_remarks'];
     managerName = json['manager_name'];
     managerTime = json['manager_time'];
@@ -296,10 +315,15 @@ class ApprovalData {
     branchheadAgreement = json['branchhead_agreement'];
     branchheadName = json['branchhead_name'];
     legalName = json['legal_name'];
+    ceoName = json['ceo_name'];
     legalStatus = json['legal_status'];
     legalRemarks = json['legal_remarks'];
+    ceoRemarks = json['ceo_remarks'];
+    ceoRemarksTime = json['ceo_remarks_time'];
+    ceoStatus = json['ceo_status'];
     legalWorkorder = json['legal_workorder'];
     legalAdditionalAttachment = json['legal_additional_attachment'];
+    ceoAttachment = json['ceo_attachment'];
     legalTime = json['legal_time'];
     submittedAt = json['submitted_at'];
   }
@@ -307,7 +331,10 @@ class ApprovalData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['quotation_id'] = this.quotationId;
     data['manager_status'] = this.managerStatus;
+    data['is_manager_status'] = this.isManagerStatus;
+    data['is_branchhead_status'] = this.isBranchheadStatus;
     data['manager_remarks'] = this.managerRemarks;
     data['manager_name'] = this.managerName;
     data['manager_time'] = this.managerTime;
@@ -317,10 +344,15 @@ class ApprovalData {
     data['branchhead_agreement'] = this.branchheadAgreement;
     data['branchhead_name'] = this.branchheadName;
     data['legal_name'] = this.legalName;
+    data['ceo_name'] = this.ceoName;
     data['legal_status'] = this.legalStatus;
     data['legal_remarks'] = this.legalRemarks;
+    data['ceo_remarks'] = this.ceoRemarks;
+    data['ceo_remarks_time'] = this.ceoRemarksTime;
+    data['ceo_status'] = this.ceoStatus;
     data['legal_workorder'] = this.legalWorkorder;
     data['legal_additional_attachment'] = this.legalAdditionalAttachment;
+    data['ceo_attachment'] = this.ceoAttachment;
     data['legal_time'] = this.legalTime;
     data['submitted_at'] = this.submittedAt;
     return data;

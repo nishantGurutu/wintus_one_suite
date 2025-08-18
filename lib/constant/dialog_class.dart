@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/image_constant.dart';
+import 'package:task_management/constant/text_constant.dart';
+import 'package:task_management/controller/lead_controller.dart';
+import 'package:task_management/custom_widget/button_widget.dart';
+import 'package:task_management/custom_widget/task_text_field.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/lead_contact_list_model.dart';
 import 'package:task_management/view/screen/leads_list.dart';
@@ -133,6 +136,114 @@ class ShowDialogFunction {
               Positioned(
                 top: 8.h,
                 right: 10.w,
+                child: InkWell(
+                  onTap: () async {
+                    await StorageHelper.setDailyMessage(false);
+                    Get.back();
+                  },
+                  child: Icon(
+                    Icons.close,
+                    size: 30,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  final LeadController leadController = Get.put(LeadController());
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  ValueNotifier<int?> focusedIndexNotifier = ValueNotifier<int?>(null);
+  final TextEditingController remarkController = TextEditingController();
+  Future<void> storeLeadRemark(BuildContext context, quotationId) async {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext builderContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.9,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: whiteColor,
+                ),
+                padding: EdgeInsets.all(16.w),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 11.h,
+                        ),
+                        TaskCustomTextField(
+                          controller: remarkController,
+                          textCapitalization: TextCapitalization.sentences,
+                          data: remark,
+                          hintText: remark,
+                          labelText: remark,
+                          index: 8,
+                          focusedIndexNotifier: focusedIndexNotifier,
+                        ),
+                        SizedBox(
+                          height: 7.h,
+                        ),
+                        CustomButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              await leadController.storeLeadRemark(
+                                  remark: remarkController.text,
+                                  quotationId: quotationId);
+                            }
+                          },
+                          text:
+                              // Row(
+                              //         mainAxisAlignment: MainAxisAlignment.center,
+                              //         children: [
+                              //           CircularProgressIndicator(
+                              //             color: whiteColor,
+                              //           ),
+                              //           SizedBox(width: 5.w),
+                              //           Text(
+                              //             'Loading...',
+                              //             style: TextStyle(
+                              //                 fontSize: 14.sp,
+                              //                 fontWeight: FontWeight.w400,
+                              //                 color: whiteColor),
+                              //           )
+                              //         ],
+                              //       )
+                              Text(
+                            submit,
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          width: double.infinity,
+                          color: primaryColor,
+                          height: 45.h,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 4.h,
+                right: 6.w,
                 child: InkWell(
                   onTap: () async {
                     await StorageHelper.setDailyMessage(false);

@@ -21,6 +21,7 @@ import 'package:task_management/model/get_list_modules.dart';
 import 'package:task_management/model/lead_contact_list_model.dart';
 import 'package:task_management/model/lead_details_model.dart';
 import 'package:task_management/model/lead_discussion_list.dart';
+import 'package:task_management/model/lead_document_remark_model.dart';
 import 'package:task_management/model/lead_list_model.dart';
 import 'package:task_management/model/lead_status_lead.dart';
 import 'package:task_management/model/lead_visit_list_model.dart';
@@ -441,6 +442,8 @@ class LeadController extends GetxController {
     }
   }
 
+  RxList<LeadStatusData> selectedStatusPerLeadforDocumentLead =
+      <LeadStatusData>[].obs;
   RxList<AddedDocumentLeadData> addedDocumentLeadDataList =
       <AddedDocumentLeadData>[].obs;
   var isAddedDocumentLeadLoading = false.obs;
@@ -453,6 +456,9 @@ class LeadController extends GetxController {
         isAddedDocumentLeadLoading.value = false;
         isAddedDocumentLeadLoading.refresh();
         addedDocumentLeadDataList.assignAll(result.data!);
+        // selectedStatusPerLeadforDocumentLead.addAll(addedDocumentLeadDataList.length )
+        selectedStatusPerLeadforDocumentLead.addAll(List<LeadStatusData>.filled(
+            addedDocumentLeadDataList.length, LeadStatusData()));
       }
     } catch (e) {
       debugPrint("Error fetching leads: $e");
@@ -915,6 +921,21 @@ class LeadController extends GetxController {
     isDocumentUploading.value = false;
   }
 
+  Rx<File> pickedFile2 = File('').obs;
+  var isLeadDocumentUpdating = false.obs;
+  Future<void> leadDocumentUpdating(
+      {int? documentId, required File ducument, required leadId}) async {
+    isDocumentUploading.value = true;
+    final result =
+        await LeadService().leadDocumentUploading(documentId, ducument);
+    if (result != null) {
+      await leadDocumentList(leadId: leadId, from: '');
+      Get.back();
+      selectedLeadStatusUpdateData.value = null;
+    } else {}
+    isDocumentUploading.value = false;
+  }
+
   var isSingleDocumentUploading = false.obs;
   Future<void> approveDocument(
       {int? documentId, required leadId, required int status}) async {
@@ -988,7 +1009,6 @@ class LeadController extends GetxController {
         leadDocumentListData.assignAll(result.data!);
         isDocumentListLoading.value = false;
         isDocumentListLoading.refresh();
-// leadController.documentUplodedList
         documentUplodedList
             .addAll(List.filled(leadDocumentListData.length, File('')));
         documentIdList.addAll(List.filled(leadDocumentListData.length, 0));
@@ -1547,6 +1567,35 @@ class LeadController extends GetxController {
       isCmoApproving.refresh();
     } else {}
     isCmoApproving.value = false;
+  }
+
+  var isLeadremarkStoring = false.obs;
+  Future<void> storeLeadRemark(
+      {required String remark, required quotationId}) async {
+    isLeadremarkStoring.value = true;
+    final result = await LeadService().storeLeadRemark(remark, quotationId);
+    if (result != null) {
+      Get.back();
+      isLeadremarkStoring.value = false;
+      isCmoApproving.refresh();
+    } else {}
+    isLeadremarkStoring.value = false;
+  }
+
+  var isLeadremarkLoading = false.obs;
+  RxList<RemarkData> remarkListData = <RemarkData>[].obs;
+  Future<void> storeLeadRemarkLoading({required id}) async {
+    isLeadremarkLoading.value = true;
+    final result = await LeadService().storeLeadRemarkLoading(id);
+    if (result != null) {
+      isLeadremarkLoading.value = false;
+
+      remarkListData.assignAll(result.data!);
+      print('iuweyiurwyei iuy87${remarkListData.length}');
+      isLeadremarkLoading.refresh();
+      remarkListData.refresh();
+    } else {}
+    isLeadremarkLoading.value = false;
   }
 
   RxList<String> timeList = <String>[

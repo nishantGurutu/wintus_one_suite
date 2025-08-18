@@ -22,6 +22,7 @@ import 'package:task_management/model/home_lead_model.dart';
 import 'package:task_management/model/lead_contact_list_model.dart';
 import 'package:task_management/model/lead_details_model.dart';
 import 'package:task_management/model/lead_discussion_list.dart';
+import 'package:task_management/model/lead_document_remark_model.dart';
 import 'package:task_management/model/lead_list_model.dart';
 import 'package:task_management/model/lead_status_lead.dart';
 import 'package:task_management/model/lead_visit_list_model.dart';
@@ -1149,7 +1150,7 @@ class LeadService {
         "user_id": userId,
         "quotation_id": quotationId,
       };
-      print('ir4u8r4 498ur84 ${formDataMap}');
+
       for (int i = 0; i < ducument.length; i++) {
         final file = ducument[i];
         final fileName = file.path.split('/').last;
@@ -1159,12 +1160,63 @@ class LeadService {
           file.path,
           filename: fileName,
         );
+        print('ir4u8r4 498ur84 ${ducument[i]}');
+        print('ir4u8r4 498ur84 ${documentId[i]}');
       }
+      print('ir4u8r4 498ur84 ${formDataMap}');
 
       final formData = FormData.fromMap(formDataMap);
 
       final response = await _dio.post(
         ApiConstant.baseUrl + ApiConstant.upload_lead_document,
+        data: formData,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        CustomToast().showCustomToast(response.data['message']);
+        return true;
+      } else {
+        print("Error: ${response.data}");
+        CustomToast().showCustomToast("Failed to upload documents");
+        return false;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return false;
+    }
+  }
+
+  Future<bool> leadDocumentUploading(int? documentId, File ducument) async {
+    try {
+      final token = StorageHelper.getToken();
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.options.contentType = 'multipart/form-data';
+
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+
+      final Map<String, dynamic> formDataMap = {
+        "document_id": documentId,
+      };
+
+      final file = ducument;
+      final fileName = file.path.split('/').last;
+      formDataMap['file'] = await MultipartFile.fromFile(
+        file.path,
+        filename: fileName,
+      );
+      print('ir4u8r4 498ur84 ${formDataMap}');
+
+      final formData = FormData.fromMap(formDataMap);
+
+      final response = await _dio.post(
+        ApiConstant.baseUrl + ApiConstant.update_lead_document,
         data: formData,
       );
 
@@ -1959,6 +2011,92 @@ class LeadService {
       print("Error response: ${e.response?.data}");
       print("Message: ${e.message}");
       return false;
+    }
+  }
+
+  Future<bool> storeLeadRemark(String remark, quotationId) async {
+    try {
+      final token = StorageHelper.getToken();
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.options.contentType = 'multipart/form-data';
+
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+
+      final Map<String, dynamic> formDataMap = {
+        'lead_quo_id': quotationId,
+        'remarks': remark,
+      };
+
+      print("euh8 398ue93 e983ue93 ${remark}");
+      print("euh8 398ue93 e983ue93 ${formDataMap}");
+
+      final formData = FormData.fromMap(formDataMap);
+
+      final response = await _dio.post(
+        ApiConstant.baseUrl + ApiConstant.store_leadquo_remarks,
+        data: formData,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        CustomToast().showCustomToast(response.data['message']);
+        return true;
+      } else {
+        print("Error: ${response.data}");
+        CustomToast().showCustomToast("Failed to add lead");
+        return false;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return false;
+    }
+  }
+
+  Future<QuotationLeadRemarkModel?> storeLeadRemarkLoading(id) async {
+    try {
+      final token = StorageHelper.getToken();
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      _dio.options.contentType = 'multipart/form-data';
+
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: true,
+        error: true,
+      ));
+
+      final Map<String, dynamic> formDataMap = {
+        'lead_quo_id': id,
+      };
+
+      print("euh8 398ue93 e983ue93 ${remark}");
+      print("euh8 398ue93 e983ue93 ${formDataMap}");
+
+      final formData = FormData.fromMap(formDataMap);
+
+      final response = await _dio.post(
+        ApiConstant.baseUrl + ApiConstant.view_leadquo_remarks,
+        data: formData,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return QuotationLeadRemarkModel.fromJson(response.data);
+      } else {
+        print("Error: ${response.data}");
+        CustomToast().showCustomToast("Failed to load remark");
+        return null;
+      }
+    } on DioException catch (e) {
+      print("Dio error: ${e.response?.statusCode}");
+      print("Error response: ${e.response?.data}");
+      print("Message: ${e.message}");
+      return null;
     }
   }
 }

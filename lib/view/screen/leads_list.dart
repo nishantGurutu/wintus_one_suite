@@ -18,7 +18,6 @@ import 'package:task_management/model/responsible_person_list_model.dart'
 import 'package:task_management/view/screen/add_lead.dart';
 import 'package:task_management/view/screen/lead_detail_update.dart';
 import 'package:task_management/view/screen/lead_overview.dart';
-import 'package:task_management/view/screen/update_leads.dart';
 
 class LeadList extends StatefulWidget {
   final String? status;
@@ -1485,7 +1484,7 @@ class _LeadListState extends State<LeadList> {
                                               value: leadController
                                                       .leadStatusData
                                                       .contains(leadController
-                                                              .selectedStatusPerLead[
+                                                              .selectedStatusPerLeadforDocumentLead[
                                                           index])
                                                   ? leadController
                                                           .selectedStatusPerLead[

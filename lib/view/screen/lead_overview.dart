@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management/component/open_file_class.dart';
 import 'package:task_management/constant/color_constant.dart';
+import 'package:task_management/constant/dialog_class.dart';
 import 'package:task_management/constant/image_constant.dart';
 import 'package:task_management/constant/style_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
@@ -23,6 +24,7 @@ import 'package:task_management/view/widgets/assign_user.dart';
 import 'package:task_management/view/widgets/customAudioPlayer.dart';
 import 'package:task_management/view/widgets/followup_list.dart';
 import 'package:task_management/view/widgets/lead_discussion_list.dart';
+import 'package:task_management/view/widgets/lead_document_remark.dart';
 import 'package:task_management/view/widgets/lead_overview_document_list.dart';
 import 'package:task_management/view/widgets/work_order_document_approve.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -509,6 +511,8 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                         child: LeadOverviewDocumentListBotomsheet(
                           leadId: widget.leadId,
                           status: leadDatavalue?.approvalData,
+                          quotationId:
+                              leadDatavalue?.approvalData?.first.quotationId,
                         ),
                       ),
                     );
@@ -528,6 +532,70 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                           fontWeight: FontWeight.w500,
                           color: whiteColor,
                         ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    ShowDialogFunction().storeLeadRemark(
+                      context,
+                      leadDatavalue?.approvalData?.first.id,
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: primaryButtonColor,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8.r),
+                      ),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      child: Text(
+                        'Add Remark',
+                        style: TextStyle(fontSize: 14.sp, color: whiteColor),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 8.w,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) => Padding(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: LeadDocumentRemarkList(
+                          id: leadDatavalue?.approvalData?.first.id,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: primaryButtonColor,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8.r),
+                      ),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      child: Text(
+                        'View Remark',
+                        style: TextStyle(fontSize: 14.sp, color: whiteColor),
                       ),
                     ),
                   ),
@@ -884,29 +952,36 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                   fontSize: 10.sp,
                                                   fontWeight: FontWeight.w400),
                                             ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                isBranchHeadViewSelected.value =
-                                                    !isBranchHeadViewSelected
-                                                        .value;
-                                              },
-                                              child: Container(
-                                                child: Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 6.w,
-                                                      vertical: 5.h),
-                                                  child: Text(
-                                                    'View',
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xff1B2A64),
-                                                        fontSize: 14.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500),
+                                            if (leadDatavalue?.approvalData?[i]
+                                                    .branchheadStatus
+                                                    .toString()
+                                                    .toLowerCase() ==
+                                                "rejected")
+                                              GestureDetector(
+                                                onTap: () {
+                                                  isBranchHeadViewSelected
+                                                          .value =
+                                                      !isBranchHeadViewSelected
+                                                          .value;
+                                                },
+                                                child: Container(
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 6.w,
+                                                            vertical: 5.h),
+                                                    child: Text(
+                                                      'View',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xff1B2A64),
+                                                          fontSize: 14.sp,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
                                           ],
                                         ),
                                         SizedBox(

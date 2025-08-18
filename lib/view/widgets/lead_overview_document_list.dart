@@ -16,10 +16,13 @@ import 'package:task_management/view/widgets/image_screen.dart';
 
 class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
   final dynamic leadId;
-  final dynamic quotationId;
   final List<ApprovalData>? status;
+  final dynamic quotationId;
   const LeadOverviewDocumentListBotomsheet(
-      {super.key, required this.leadId, this.quotationId, this.status});
+      {super.key,
+      required this.leadId,
+      this.status,
+      required this.quotationId});
 
   @override
   State<LeadOverviewDocumentListBotomsheet> createState() =>
@@ -118,7 +121,7 @@ class _LeadOverviewDocumentListBotomsheet
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              "${index + 1}. ${leadController.leadDocumentListData[index].status ?? ''}",
+                                              "${index + 1}. ${leadController.leadDocumentListData[index].fileName ?? ''}",
                                               style: TextStyle(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.w500),
@@ -139,24 +142,15 @@ class _LeadOverviewDocumentListBotomsheet
                                                                   index]
                                                               .id ??
                                                           0;
-                                                      takeDocument2(
-                                                          index: index,
-                                                          documentId: leadController
-                                                                  .leadDocumentListData[
-                                                                      index]
-                                                                  .id ??
-                                                              0);
-                                                      // await leadController
-                                                      //     .documentUploading(
-                                                      //   documentId:
-                                                      //       leadController
-                                                      //           .documentIdList,
-                                                      //   ducument: leadController
-                                                      //       .documentUplodedList,
-                                                      //   leadId: widget.leadId,
-                                                      //   quotationId:
-                                                      //       widget.quotationId,
-                                                      // );
+                                                      await takeDocument2(
+                                                        index: index,
+                                                        documentId: leadController
+                                                                .leadDocumentListData[
+                                                                    index]
+                                                                .id ??
+                                                            0,
+                                                        leadId: widget.leadId,
+                                                      );
                                                     },
                                                     child: Container(
                                                       width: 40.w,
@@ -272,41 +266,56 @@ class _LeadOverviewDocumentListBotomsheet
                                                     ),
                                                   ),
                                           ),
-                                          // if (StorageHelper.getRoleName()
-                                          //             .toString()
-                                          //             .toLowerCase() ==
-                                          //         "marketing manager" ||
-                                          //     StorageHelper.getRoleName()
-                                          //             .toString()
-                                          //             .toLowerCase() ==
-                                          //         "branch head" ||
-                                          //     StorageHelper.getRoleName()
-                                          //             .toString()
-                                          //             .toLowerCase() ==
-                                          //         "pa")
                                           Obx(
                                             () => Checkbox(
                                               value: leadController
                                                       .isDocumentCheckBoxSelected[
                                                   index],
                                               onChanged: (value) async {
-                                                if (StorageHelper.getRoleName()
+                                                if ((StorageHelper.getRoleName()
                                                                 .toString()
                                                                 .toLowerCase() ==
                                                             "marketing manager" &&
-                                                        leadController
-                                                                .leadDetails
-                                                                .value
-                                                                ?.approvalData
-                                                                ?.first
-                                                                .managerStatus
+                                                        (leadController
+                                                                    .leadDetails
+                                                                    .value
+                                                                    ?.approvalData
+                                                                    ?.first
+                                                                    .managerStatus
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                'pending' ||
+                                                            leadController
+                                                                    .leadDetails
+                                                                    .value
+                                                                    ?.approvalData
+                                                                    ?.first
+                                                                    .managerStatus
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                "rejected")) ||
+                                                    (StorageHelper.getRoleName()
                                                                 .toString()
                                                                 .toLowerCase() ==
-                                                            'pending' ||
-                                                    StorageHelper.getRoleName()
-                                                            .toString()
-                                                            .toLowerCase() ==
-                                                        "branch head") {
+                                                            "branch head" &&
+                                                        (leadController
+                                                                    .leadDetails
+                                                                    .value
+                                                                    ?.approvalData
+                                                                    ?.first
+                                                                    .branchheadStatus
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                'pending' ||
+                                                            leadController
+                                                                    .leadDetails
+                                                                    .value
+                                                                    ?.approvalData
+                                                                    ?.first
+                                                                    .branchheadStatus
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                "rejected"))) {
                                                   await leadController
                                                       .approveDocument(
                                                     documentId: leadController
@@ -449,7 +458,8 @@ class _LeadOverviewDocumentListBotomsheet
     );
   }
 
-  Future<void> takeDocument2({required int index, int? documentId}) async {
+  Future<void> takeDocument2(
+      {required int index, int? documentId, required leadId}) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.any,
@@ -467,13 +477,11 @@ class _LeadOverviewDocumentListBotomsheet
         }
 
         final File file = File(filePath);
-        leadController.documentUplodedList[index] = file;
-        leadController.documentUplodedList.refresh();
-        await leadController.documentUploading(
-          documentId: leadController.documentIdList,
-          ducument: leadController.documentUplodedList,
-          leadId: widget.leadId,
-          quotationId: widget.quotationId,
+        leadController.pickedFile2.value = file;
+        await leadController.leadDocumentUpdating(
+          documentId: documentId,
+          ducument: leadController.pickedFile2.value,
+          leadId: leadId,
         );
         print('File selected for index $index: ${file.path}');
       } else {
