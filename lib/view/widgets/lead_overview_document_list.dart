@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/custom_toast.dart';
 import 'package:task_management/constant/download.dart' show DownloadFile;
@@ -52,6 +53,21 @@ class _LeadOverviewDocumentListBotomsheet
     leadController.documentUplodedList.clear();
     leadController.leadpickedFile.value = File("");
     leadController.profilePicPath.value = "";
+  }
+
+  String _formatDate(String rawDate) {
+    try {
+      if (rawDate.isEmpty) return "";
+
+      // Parse the API date
+      DateTime parsedDate = DateFormat("yyyy-MM-dd HH:mm:ss").parse(rawDate);
+      print(
+          'y3te73 3e36r6e3 ${DateFormat("yyyy-MM-dd hh:mm a").format(parsedDate)}');
+      // Format to required output
+      return DateFormat("yyyy-MM-dd hh:mm a").format(parsedDate);
+    } catch (e) {
+      return rawDate; // fallback if parsing fails
+    }
   }
 
   @override
@@ -117,15 +133,38 @@ class _LeadOverviewDocumentListBotomsheet
                                         CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
+                                          Text(
+                                            "${index + 1}.",
+                                            style: TextStyle(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500),
+                                          ),
                                           Expanded(
-                                            child: Text(
-                                              "${index + 1}. ${leadController.leadDocumentListData[index].fileName ?? ''}",
-                                              style: TextStyle(
-                                                  fontSize: 14.sp,
-                                                  fontWeight: FontWeight.w500),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "${leadController.leadDocumentListData[index].fileName ?? ''}",
+                                                  style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                                SizedBox(height: 3.h),
+                                                Text(
+                                                  '${_formatDate(leadController.leadDocumentListData[index].uploadedAt ?? "")}',
+                                                  style: TextStyle(
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                           if ((StorageHelper.getRoleName()
@@ -330,7 +369,11 @@ class _LeadOverviewDocumentListBotomsheet
                                               StorageHelper.getRoleName()
                                                       .toString()
                                                       .toLowerCase() ==
-                                                  "marketing manager")
+                                                  "marketing manager" ||
+                                              StorageHelper.getRoleName()
+                                                      .toString()
+                                                      .toLowerCase() ==
+                                                  "branch head")
                                             Obx(
                                               () => Checkbox(
                                                 value: leadController

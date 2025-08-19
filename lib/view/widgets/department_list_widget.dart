@@ -43,7 +43,7 @@ class DepartmentList extends StatelessWidget {
               height: 8.h,
             ),
             menuHeight: 350.h,
-            hintText: "Select Department",
+            hintText: "Search Department",
             requestFocusOnTap: true,
             enableSearch: true,
             enableFilter: true,
