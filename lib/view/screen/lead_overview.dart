@@ -26,6 +26,7 @@ import 'package:task_management/view/widgets/followup_list.dart';
 import 'package:task_management/view/widgets/lead_discussion_list.dart';
 import 'package:task_management/view/widgets/lead_document_remark.dart';
 import 'package:task_management/view/widgets/lead_overview_document_list.dart';
+import 'package:task_management/view/widgets/pdf_screen.dart';
 import 'package:task_management/view/widgets/work_order_document_approve.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:task_management/helper/sos_pusher.dart';
@@ -1047,107 +1048,119 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                               SizedBox(
                                                 height: 5.h,
                                               ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  if ((leadDatavalue
-                                                              ?.approvalData
-                                                              ?.first
-                                                              .branchheadAgreement ??
-                                                          "")
-                                                      .toString()
-                                                      .contains('https')) {
-                                                    Get.to(() =>
-                                                        WorkOrderDocumentApprove(
-                                                          documentUrl: leadDatavalue
-                                                                  ?.approvalData
-                                                                  ?.first
-                                                                  .branchheadAgreement ??
-                                                              '',
-                                                          leadId: widget.leadId,
-                                                          legalStatus:
-                                                              leadDatavalue
-                                                                  ?.approvalData?[
-                                                                      i]
-                                                                  .legalStatus,
-                                                        ));
-                                                  }
-                                                },
-                                                child: Container(
-                                                  height: 80.h,
-                                                  width: 150.w,
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      color: lightBorderColor,
-                                                    ),
+                                              Container(
+                                                height: 80.h,
+                                                width: 150.w,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: lightBorderColor,
                                                   ),
-                                                  child: (leadDatavalue
-                                                              ?.approvalData
-                                                              ?.first
-                                                              .branchheadAgreement !=
-                                                          null)
-                                                      ? ((leadDatavalue
+                                                ),
+                                                child: (leadDatavalue
+                                                            ?.approvalData
+                                                            ?.first
+                                                            .branchheadAgreement !=
+                                                        null)
+                                                    ? ((leadDatavalue
+                                                                        ?.approvalData
+                                                                        ?.first
+                                                                        .branchheadAgreement ??
+                                                                    "")
+                                                                .toLowerCase()
+                                                                .endsWith(
+                                                                    '.png') ||
+                                                            (leadDatavalue
+                                                                        ?.approvalData
+                                                                        ?.first
+                                                                        .branchheadAgreement ??
+                                                                    "")
+                                                                .toLowerCase()
+                                                                .endsWith(
+                                                                    '.jpg') ||
+                                                            (leadDatavalue?.approvalData!.first.branchheadAgreement ?? '')
+                                                                .toString()
+                                                                .toLowerCase()
+                                                                .endsWith(
+                                                                    '.jpeg'))
+                                                        ? GestureDetector(
+                                                            onTap: () {
+                                                              if ((leadDatavalue
                                                                           ?.approvalData
                                                                           ?.first
                                                                           .branchheadAgreement ??
                                                                       "")
-                                                                  .toLowerCase()
-                                                                  .endsWith(
-                                                                      '.png') ||
-                                                              (leadDatavalue
-                                                                          ?.approvalData
-                                                                          ?.first
-                                                                          .branchheadAgreement ??
-                                                                      "")
-                                                                  .toLowerCase()
-                                                                  .endsWith(
-                                                                      '.jpg') ||
-                                                              (leadDatavalue
-                                                                          ?.approvalData!
-                                                                          .first
-                                                                          .branchheadAgreement ??
-                                                                      '')
                                                                   .toString()
-                                                                  .toLowerCase()
-                                                                  .endsWith(
-                                                                      '.jpeg'))
-                                                          ? Image.network(
+                                                                  .contains(
+                                                                      'https')) {
+                                                                Get.to(() =>
+                                                                    WorkOrderDocumentApprove(
+                                                                      documentUrl:
+                                                                          leadDatavalue?.approvalData?.first.branchheadAgreement ??
+                                                                              '',
+                                                                      leadId: widget
+                                                                          .leadId,
+                                                                      legalStatus: leadDatavalue
+                                                                          ?.approvalData?[
+                                                                              i]
+                                                                          .legalStatus,
+                                                                    ));
+                                                              }
+                                                            },
+                                                            child:
+                                                                Image.network(
                                                               leadDatavalue
                                                                       ?.approvalData
                                                                       ?.first
                                                                       .branchheadAgreement ??
                                                                   '',
                                                               fit: BoxFit.cover,
-                                                            )
-                                                          : Center(
-                                                              child: InkWell(
-                                                                onTap: () {},
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Icon(
-                                                                        Icons
-                                                                            .insert_drive_file,
-                                                                        size:
-                                                                            30),
-                                                                    SizedBox(
-                                                                        height:
-                                                                            5),
-                                                                    Text(
-                                                                      'No File',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              12.sp),
-                                                                    ),
-                                                                  ],
+                                                            ),
+                                                          )
+                                                        : (leadDatavalue?.approvalData?.first.branchheadAgreement ?? "")
+                                                                .toString()
+                                                                .contains('pdf')
+                                                            ? GestureDetector(
+                                                                onTap: () {
+                                                                  Get.to(() => NetworkPDFScreen(
+                                                                      file: leadDatavalue
+                                                                          ?.approvalData
+                                                                          ?.first
+                                                                          .branchheadAgreement));
+                                                                },
+                                                                child:
+                                                                    Image.asset(
+                                                                  'assets/images/png/pdf-image-removebg-preview.png',
+                                                                  height: 80.h,
                                                                 ),
-                                                              ),
-                                                            )
-                                                      : Center(
-                                                          child:
-                                                              Text('No File')),
-                                                ),
+                                                              )
+                                                            : Center(
+                                                                child: InkWell(
+                                                                  onTap: () {},
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Icon(
+                                                                          Icons
+                                                                              .insert_drive_file,
+                                                                          size:
+                                                                              30),
+                                                                      SizedBox(
+                                                                          height:
+                                                                              5),
+                                                                      Text(
+                                                                        'No File',
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                12.sp),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              )
+                                                    : Center(
+                                                        child: Text('No File')),
                                               ),
                                               if (StorageHelper.getRoleName()
                                                       .toString()
@@ -1344,48 +1357,45 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                           Row(
                                             children: [
                                               Expanded(
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    // OpenFileClass().openUrl(
-                                                    //     leadDatavalue
-                                                    //         ?.approvalData?[i]
-                                                    //         .legalWorkorder);
-                                                    Get.to(() =>
-                                                        WorkOrderDocumentApprove(
-                                                          documentUrl: leadDatavalue
-                                                              ?.approvalData?[i]
-                                                              .legalWorkorder,
-                                                          leadId: widget.leadId,
-                                                          legalStatus:
-                                                              leadDatavalue
-                                                                  ?.approvalData?[
-                                                                      i]
-                                                                  .legalStatus,
-                                                        ));
-                                                  },
-                                                  child: Container(
-                                                    height: 80.h,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                        color: lightBorderColor,
-                                                      ),
+                                                child: Container(
+                                                  height: 80.h,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: lightBorderColor,
                                                     ),
-                                                    child: (leadDatavalue?.approvalData?[i].legalWorkorder !=
-                                                            null)
-                                                        ? ((leadDatavalue?.approvalData?[i].legalWorkorder ?? "").toLowerCase().endsWith('.png') ||
-                                                                (leadDatavalue?.approvalData?[i].legalWorkorder ??
-                                                                        "")
-                                                                    .toLowerCase()
-                                                                    .endsWith(
-                                                                        '.jpg') ||
-                                                                (leadDatavalue?.approvalData![i].legalWorkorder ??
-                                                                        "" ??
-                                                                        '')
-                                                                    .toString()
-                                                                    .toLowerCase()
-                                                                    .endsWith(
-                                                                        '.jpeg'))
-                                                            ? Image.network(
+                                                  ),
+                                                  child: (leadDatavalue
+                                                              ?.approvalData?[i]
+                                                              .legalWorkorder !=
+                                                          null)
+                                                      ? ((leadDatavalue?.approvalData?[i].legalWorkorder ?? "").toLowerCase().endsWith('.png') ||
+                                                              (leadDatavalue?.approvalData?[i].legalWorkorder ?? "")
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      '.jpg') ||
+                                                              (leadDatavalue?.approvalData![i].legalWorkorder ?? "" ?? '')
+                                                                  .toString()
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      '.jpeg'))
+                                                          ? GestureDetector(
+                                                              onTap: () {
+                                                                Get.to(() =>
+                                                                    WorkOrderDocumentApprove(
+                                                                      documentUrl: leadDatavalue
+                                                                          ?.approvalData?[
+                                                                              i]
+                                                                          .legalWorkorder,
+                                                                      leadId: widget
+                                                                          .leadId,
+                                                                      legalStatus: leadDatavalue
+                                                                          ?.approvalData?[
+                                                                              i]
+                                                                          .legalStatus,
+                                                                    ));
+                                                              },
+                                                              child:
+                                                                  Image.network(
                                                                 leadDatavalue
                                                                         ?.approvalData?[
                                                                             i]
@@ -1393,101 +1403,107 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                     "",
                                                                 fit: BoxFit
                                                                     .cover,
-                                                              )
-                                                            : (leadDatavalue?.approvalData![i].legalWorkorder ??
-                                                                        "" ??
-                                                                        '')
-                                                                    .toString()
-                                                                    .toLowerCase()
-                                                                    .endsWith(
-                                                                        'pdf')
-                                                                ? Padding(
-                                                                    padding: EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            5.h),
-                                                                    child: Image
-                                                                        .asset(
-                                                                            'assets/image/png/pdf.png'),
-                                                                  )
-                                                                : (leadDatavalue?.approvalData![i].legalWorkorder ??
-                                                                            "" ??
-                                                                            '')
-                                                                        .toString()
-                                                                        .toLowerCase()
-                                                                        .endsWith('docx')
-                                                                    ? Padding(
-                                                                        padding:
-                                                                            EdgeInsets.symmetric(vertical: 5.h),
-                                                                        child: Image.asset(
-                                                                            'assets/image/png/docs.jpeg'),
-                                                                      )
-                                                                    : (leadDatavalue?.approvalData![i].legalWorkorder ?? "" ?? '').toString().toLowerCase().endsWith('.jpeg')
-                                                                        ? Image.asset('assets/image/png/pdf.png')
-                                                                        : Center(
-                                                                            child:
-                                                                                Column(
-                                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                                              children: [
-                                                                                Icon(Icons.insert_drive_file, size: 30.sp),
-                                                                                SizedBox(height: 5.h),
-                                                                                Text(
-                                                                                  'No File',
-                                                                                  style: TextStyle(fontSize: 12.sp),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          )
-                                                        : Center(
-                                                            child:
-                                                                Text('No File'),
-                                                          ),
-                                                  ),
+                                                              ),
+                                                            )
+                                                          : (leadDatavalue?.approvalData![i].legalWorkorder ?? "" ?? '')
+                                                                  .toString()
+                                                                  .toLowerCase()
+                                                                  .endsWith('pdf')
+                                                              ? GestureDetector(
+                                                                  onTap: () {
+                                                                    Get.to(() => NetworkPDFScreen(
+                                                                        file: leadDatavalue
+                                                                            ?.approvalData
+                                                                            ?.first
+                                                                            .branchheadAgreement));
+                                                                  },
+                                                                  child: Image
+                                                                      .asset(
+                                                                    'assets/images/png/pdf-image-removebg-preview.png',
+                                                                    height:
+                                                                        80.h,
+                                                                  ),
+                                                                )
+                                                              : (leadDatavalue?.approvalData![i].legalWorkorder ?? "" ?? '').toString().toLowerCase().endsWith('docx')
+                                                                  ? Padding(
+                                                                      padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              5.h),
+                                                                      child: Image
+                                                                          .asset(
+                                                                              'assets/image/png/docs.jpeg'),
+                                                                    )
+                                                                  : (leadDatavalue?.approvalData![i].legalWorkorder ?? "" ?? '').toString().toLowerCase().endsWith('.jpeg')
+                                                                      ? Image.asset('assets/image/png/pdf.png')
+                                                                      : Center(
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Icon(Icons.insert_drive_file, size: 30.sp),
+                                                                              SizedBox(height: 5.h),
+                                                                              Text(
+                                                                                'No File',
+                                                                                style: TextStyle(fontSize: 12.sp),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        )
+                                                      : Center(
+                                                          child:
+                                                              Text('No File'),
+                                                        ),
                                                 ),
                                               ),
                                               SizedBox(
                                                 width: 5.w,
                                               ),
                                               Expanded(
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    OpenFileClass().openUrl(
-                                                        leadDatavalue
-                                                            ?.approvalData?[i]
-                                                            .legalAdditionalAttachment);
-                                                  },
-                                                  child: Container(
-                                                    height: 80.h,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                        color: lightBorderColor,
-                                                      ),
+                                                child: Container(
+                                                  height: 80.h,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: lightBorderColor,
                                                     ),
-                                                    child: (leadDatavalue
-                                                                ?.approvalData?[
-                                                                    i]
-                                                                .legalAdditionalAttachment !=
-                                                            null)
-                                                        ? ((leadDatavalue
-                                                                            ?.approvalData?[
-                                                                                i]
-                                                                            .legalAdditionalAttachment ??
-                                                                        "")
-                                                                    .toLowerCase()
-                                                                    .endsWith(
-                                                                        '.png') ||
-                                                                (leadDatavalue?.approvalData?[i].legalAdditionalAttachment ??
-                                                                        "")
-                                                                    .toLowerCase()
-                                                                    .endsWith(
-                                                                        '.jpg') ||
-                                                                (leadDatavalue?.approvalData![i].legalAdditionalAttachment ??
-                                                                        "" ??
-                                                                        '')
-                                                                    .toString()
-                                                                    .toLowerCase()
-                                                                    .endsWith(
-                                                                        '.jpeg'))
-                                                            ? Image.network(
+                                                  ),
+                                                  child: (leadDatavalue
+                                                              ?.approvalData?[i]
+                                                              .legalAdditionalAttachment !=
+                                                          null)
+                                                      ? ((leadDatavalue
+                                                                          ?.approvalData?[
+                                                                              i]
+                                                                          .legalAdditionalAttachment ??
+                                                                      "")
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      '.png') ||
+                                                              (leadDatavalue?.approvalData?[i].legalAdditionalAttachment ??
+                                                                      "")
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      '.jpg') ||
+                                                              (leadDatavalue
+                                                                          ?.approvalData![
+                                                                              i]
+                                                                          .legalAdditionalAttachment ??
+                                                                      "" ??
+                                                                      '')
+                                                                  .toString()
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      '.jpeg'))
+                                                          ? GestureDetector(
+                                                              onTap: () {
+                                                                OpenFileClass().openUrl(
+                                                                    leadDatavalue
+                                                                        ?.approvalData?[
+                                                                            i]
+                                                                        .legalAdditionalAttachment);
+                                                              },
+                                                              child:
+                                                                  Image.network(
                                                                 leadDatavalue
                                                                         ?.approvalData?[
                                                                             i]
@@ -1495,60 +1511,69 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                     "",
                                                                 fit: BoxFit
                                                                     .cover,
-                                                              )
-                                                            : (leadDatavalue?.approvalData![i].legalWorkorder ??
-                                                                        "" ??
-                                                                        '')
-                                                                    .toString()
-                                                                    .toLowerCase()
-                                                                    .endsWith(
-                                                                        'pdf')
-                                                                ? Padding(
-                                                                    padding: EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            5.h),
-                                                                    child: Image
-                                                                        .asset(
-                                                                            'assets/image/png/pdf.png'),
-                                                                  )
-                                                                : (leadDatavalue?.approvalData![i].legalWorkorder ??
-                                                                            "" ??
-                                                                            '')
-                                                                        .toString()
-                                                                        .toLowerCase()
-                                                                        .endsWith(
-                                                                            'docx')
-                                                                    ? Padding(
-                                                                        padding:
-                                                                            EdgeInsets.symmetric(vertical: 5.h),
-                                                                        child: Image.asset(
-                                                                            'assets/image/png/docs.jpeg'),
-                                                                      )
-                                                                    : Center(
+                                                              ),
+                                                            )
+                                                          : (leadDatavalue?.approvalData![i].legalAdditionalAttachment ??
+                                                                      "" ??
+                                                                      '')
+                                                                  .toString()
+                                                                  .toLowerCase()
+                                                                  .endsWith(
+                                                                      'pdf')
+                                                              ? GestureDetector(
+                                                                  onTap: () {
+                                                                    Get.to(() => NetworkPDFScreen(
+                                                                        file: leadDatavalue
+                                                                            ?.approvalData![i]
+                                                                            .legalAdditionalAttachment));
+                                                                  },
+                                                                  child: Image
+                                                                      .asset(
+                                                                    'assets/images/png/pdf-image-removebg-preview.png',
+                                                                    height:
+                                                                        80.h,
+                                                                  ),
+                                                                )
+                                                              : (leadDatavalue?.approvalData![i].legalAdditionalAttachment ??
+                                                                          "" ??
+                                                                          '')
+                                                                      .toString()
+                                                                      .toLowerCase()
+                                                                      .endsWith(
+                                                                          'docx')
+                                                                  ? Padding(
+                                                                      padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              5.h),
+                                                                      child: Image
+                                                                          .asset(
+                                                                              'assets/image/png/docs.jpeg'),
+                                                                    )
+                                                                  : Center(
+                                                                      child:
+                                                                          InkWell(
+                                                                        onTap:
+                                                                            () {},
                                                                         child:
-                                                                            InkWell(
-                                                                          onTap:
-                                                                              () {},
-                                                                          child:
-                                                                              Column(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Icon(Icons.insert_drive_file, size: 30),
-                                                                              SizedBox(height: 5),
-                                                                              Text(
-                                                                                'No File',
-                                                                                style: TextStyle(fontSize: 12.sp),
-                                                                              ),
-                                                                            ],
-                                                                          ),
+                                                                            Column(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Icon(Icons.insert_drive_file,
+                                                                                size: 30),
+                                                                            SizedBox(height: 5),
+                                                                            Text(
+                                                                              'No File',
+                                                                              style: TextStyle(fontSize: 12.sp),
+                                                                            ),
+                                                                          ],
                                                                         ),
-                                                                      )
-                                                        : Center(
-                                                            child:
-                                                                Text('No File'),
-                                                          ),
-                                                  ),
+                                                                      ),
+                                                                    )
+                                                      : Center(
+                                                          child:
+                                                              Text('No File'),
+                                                        ),
                                                 ),
                                               ),
                                               SizedBox(

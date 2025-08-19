@@ -58,15 +58,10 @@ class _LeadOverviewDocumentListBotomsheet
   String _formatDate(String rawDate) {
     try {
       if (rawDate.isEmpty) return "";
-
-      // Parse the API date
       DateTime parsedDate = DateFormat("yyyy-MM-dd HH:mm:ss").parse(rawDate);
-      print(
-          'y3te73 3e36r6e3 ${DateFormat("yyyy-MM-dd hh:mm a").format(parsedDate)}');
-      // Format to required output
       return DateFormat("yyyy-MM-dd hh:mm a").format(parsedDate);
     } catch (e) {
-      return rawDate; // fallback if parsing fails
+      return rawDate;
     }
   }
 
@@ -471,7 +466,7 @@ class _LeadOverviewDocumentListBotomsheet
                               widget.status?.first.branchheadStatus
                                       .toString()
                                       .toLowerCase() !=
-                                  'approve'))
+                                  'approved'))
                         Column(
                           children: [
                             SizedBox(
