@@ -10,6 +10,7 @@ import 'package:task_management/constant/style_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/button_widget.dart';
 import 'package:task_management/view/widgets/image_screen.dart';
+import 'package:task_management/view/widgets/pdf_screen.dart';
 
 class DocumentListBotomsheet extends StatefulWidget {
   final String? from;
@@ -153,42 +154,63 @@ class _DocumentListBotomsheetState extends State<DocumentListBotomsheet> {
                                                     size: 30.sp,
                                                   ),
                                                 )
-                                              : InkWell(
-                                                  onTap: () {
-                                                    Get.to(
-                                                      () => ImageScreen(
-                                                        file: leadController
-                                                                .documentUplodedList[
-                                                            index],
+                                              : leadController
+                                                      .documentUplodedList[
+                                                          index]
+                                                      .path
+                                                      .toString()
+                                                      .contains('pdf')
+                                                  ? GestureDetector(
+                                                      onTap: () {
+                                                        Get.to(() => PDFScreen(
+                                                            file: leadController
+                                                                    .documentUplodedList[
+                                                                index]));
+                                                      },
+                                                      child: Image.asset(
+                                                        'assets/images/png/pdf-image-removebg-preview.png',
+                                                        height: 40.h,
                                                       ),
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    height: 40.h,
-                                                    width: 40.w,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color:
-                                                              lightBorderColor),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  8.r)),
-                                                    ),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.r)),
-                                                      child: Image.file(
-                                                        leadController
-                                                                .documentUplodedList[
-                                                            index],
-                                                        fit: BoxFit.cover,
+                                                    )
+                                                  : InkWell(
+                                                      onTap: () {
+                                                        Get.to(
+                                                          () => ImageScreen(
+                                                            file: leadController
+                                                                    .documentUplodedList[
+                                                                index],
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        height: 40.h,
+                                                        width: 40.w,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  lightBorderColor),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          8.r)),
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10.r)),
+                                                          child: Image.file(
+                                                            leadController
+                                                                    .documentUplodedList[
+                                                                index],
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ),
                                         ),
                                       ],
                                     ),

@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/custom_toast.dart';
 import 'package:task_management/constant/download.dart' show DownloadFile;
-import 'package:task_management/constant/text_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/network_image_class.dart';
 import 'package:task_management/custom_widget/task_text_field.dart';
@@ -129,42 +128,64 @@ class _LeadOverviewDocumentListBotomsheet
                                                   fontWeight: FontWeight.w500),
                                             ),
                                           ),
-                                          Obx(
-                                            () => leadController
-                                                        .leadDocumentListData[
-                                                            index]
-                                                        .status ==
-                                                    0
-                                                ? InkWell(
-                                                    onTap: () async {
-                                                      leadController
-                                                              .documentIdList[
-                                                          index] = leadController
-                                                              .leadDocumentListData[
-                                                                  index]
-                                                              .id ??
-                                                          0;
-                                                      await takeDocument2(
-                                                        index: index,
-                                                        documentId: leadController
+                                          if ((StorageHelper.getRoleName()
+                                                          .toString()
+                                                          .toLowerCase() ==
+                                                      "null" ||
+                                                  StorageHelper.getRoleName()
+                                                          .toString()
+                                                          .toLowerCase() ==
+                                                      "") &&
+                                              leadController
+                                                      .leadDetails
+                                                      .value
+                                                      ?.approvalData
+                                                      ?.first
+                                                      .managerStatus
+                                                      .toString()
+                                                      .toLowerCase() !=
+                                                  "pending" &&
+                                              leadController
+                                                      .leadDocumentListData[
+                                                          index]
+                                                      .status ==
+                                                  0)
+                                            Obx(
+                                              () => leadController
+                                                          .leadDocumentListData[
+                                                              index]
+                                                          .status ==
+                                                      0
+                                                  ? InkWell(
+                                                      onTap: () async {
+                                                        leadController
+                                                                .documentIdList[
+                                                            index] = leadController
                                                                 .leadDocumentListData[
                                                                     index]
                                                                 .id ??
-                                                            0,
-                                                        leadId: widget.leadId,
-                                                      );
-                                                    },
-                                                    child: Container(
-                                                      width: 40.w,
-                                                      height: 30.h,
-                                                      child: Icon(
-                                                        Icons.upload,
-                                                        size: 30.sp,
+                                                            0;
+                                                        await takeDocument2(
+                                                          index: index,
+                                                          documentId: leadController
+                                                                  .leadDocumentListData[
+                                                                      index]
+                                                                  .id ??
+                                                              0,
+                                                          leadId: widget.leadId,
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        width: 40.w,
+                                                        height: 30.h,
+                                                        child: Icon(
+                                                          Icons.upload,
+                                                          size: 30.sp,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  )
-                                                : SizedBox(),
-                                          ),
+                                                    )
+                                                  : SizedBox(),
+                                            ),
                                           InkWell(
                                             onTap: () async {
                                               showDialog(
@@ -288,78 +309,100 @@ class _LeadOverviewDocumentListBotomsheet
                                                         ),
                                                       ),
                                           ),
-                                          Obx(
-                                            () => Checkbox(
-                                              value: leadController
-                                                      .isDocumentCheckBoxSelected[
-                                                  index],
-                                              onChanged: (value) async {
-                                                if ((StorageHelper.getRoleName()
-                                                                .toString()
-                                                                .toLowerCase() ==
-                                                            "marketing manager" &&
-                                                        (leadController
-                                                                    .leadDetails
-                                                                    .value
-                                                                    ?.approvalData
-                                                                    ?.first
-                                                                    .managerStatus
-                                                                    .toString()
-                                                                    .toLowerCase() ==
-                                                                'pending' ||
-                                                            leadController
-                                                                    .leadDetails
-                                                                    .value
-                                                                    ?.approvalData
-                                                                    ?.first
-                                                                    .managerStatus
-                                                                    .toString()
-                                                                    .toLowerCase() ==
-                                                                "rejected")) ||
-                                                    (StorageHelper.getRoleName()
-                                                                .toString()
-                                                                .toLowerCase() ==
-                                                            "branch head" &&
-                                                        (leadController
-                                                                    .leadDetails
-                                                                    .value
-                                                                    ?.approvalData
-                                                                    ?.first
-                                                                    .branchheadStatus
-                                                                    .toString()
-                                                                    .toLowerCase() ==
-                                                                'pending' ||
-                                                            leadController
-                                                                    .leadDetails
-                                                                    .value
-                                                                    ?.approvalData
-                                                                    ?.first
-                                                                    .branchheadStatus
-                                                                    .toString()
-                                                                    .toLowerCase() ==
-                                                                "rejected"))) {
-                                                  await leadController
-                                                      .approveDocument(
-                                                    documentId: leadController
-                                                        .leadDocumentListData[
-                                                            index]
-                                                        .id,
-                                                    leadId: widget.leadId,
-                                                    status: leadController
-                                                                .leadDocumentListData[
-                                                                    index]
-                                                                .status ==
-                                                            0
-                                                        ? 1
-                                                        : 0,
-                                                  );
+                                          if ((StorageHelper.getRoleName()
+                                                              .toString()
+                                                              .toLowerCase() ==
+                                                          "null" ||
+                                                      StorageHelper
+                                                                  .getRoleName()
+                                                              .toString()
+                                                              .toLowerCase() ==
+                                                          "") &&
                                                   leadController
-                                                          .isDocumentCheckBoxSelected[
-                                                      index] = value!;
-                                                }
-                                              },
-                                            ),
-                                          )
+                                                          .leadDetails
+                                                          .value
+                                                          ?.approvalData
+                                                          ?.first
+                                                          .managerStatus
+                                                          .toString()
+                                                          .toLowerCase() !=
+                                                      "pending" ||
+                                              StorageHelper.getRoleName()
+                                                      .toString()
+                                                      .toLowerCase() ==
+                                                  "marketing manager")
+                                            Obx(
+                                              () => Checkbox(
+                                                value: leadController
+                                                        .isDocumentCheckBoxSelected[
+                                                    index],
+                                                onChanged: (value) async {
+                                                  if ((StorageHelper.getRoleName()
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              "marketing manager" &&
+                                                          (leadController
+                                                                      .leadDetails
+                                                                      .value
+                                                                      ?.approvalData
+                                                                      ?.first
+                                                                      .managerStatus
+                                                                      .toString()
+                                                                      .toLowerCase() ==
+                                                                  'pending' ||
+                                                              leadController
+                                                                      .leadDetails
+                                                                      .value
+                                                                      ?.approvalData
+                                                                      ?.first
+                                                                      .managerStatus
+                                                                      .toString()
+                                                                      .toLowerCase() ==
+                                                                  "rejected")) ||
+                                                      (StorageHelper.getRoleName()
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              "branch head" &&
+                                                          (leadController
+                                                                      .leadDetails
+                                                                      .value
+                                                                      ?.approvalData
+                                                                      ?.first
+                                                                      .branchheadStatus
+                                                                      .toString()
+                                                                      .toLowerCase() ==
+                                                                  'pending' ||
+                                                              leadController
+                                                                      .leadDetails
+                                                                      .value
+                                                                      ?.approvalData
+                                                                      ?.first
+                                                                      .branchheadStatus
+                                                                      .toString()
+                                                                      .toLowerCase() ==
+                                                                  "rejected"))) {
+                                                    await leadController
+                                                        .approveDocument(
+                                                      documentId: leadController
+                                                          .leadDocumentListData[
+                                                              index]
+                                                          .id,
+                                                      leadId: widget.leadId,
+                                                      status: leadController
+                                                                  .leadDocumentListData[
+                                                                      index]
+                                                                  .status ==
+                                                              0
+                                                          ? 1
+                                                          : 0,
+                                                    );
+                                                    leadController
+                                                            .isDocumentCheckBoxSelected[
+                                                        index] = value!;
+                                                  }
+                                                },
+                                              ),
+                                            )
                                         ],
                                       ),
                                       Divider(
@@ -370,16 +413,14 @@ class _LeadOverviewDocumentListBotomsheet
                                 },
                               ),
                             ),
-                      if (StorageHelper.getRoleName()
-                                  .toString()
-                                  .toLowerCase() ==
-                              "marketing manager"
-                          //      &&
-                          // widget.status?.first.managerStatus
-                          //         .toString()
-                          //         .toLowerCase() ==
-                          //     'pending')
-                          ||
+                      if ((StorageHelper.getRoleName()
+                                      .toString()
+                                      .toLowerCase() ==
+                                  "marketing manager" &&
+                              widget.status?.first.managerStatus
+                                      .toString()
+                                      .toLowerCase() !=
+                                  'approved') ||
                           (StorageHelper.getRoleName()
                                       .toString()
                                       .toLowerCase() ==
@@ -388,12 +429,6 @@ class _LeadOverviewDocumentListBotomsheet
                                       .toString()
                                       .toLowerCase() !=
                                   'approve'))
-                        //         ||
-                        // (StorageHelper.getRoleName()
-                        //             .toString()
-                        //             .toLowerCase() ==
-                        //         "pa" &&
-                        //     widget.status?.first.legalStatus == 0))
                         Column(
                           children: [
                             SizedBox(

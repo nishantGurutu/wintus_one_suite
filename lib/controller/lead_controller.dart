@@ -949,7 +949,7 @@ class LeadController extends GetxController {
         await LeadService().leadDocumentUploading(documentId, ducument);
     if (result != null) {
       await leadDocumentList(leadId: leadId, from: '');
-      Get.back();
+      // Get.back();
       selectedLeadStatusUpdateData.value = null;
     } else {}
     isDocumentUploading.value = false;
