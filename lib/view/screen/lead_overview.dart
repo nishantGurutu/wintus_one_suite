@@ -24,6 +24,7 @@ import 'package:task_management/view/widgets/assign_user.dart';
 import 'package:task_management/view/widgets/customAudioPlayer.dart';
 import 'package:task_management/view/widgets/followup_list.dart';
 import 'package:task_management/view/widgets/lead_discussion_list.dart';
+import 'package:task_management/view/widgets/lead_document_pdf_view.dart';
 import 'package:task_management/view/widgets/lead_document_remark.dart';
 import 'package:task_management/view/widgets/lead_overview_document_list.dart';
 import 'package:task_management/view/widgets/pdf_screen.dart';
@@ -1479,7 +1480,10 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                   .toLowerCase()
                                                                   .endsWith(
                                                                       '.png') ||
-                                                              (leadDatavalue?.approvalData?[i].legalAdditionalAttachment ??
+                                                              (leadDatavalue
+                                                                          ?.approvalData?[
+                                                                              i]
+                                                                          .legalAdditionalAttachment ??
                                                                       "")
                                                                   .toLowerCase()
                                                                   .endsWith(
@@ -1513,7 +1517,10 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                     .cover,
                                                               ),
                                                             )
-                                                          : (leadDatavalue?.approvalData![i].legalAdditionalAttachment ??
+                                                          : (leadDatavalue
+                                                                          ?.approvalData![
+                                                                              i]
+                                                                          .legalAdditionalAttachment ??
                                                                       "" ??
                                                                       '')
                                                                   .toString()
@@ -1522,10 +1529,17 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                       'pdf')
                                                               ? GestureDetector(
                                                                   onTap: () {
-                                                                    Get.to(() => NetworkPDFScreen(
-                                                                        file: leadDatavalue
-                                                                            ?.approvalData![i]
-                                                                            .legalAdditionalAttachment));
+                                                                    Get.to(() =>
+                                                                        WorkOrderPdfDocumentApprove(
+                                                                          documentUrl: leadDatavalue
+                                                                              ?.approvalData![i]
+                                                                              .legalAdditionalAttachment,
+                                                                          leadId:
+                                                                              widget.leadId,
+                                                                          legalStatus: leadDatavalue
+                                                                              ?.approvalData![i]
+                                                                              .legalStatus,
+                                                                        ));
                                                                   },
                                                                   child: Image
                                                                       .asset(

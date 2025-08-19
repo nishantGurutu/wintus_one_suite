@@ -73,63 +73,29 @@ class _WorkOrderPdfDocumentApproveState
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Column(
             children: [
-              SfPdfViewer.network(
-                file.toString(),
-                key: _pdfViewerKey,
+              Expanded(
+                child: SfPdfViewer.network(
+                  widget.documentUrl.toString(),
+                  key: _pdfViewerKey,
+                ),
               ),
               SizedBox(
                 height: 10.h,
               ),
-              // if (widget.legalStatus == 2)
-              //   GestureDetector(
-              //     onTap: () {
-              //       // if (!leadController.isDocumentCheckBoxSelected
-              //       //     .contains(false)) {
-              //       documentApprovedDialog(context, "approve");
-              //       // } else {
-              //       //   CustomToast()
-              //       //       .showCustomToast("All document not approved.");
-              //       // }
-              //     },
-              //     child: Container(
-              //       height: 40.h,
-              //       width: 150.w,
-              //       decoration: BoxDecoration(
-              //         color: !leadController.isDocumentCheckBoxSelected
-              //                 .contains(false)
-              //             ? primaryButtonColor
-              //             : lightGreyColor,
-              //         borderRadius: BorderRadius.all(
-              //           Radius.circular(8.r),
-              //         ),
-              //       ),
-              //       child: Center(
-              //         child: Text(
-              //           'Approve',
-              //           style: TextStyle(
-              //               fontSize: 13.sp,
-              //               fontWeight: FontWeight.w500,
-              //               color: whiteColor),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                      "pa" ||
+              if ((StorageHelper.getRoleName().toString().toLowerCase() ==
+                          "pa" &&
+                      widget.legalStatus.toString().toLowerCase() !=
+                          'approveed') ||
                   StorageHelper.getRoleName().toString().toLowerCase() ==
-                      "chairman")
+                          "chairman" &&
+                      widget.legalStatus.toString().toLowerCase() !=
+                          'approveed')
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
                       onTap: () {
-                        // if (!leadController.isDocumentCheckBoxSelected
-                        //     .contains(false)) {
                         documentApprovedDialog(context, "approve");
-                        // } else {
-                        //   CustomToast()
-                        //       .showCustomToast("All document not approved.");
-                        // }
                       },
                       child: Container(
                         height: 40.h,

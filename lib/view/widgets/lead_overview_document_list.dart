@@ -702,32 +702,64 @@ class _LeadOverviewDocumentListBotomsheet
                                       Radius.circular(10.r),
                                     ),
                                   ),
+
+                                  // GestureDetector(
+                                  //                       onTap: () {
+                                  //                         Get.to(() => NetworkPDFScreen(
+                                  //                             file: leadController
+                                  //                                 .leadDocumentListData[
+                                  //                                     index]
+                                  //                                 .fileUrl));
+                                  //                       },
+                                  //                       child: Image.asset(
+                                  //                         'assets/images/png/pdf-image-removebg-preview.png',
+                                  //                         height: 40.h,
+                                  //                       ),
+                                  //                     )
                                   child: Obx(
                                     () {
                                       return ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(10.r),
-                                        child: Image.file(
-                                          leadController.leadpickedFile.value,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.r),
-                                                  border: Border.all(
-                                                      color: lightBorderColor)),
-                                              height: 40.h,
-                                              width: 100.w,
-                                              child: Image.asset(
-                                                'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                                height: 15.h,
+                                        child: leadController
+                                                .leadpickedFile.value
+                                                .toString()
+                                                .contains('pdf')
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  Get.to(() => PDFScreen(
+                                                      file: leadController
+                                                          .leadpickedFile
+                                                          .value));
+                                                },
+                                                child: Image.asset(
+                                                  'assets/images/png/pdf-image-removebg-preview.png',
+                                                  height: 40.h,
+                                                ),
+                                              )
+                                            : Image.file(
+                                                leadController
+                                                    .leadpickedFile.value,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  return Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.r),
+                                                        border: Border.all(
+                                                            color:
+                                                                lightBorderColor)),
+                                                    height: 40.h,
+                                                    width: 100.w,
+                                                    child: Image.asset(
+                                                      'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                                      height: 15.h,
+                                                    ),
+                                                  );
+                                                },
                                               ),
-                                            );
-                                          },
-                                        ),
                                       );
                                     },
                                   ),
