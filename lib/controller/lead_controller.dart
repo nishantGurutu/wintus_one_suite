@@ -518,6 +518,24 @@ class LeadController extends GetxController {
     }
   }
 
+  Future<void> detailsoffLineStatusdata({String? status}) async {
+    final result = await DatabaseHelper.instance.getLeadStatus();
+    leadStatusData.assignAll(result);
+    refresh();
+    if (status != null) {
+      for (var val in leadStatusData) {
+        if (val.id.toString() == status.toString() ||
+            val.name.toString().toLowerCase() == status.toString()) {
+          selectedLeadStatusData2.value = val;
+          break;
+        }
+      }
+      print('lead selected id from home ${selectedLeadStatusData2.value?.id}');
+      await leadsList(
+          selectedLeadStatusData2.value?.id, selectedLeadType.value, '');
+    }
+  }
+
   Future<void> getOflineLeadList() async {
     final offlineLeads = await DatabaseHelper.instance.getLeads();
     leadsListData.clear();
@@ -542,6 +560,7 @@ class LeadController extends GetxController {
 
   RxList<LeadStatusData> leadStatusData = <LeadStatusData>[].obs;
   Rx<LeadStatusData?> selectedLeadStatusData = Rx<LeadStatusData?>(null);
+  Rx<LeadStatusData?> selectedLeadStatusData2 = Rx<LeadStatusData?>(null);
   Rx<LeadStatusData?> selectedLeadStatusDropdawnData =
       Rx<LeadStatusData?>(null);
   Rx<LeadStatusData?> addselectedLeadStatusData = Rx<LeadStatusData?>(null);
