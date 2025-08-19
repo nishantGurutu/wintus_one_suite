@@ -7,12 +7,14 @@ import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/custom_toast.dart';
 import 'package:task_management/constant/download.dart' show DownloadFile;
+import 'package:task_management/constant/text_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/network_image_class.dart';
 import 'package:task_management/custom_widget/task_text_field.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/lead_details_model.dart';
 import 'package:task_management/view/widgets/image_screen.dart';
+import 'package:task_management/view/widgets/pdf_screen.dart';
 
 class LeadOverviewDocumentListBotomsheet extends StatefulWidget {
   final dynamic leadId;
@@ -250,21 +252,41 @@ class _LeadOverviewDocumentListBotomsheet
                                                       ),
                                                     ),
                                                   )
-                                                : InkWell(
-                                                    onTap: () {},
-                                                    child: Container(
-                                                      width: 40.w,
-                                                      height: 40.h,
-                                                      child: NetworkImageWidget(
-                                                        imageurl: leadController
-                                                            .leadDocumentListData[
-                                                                index]
-                                                            .fileUrl,
-                                                        height: 40.h,
-                                                        width: 40.w,
+                                                : leadController
+                                                        .leadDocumentListData[
+                                                            index]
+                                                        .fileUrl
+                                                        .toString()
+                                                        .contains("pdf")
+                                                    ? GestureDetector(
+                                                        onTap: () {
+                                                          Get.to(() => NetworkPDFScreen(
+                                                              file: leadController
+                                                                  .leadDocumentListData[
+                                                                      index]
+                                                                  .fileUrl));
+                                                        },
+                                                        child: Image.asset(
+                                                          'assets/images/png/pdf-image-removebg-preview.png',
+                                                          height: 40.h,
+                                                        ),
+                                                      )
+                                                    : InkWell(
+                                                        onTap: () {},
+                                                        child: Container(
+                                                          width: 40.w,
+                                                          height: 40.h,
+                                                          child:
+                                                              NetworkImageWidget(
+                                                            imageurl: leadController
+                                                                .leadDocumentListData[
+                                                                    index]
+                                                                .fileUrl,
+                                                            height: 40.h,
+                                                            width: 40.w,
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
                                           ),
                                           Obx(
                                             () => Checkbox(
