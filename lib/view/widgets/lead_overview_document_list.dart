@@ -702,20 +702,6 @@ class _LeadOverviewDocumentListBotomsheet
                                       Radius.circular(10.r),
                                     ),
                                   ),
-
-                                  // GestureDetector(
-                                  //                       onTap: () {
-                                  //                         Get.to(() => NetworkPDFScreen(
-                                  //                             file: leadController
-                                  //                                 .leadDocumentListData[
-                                  //                                     index]
-                                  //                                 .fileUrl));
-                                  //                       },
-                                  //                       child: Image.asset(
-                                  //                         'assets/images/png/pdf-image-removebg-preview.png',
-                                  //                         height: 40.h,
-                                  //                       ),
-                                  //                     )
                                   child: Obx(
                                     () {
                                       return ClipRRect(

@@ -13,11 +13,13 @@ class WorkOrderPdfDocumentApprove extends StatefulWidget {
   final dynamic documentUrl;
   final dynamic leadId;
   final dynamic legalStatus;
+  final String from;
   const WorkOrderPdfDocumentApprove(
       {super.key,
       required this.documentUrl,
       required this.leadId,
-      required this.legalStatus});
+      required this.legalStatus,
+      required this.from});
 
   @override
   State<WorkOrderPdfDocumentApprove> createState() =>
@@ -85,11 +87,13 @@ class _WorkOrderPdfDocumentApproveState
               if ((StorageHelper.getRoleName().toString().toLowerCase() ==
                           "pa" &&
                       widget.legalStatus.toString().toLowerCase() !=
-                          'approveed') ||
-                  StorageHelper.getRoleName().toString().toLowerCase() ==
+                          'approveed' &&
+                      widget.from == "branch head") ||
+                  (StorageHelper.getRoleName().toString().toLowerCase() ==
                           "chairman" &&
                       widget.legalStatus.toString().toLowerCase() !=
-                          'approveed')
+                          'approveed' &&
+                      widget.from == 'legal'))
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

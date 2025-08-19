@@ -12,11 +12,13 @@ class WorkOrderDocumentApprove extends StatefulWidget {
   final dynamic documentUrl;
   final dynamic leadId;
   final dynamic legalStatus;
+  final String from;
   const WorkOrderDocumentApprove(
       {super.key,
       required this.documentUrl,
       required this.leadId,
-      required this.legalStatus});
+      required this.legalStatus,
+      required this.from});
 
   @override
   State<WorkOrderDocumentApprove> createState() =>
@@ -74,9 +76,14 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.network(
-                      widget.documentUrl,
-                      width: double.infinity,
+                    InteractiveViewer(
+                      panEnabled: true,
+                      minScale: 0.9,
+                      maxScale: 4.0,
+                      child: Image.network(
+                        widget.documentUrl,
+                        width: double.infinity,
+                      ),
                     ),
                   ],
                 ),
@@ -84,44 +91,12 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
               SizedBox(
                 height: 10.h,
               ),
-              // if (widget.legalStatus == 2)
-              //   GestureDetector(
-              //     onTap: () {
-              //       // if (!leadController.isDocumentCheckBoxSelected
-              //       //     .contains(false)) {
-              //       documentApprovedDialog(context, "approve");
-              //       // } else {
-              //       //   CustomToast()
-              //       //       .showCustomToast("All document not approved.");
-              //       // }
-              //     },
-              //     child: Container(
-              //       height: 40.h,
-              //       width: 150.w,
-              //       decoration: BoxDecoration(
-              //         color: !leadController.isDocumentCheckBoxSelected
-              //                 .contains(false)
-              //             ? primaryButtonColor
-              //             : lightGreyColor,
-              //         borderRadius: BorderRadius.all(
-              //           Radius.circular(8.r),
-              //         ),
-              //       ),
-              //       child: Center(
-              //         child: Text(
-              //           'Approve',
-              //           style: TextStyle(
-              //               fontSize: 13.sp,
-              //               fontWeight: FontWeight.w500,
-              //               color: whiteColor),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                      "pa" ||
-                  StorageHelper.getRoleName().toString().toLowerCase() ==
-                      "chairman")
+              if ((StorageHelper.getRoleName().toString().toLowerCase() ==
+                          "pa" &&
+                      widget.from != "legal") ||
+                  (StorageHelper.getRoleName().toString().toLowerCase() ==
+                          "chairman" &&
+                      widget.from != "ceo"))
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

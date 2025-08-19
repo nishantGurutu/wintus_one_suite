@@ -1103,7 +1103,9 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                       legalStatus: leadDatavalue
                                                                           ?.approvalData?[
                                                                               i]
-                                                                          .legalStatus,
+                                                                          .branchheadStatus,
+                                                                      from:
+                                                                          "branch head",
                                                                     ));
                                                               }
                                                             },
@@ -1122,11 +1124,21 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                 .contains('pdf')
                                                             ? GestureDetector(
                                                                 onTap: () {
-                                                                  Get.to(() => NetworkPDFScreen(
-                                                                      file: leadDatavalue
-                                                                          ?.approvalData
-                                                                          ?.first
-                                                                          .branchheadAgreement));
+                                                                  Get.to(() =>
+                                                                      WorkOrderPdfDocumentApprove(
+                                                                        documentUrl: leadDatavalue
+                                                                            ?.approvalData
+                                                                            ?.first
+                                                                            .branchheadAgreement,
+                                                                        leadId:
+                                                                            widget.leadId,
+                                                                        legalStatus: leadDatavalue
+                                                                            ?.approvalData
+                                                                            ?.first
+                                                                            .branchheadStatus,
+                                                                        from:
+                                                                            'branch head',
+                                                                      ));
                                                                 },
                                                                 child:
                                                                     Image.asset(
@@ -1381,19 +1393,19 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                       '.jpeg'))
                                                           ? GestureDetector(
                                                               onTap: () {
-                                                                Get.to(() =>
-                                                                    WorkOrderDocumentApprove(
-                                                                      documentUrl: leadDatavalue
-                                                                          ?.approvalData?[
-                                                                              i]
-                                                                          .legalWorkorder,
-                                                                      leadId: widget
-                                                                          .leadId,
-                                                                      legalStatus: leadDatavalue
-                                                                          ?.approvalData?[
-                                                                              i]
-                                                                          .legalStatus,
-                                                                    ));
+                                                                Get.to(() => WorkOrderDocumentApprove(
+                                                                    documentUrl: leadDatavalue
+                                                                        ?.approvalData?[
+                                                                            i]
+                                                                        .legalWorkorder,
+                                                                    leadId: widget
+                                                                        .leadId,
+                                                                    legalStatus: leadDatavalue
+                                                                        ?.approvalData?[
+                                                                            i]
+                                                                        .legalStatus,
+                                                                    from:
+                                                                        "legal"));
                                                               },
                                                               child:
                                                                   Image.network(
@@ -1406,10 +1418,13 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                     .cover,
                                                               ),
                                                             )
-                                                          : (leadDatavalue?.approvalData![i].legalWorkorder ?? "" ?? '')
+                                                          : (leadDatavalue?.approvalData![i].legalWorkorder ??
+                                                                      "" ??
+                                                                      '')
                                                                   .toString()
                                                                   .toLowerCase()
-                                                                  .endsWith('pdf')
+                                                                  .endsWith(
+                                                                      'pdf')
                                                               ? GestureDetector(
                                                                   onTap: () {
                                                                     Get.to(() => NetworkPDFScreen(
@@ -1425,7 +1440,12 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                         80.h,
                                                                   ),
                                                                 )
-                                                              : (leadDatavalue?.approvalData![i].legalWorkorder ?? "" ?? '').toString().toLowerCase().endsWith('docx')
+                                                              : (leadDatavalue?.approvalData![i].legalWorkorder ??
+                                                                          "" ??
+                                                                          '')
+                                                                      .toString()
+                                                                      .toLowerCase()
+                                                                      .endsWith('docx')
                                                                   ? Padding(
                                                                       padding: EdgeInsets.symmetric(
                                                                           vertical:
@@ -1480,10 +1500,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                   .toLowerCase()
                                                                   .endsWith(
                                                                       '.png') ||
-                                                              (leadDatavalue
-                                                                          ?.approvalData?[
-                                                                              i]
-                                                                          .legalAdditionalAttachment ??
+                                                              (leadDatavalue?.approvalData?[i].legalAdditionalAttachment ??
                                                                       "")
                                                                   .toLowerCase()
                                                                   .endsWith(
@@ -1500,11 +1517,20 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                       '.jpeg'))
                                                           ? GestureDetector(
                                                               onTap: () {
-                                                                OpenFileClass().openUrl(
-                                                                    leadDatavalue
-                                                                        ?.approvalData?[
-                                                                            i]
-                                                                        .legalAdditionalAttachment);
+                                                                Get.to(() =>
+                                                                    WorkOrderDocumentApprove(
+                                                                      documentUrl:
+                                                                          leadDatavalue?.approvalData?[i].legalAdditionalAttachment ??
+                                                                              '',
+                                                                      leadId: widget
+                                                                          .leadId,
+                                                                      legalStatus: leadDatavalue
+                                                                          ?.approvalData?[
+                                                                              i]
+                                                                          .branchheadStatus,
+                                                                      from:
+                                                                          "legal",
+                                                                    ));
                                                               },
                                                               child:
                                                                   Image.network(
@@ -1517,10 +1543,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                     .cover,
                                                               ),
                                                             )
-                                                          : (leadDatavalue
-                                                                          ?.approvalData![
-                                                                              i]
-                                                                          .legalAdditionalAttachment ??
+                                                          : (leadDatavalue?.approvalData![i].legalAdditionalAttachment ??
                                                                       "" ??
                                                                       '')
                                                                   .toString()
@@ -1539,6 +1562,8 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                                           legalStatus: leadDatavalue
                                                                               ?.approvalData![i]
                                                                               .legalStatus,
+                                                                          from:
+                                                                              'legal',
                                                                         ));
                                                                   },
                                                                   child: Image
@@ -1773,16 +1798,16 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                             //     leadDatavalue
                                             //         ?.approvalData?[i]
                                             //         .legalWorkorder);
-                                            Get.to(
-                                                () => WorkOrderDocumentApprove(
-                                                      documentUrl: leadDatavalue
-                                                          ?.approvalData?[i]
-                                                          .ceoAttachment,
-                                                      leadId: widget.leadId,
-                                                      legalStatus: leadDatavalue
-                                                          ?.approvalData?[i]
-                                                          .ceoStatus,
-                                                    ));
+                                            Get.to(() =>
+                                                WorkOrderDocumentApprove(
+                                                    documentUrl: leadDatavalue
+                                                        ?.approvalData?[i]
+                                                        .ceoAttachment,
+                                                    leadId: widget.leadId,
+                                                    legalStatus: leadDatavalue
+                                                        ?.approvalData?[i]
+                                                        .ceoStatus,
+                                                    from: "ceo"));
                                           },
                                           child: Container(
                                             height: 80.h,
