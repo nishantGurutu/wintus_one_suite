@@ -220,11 +220,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     String cacheKey = 'home_data_cache';
     final cacheManager = DefaultCacheManager();
     await cacheManager.removeFile('$cacheKey');
-
     await homeController.homeDataApi('');
-    // } else if (homeController.isTabIndexSelected.value == 1) {
     await homeController.leadHomeApi();
-    // }
   }
 
   @override

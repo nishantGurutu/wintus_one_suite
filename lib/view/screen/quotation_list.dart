@@ -39,6 +39,10 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
     });
   }
 
+  Future onrefresher() async {
+    await leadController.quotationListApi(leadId: widget.leadId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,175 +66,179 @@ class _QuotationListScreenState extends State<QuotationListScreen> {
               elevation: 0,
             )
           : null,
-      body: Obx(
-        () {
-          if (leadController.isQuotationLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (leadController.quotationListData.isEmpty) {
-            return const Center(child: Text("No quotations available"));
-          }
+      body: RefreshIndicator(
+        onRefresh: () => onrefresher(),
+        child: Obx(
+          () {
+            if (leadController.isQuotationLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (leadController.quotationListData.isEmpty) {
+              return const Center(child: Text("No quotations available"));
+            }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: leadController.quotationListData.length,
-            itemBuilder: (context, index) {
-              final QuotationListData quotation =
-                  leadController.quotationListData[index];
+            return ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: leadController.quotationListData.length,
+              itemBuilder: (context, index) {
+                final QuotationListData quotation =
+                    leadController.quotationListData[index];
 
-              return Card(
-                color: whiteColor,
-                margin: const EdgeInsets.only(bottom: 12),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Lead: ${quotation.lead?.leadNumber ?? 'N/A'}",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
-                          Spacer(),
-                          InkWell(
-                            onTap: () {
-                              Get.to(() => UpdateQuotationScreen(
-                                  leadId: widget.leadId,
-                                  leadNumber: widget.leadNumber,
-                                  quotationData:
-                                      leadController.quotationListData[index]));
-                            },
-                            child: SvgPicture.asset(
-                              'assets/image/svg/edit_icon.svg',
-                              height: 20.h,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 15.w,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              if (leadController.isQuotationDownloading.value ==
-                                  false) {
-                                await leadController.downloadQuotation(
-                                    quotation.id, quotation.quotationNumber);
-                              }
-                            },
-                            child: Icon(
-                              Icons.download,
-                              size: 24.sp,
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 6.h),
-                      Text(
-                        "Quotation: ${quotation.quotationNumber}",
-                        style: TextStyle(color: Colors.grey.shade700),
-                      ),
-                      SizedBox(height: 6.h),
-                      if (quotation.userId.toString() ==
-                              StorageHelper.getId().toString() ||
-                          (widget.leadDetails.value?.assignedTo ?? "")
-                              .toString()
-                              .contains(StorageHelper.getId().toString()))
+                return Card(
+                  color: whiteColor,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Obx(
-                              () => GestureDetector(
-                                onTap: () {
-                                  if ((leadController.leadDetails.value
-                                              ?.approvalData ??
-                                          [])
-                                      .isEmpty) {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (context) => Padding(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        child: DocumentListBotomsheet(
-                                          from: "quotation",
-                                          leadId: widget.leadId,
-                                          quotationId: leadController
-                                              .quotationListData[index].id,
+                            Text(
+                              "Lead: ${quotation.lead?.leadNumber ?? 'N/A'}",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                            Spacer(),
+                            InkWell(
+                              onTap: () {
+                                Get.to(() => UpdateQuotationScreen(
+                                    leadId: widget.leadId,
+                                    leadNumber: widget.leadNumber,
+                                    quotationData: leadController
+                                        .quotationListData[index]));
+                              },
+                              child: SvgPicture.asset(
+                                'assets/image/svg/edit_icon.svg',
+                                height: 20.h,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.w,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                if (leadController
+                                        .isQuotationDownloading.value ==
+                                    false) {
+                                  await leadController.downloadQuotation(
+                                      quotation.id, quotation.quotationNumber);
+                                }
+                              },
+                              child: Icon(
+                                Icons.download,
+                                size: 24.sp,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 6.h),
+                        Text(
+                          "Quotation: ${quotation.quotationNumber}",
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
+                        SizedBox(height: 6.h),
+                        if (quotation.userId.toString() ==
+                                StorageHelper.getId().toString() ||
+                            (widget.leadDetails.value?.assignedTo ?? "")
+                                .toString()
+                                .contains(StorageHelper.getId().toString()))
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Obx(
+                                () => GestureDetector(
+                                  onTap: () {
+                                    if ((leadController.leadDetails.value
+                                                ?.approvalData ??
+                                            [])
+                                        .isEmpty) {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (context) => Padding(
+                                          padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                  .viewInsets
+                                                  .bottom),
+                                          child: DocumentListBotomsheet(
+                                            from: "quotation",
+                                            leadId: widget.leadId,
+                                            quotationId: leadController
+                                                .quotationListData[index].id,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: Container(
-                                  height: 30.h,
-                                  width: 140.w,
-                                  decoration: BoxDecoration(
-                                    color: (leadController.leadDetails.value
-                                                    ?.approvalData ??
-                                                [])
-                                            .isEmpty
-                                        ? lightBlue
-                                        : greenColor,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10.r),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      (leadController.leadDetails.value
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 30.h,
+                                    width: 140.w,
+                                    decoration: BoxDecoration(
+                                      color: (leadController.leadDetails.value
                                                       ?.approvalData ??
                                                   [])
                                               .isEmpty
-                                          ? "Accept"
-                                          : "Accepted",
-                                      style: TextStyle(
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: (leadController
-                                                          .leadDetails
-                                                          .value
-                                                          ?.approvalData ??
-                                                      [])
-                                                  .isEmpty
-                                              ? textColor
-                                              : whiteColor),
+                                          ? lightBlue
+                                          : greenColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.r),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        (leadController.leadDetails.value
+                                                        ?.approvalData ??
+                                                    [])
+                                                .isEmpty
+                                            ? "Accept"
+                                            : "Accepted",
+                                        style: TextStyle(
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: (leadController
+                                                            .leadDetails
+                                                            .value
+                                                            ?.approvalData ??
+                                                        [])
+                                                    .isEmpty
+                                                ? textColor
+                                                : whiteColor),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Container(
-                              height: 30.h,
-                              width: 140.w,
-                              decoration: BoxDecoration(
-                                color: lightBlue,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10.r),
+                              Container(
+                                height: 30.h,
+                                width: 140.w,
+                                decoration: BoxDecoration(
+                                  color: lightBlue,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.r),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Not Accept",
+                                    style: TextStyle(
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
                               ),
-                              child: Center(
-                                child: Text(
-                                  "Not Accept",
-                                  style: TextStyle(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                    ],
+                            ],
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryButtonColor,

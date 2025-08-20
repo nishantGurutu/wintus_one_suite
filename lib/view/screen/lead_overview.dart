@@ -280,9 +280,9 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
   }
 
   Widget leadOverview(LeadDetailsData? leadDatavalue) {
-    return SingleChildScrollView(
-      child: RefreshIndicator(
-        onRefresh: onrefresher,
+    return RefreshIndicator(
+      onRefresh: onrefresher,
+      child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Column(

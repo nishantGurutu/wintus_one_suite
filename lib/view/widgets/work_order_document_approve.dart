@@ -102,13 +102,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        // if (!leadController.isDocumentCheckBoxSelected
-                        //     .contains(false)) {
                         documentApprovedDialog(context, "approve");
-                        // } else {
-                        //   CustomToast()
-                        //       .showCustomToast("All document not approved.");
-                        // }
                       },
                       child: Container(
                         height: 40.h,

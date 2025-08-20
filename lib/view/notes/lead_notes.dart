@@ -216,133 +216,136 @@ class _LeadNoteEditorScreenState extends State<LeadNoteEditorScreen> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: TextFormField(
-              controller: _titleController,
-              textCapitalization: TextCapitalization.sentences,
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-              decoration: InputDecoration(
-                  hintText: "Enter Title",
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: lightGreyColor)),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: TextFormField(
+                controller: _titleController,
+                textCapitalization: TextCapitalization.sentences,
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                    hintText: "Enter Title",
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: lightGreyColor)),
+              ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: quill.QuillEditor(
-                controller: editorController.quillController,
-                focusNode: _focusNode,
-                scrollController: ScrollController(),
-                config: quill.QuillEditorConfig(
-                  placeholder: 'Start writing your notes...',
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: quill.QuillEditor(
+                  controller: editorController.quillController,
+                  focusNode: _focusNode,
+                  scrollController: ScrollController(),
+                  config: quill.QuillEditorConfig(
+                    placeholder: 'Start writing your notes...',
+                  ),
                 ),
               ),
             ),
-          ),
-          Obx(
-            () {
-              return Column(
-                children: [
-                  if (leadController.profilePicPath.value.isNotEmpty)
-                    InkWell(
-                      onTap: () {
-                        openFile(File(leadController.profilePicPath.value));
-                      },
-                      child: Container(
-                        height: 150.h,
-                        width: 250.w,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: lightGreyColor),
-                          borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.r),
-                          child: Image.file(
-                            File(leadController.profilePicPath.value),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Center(
-                                child: Text(
-                                  "Invalid Image",
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              );
-                            },
+            Obx(
+              () {
+                return Column(
+                  children: [
+                    if (leadController.profilePicPath.value.isNotEmpty)
+                      InkWell(
+                        onTap: () {
+                          openFile(File(leadController.profilePicPath.value));
+                        },
+                        child: Container(
+                          height: 150.h,
+                          width: 250.w,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: lightGreyColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.r)),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.r),
+                            child: Image.file(
+                              File(leadController.profilePicPath.value),
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Center(
+                                  child: Text(
+                                    "Invalid Image",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
+                  ],
+                );
+              },
+            ),
+            Container(
+              width: double.infinity,
+              color: backgroundColor,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.attach_file),
+                      onPressed: () async {
+                        await takePhoto();
+                      },
                     ),
-                ],
-              );
-            },
-          ),
-          Container(
-            width: double.infinity,
-            color: backgroundColor,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.attach_file),
-                    onPressed: () async {
-                      await takePhoto();
-                    },
-                  ),
-                  CustomStyleButton(
-                    controller: editorController.quillController,
-                    attribute: quill.Attribute.bold,
-                    icon: Icons.format_bold,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.format_list_bulleted),
-                    onPressed: () {
-                      var controller = editorController.quillController;
+                    CustomStyleButton(
+                      controller: editorController.quillController,
+                      attribute: quill.Attribute.bold,
+                      icon: Icons.format_bold,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.format_list_bulleted),
+                      onPressed: () {
+                        var controller = editorController.quillController;
 
-                      var currentAttr = controller
-                          .getSelectionStyle()
-                          .attributes[quill.Attribute.list.key];
+                        var currentAttr = controller
+                            .getSelectionStyle()
+                            .attributes[quill.Attribute.list.key];
 
-                      if (currentAttr == quill.Attribute.ul) {
-                        controller.formatSelection(
-                            quill.Attribute.clone(quill.Attribute.list, null));
-                      } else {
-                        controller.formatSelection(quill.Attribute.ul);
-                      }
-                    },
-                  ),
-                  CustomStyleButton(
-                    controller: editorController.quillController,
-                    attribute: quill.Attribute.italic,
-                    icon: Icons.format_italic,
-                  ),
-                  SizedBox(width: 10.w),
-                  Obx(
-                    () {
-                      return GestureDetector(
-                        onTap: () => _showCustomColorPicker(context),
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: editorController.selectedColor.value,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black),
+                        if (currentAttr == quill.Attribute.ul) {
+                          controller.formatSelection(quill.Attribute.clone(
+                              quill.Attribute.list, null));
+                        } else {
+                          controller.formatSelection(quill.Attribute.ul);
+                        }
+                      },
+                    ),
+                    CustomStyleButton(
+                      controller: editorController.quillController,
+                      attribute: quill.Attribute.italic,
+                      icon: Icons.format_italic,
+                    ),
+                    SizedBox(width: 10.w),
+                    Obx(
+                      () {
+                        return GestureDetector(
+                          onTap: () => _showCustomColorPicker(context),
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: editorController.selectedColor.value,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.black),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
