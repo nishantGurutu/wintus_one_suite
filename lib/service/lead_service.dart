@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:http_parser/http_parser.dart' show MediaType;
 import 'package:intl/intl.dart';
@@ -599,7 +598,8 @@ class LeadService {
   Future<FollowUpsListModel?> followUpsListApi(leadId) async {
     try {
       final token = StorageHelper.getToken();
-      print("Token used: $token");
+      print("Token used4: $token");
+      print("Token used4:  $leadId");
 
       _dio.options.headers["Authorization"] = "Bearer $token";
       _dio.interceptors.add(LogInterceptor(
@@ -1832,7 +1832,8 @@ class LeadService {
       String note,
       int? status,
       dynamic leadId,
-      String reminder) async {
+      String reminder,
+      String mobileNumber) async {
     try {
       final token = StorageHelper.getToken();
       _dio.options.headers["Authorization"] = "Bearer $token";
@@ -1845,6 +1846,14 @@ class LeadService {
         error: true,
       ));
 
+      print('736872g8787g ${followupsType}');
+      print('736872g8787g ${followupsDate}');
+      print('736872g8787g ${followupsTime}');
+      print('736872g8787g ${note}');
+      print('736872g8787g ${status}');
+      print('736872g8787g ${reminder}');
+      print('736872g8787g ${mobileNumber}');
+
       final Map<String, dynamic> formDataMap = {
         'follow_up_type': followupsType,
         'follow_up_date': followupsDate,
@@ -1852,6 +1861,7 @@ class LeadService {
         'note': note,
         'status': status.toString(),
         'reminder': reminder,
+        "phone": mobileNumber,
       };
 
       if (leadId.toString() == "null" || leadId.toString().isNotEmpty) {

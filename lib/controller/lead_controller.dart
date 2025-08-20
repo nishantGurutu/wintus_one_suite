@@ -1503,12 +1503,13 @@ class LeadController extends GetxController {
     required dynamic followupsTime,
     required dynamic note,
     int? status,
-    dynamic? leadId,
+    dynamic leadId,
     required String reminder,
+    required String mobileNumber,
   }) async {
     isPeopleAdding.value = true;
     final result = await LeadService().addFollowup(followupsType, followupsDate,
-        followupsTime, note, status, leadId, reminder);
+        followupsTime, note, status, leadId, reminder, mobileNumber);
     if (result != null) {
       Get.back();
       Get.back();

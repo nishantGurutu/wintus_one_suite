@@ -31,6 +31,7 @@ class _UpdateFollowUpsScreenState extends State<UpdateFollowUpsScreen> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
+  final TextEditingController mobileController = TextEditingController();
   final TextEditingController timeTextEditingController =
       TextEditingController();
   @override
@@ -199,6 +200,27 @@ class _UpdateFollowUpsScreenState extends State<UpdateFollowUpsScreen> {
                   height: 10.h,
                 ),
                 Text(
+                  "Mobile Number",
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                TaskCustomTextField(
+                  controller: mobileController,
+                  textCapitalization: TextCapitalization.none,
+                  data: phone,
+                  keyboardType: TextInputType.number,
+                  hintText: mobileNumber,
+                  maxLength: 10,
+                  labelText: mobileNumber,
+                  index: 6,
+                  focusedIndexNotifier: focusedIndexNotifier,
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Text(
                   "Note",
                   style: TextStyle(fontSize: 14.sp),
                 ),
@@ -324,17 +346,18 @@ class _UpdateFollowUpsScreenState extends State<UpdateFollowUpsScreen> {
                         "${timeTextEditingController.text} ${leadController.selectedTime?.value}";
                     if (_formKey.currentState!.validate()) {
                       leadController.addFollowup(
-                        followupsType: leadController
-                                .selectedFollowUpsTypeListData.value?.id
-                                .toString() ??
-                            "",
-                        followupsDate: dateController.text,
-                        followupsTime: timeController.text,
-                        note: noteController.text,
-                        status: leadController.selectedLeadStatusData.value?.id,
-                        leadId: widget.leadId,
-                        reminder: rem,
-                      );
+                          followupsType: leadController
+                                  .selectedFollowUpsTypeListData.value?.id
+                                  .toString() ??
+                              "",
+                          followupsDate: dateController.text,
+                          followupsTime: timeController.text,
+                          note: noteController.text,
+                          status:
+                              leadController.selectedLeadStatusData.value?.id,
+                          leadId: widget.leadId,
+                          reminder: rem,
+                          mobileNumber: '');
                     }
                   },
                   text: Text(

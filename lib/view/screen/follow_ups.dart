@@ -28,6 +28,7 @@ class _FollowUpsScreenState extends State<FollowUpsScreen> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
+  final TextEditingController mobileController = TextEditingController();
   final TextEditingController timeTextEditingController =
       TextEditingController();
   @override
@@ -182,6 +183,27 @@ class _FollowUpsScreenState extends State<FollowUpsScreen> {
                   height: 10.h,
                 ),
                 Text(
+                  "Mobile number",
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                TaskCustomTextField(
+                  controller: mobileController,
+                  textCapitalization: TextCapitalization.none,
+                  keyboardType: TextInputType.number,
+                  data: phone,
+                  hintText: mobileNumber,
+                  maxLength: 10,
+                  labelText: mobileNumber,
+                  index: 6,
+                  focusedIndexNotifier: focusedIndexNotifier,
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Text(
                   "Follow ups time",
                   style: TextStyle(fontSize: 14.sp),
                 ),
@@ -316,11 +338,11 @@ class _FollowUpsScreenState extends State<FollowUpsScreen> {
                   height: 15.h,
                 ),
                 CustomButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       String rem =
                           "${timeTextEditingController.text} ${leadController.selectedTime?.value}";
-                      leadController.addFollowup(
+                      await leadController.addFollowup(
                         followupsType: leadController
                                 .selectedFollowUpsTypeListData.value?.id
                                 .toString() ??
@@ -331,6 +353,7 @@ class _FollowUpsScreenState extends State<FollowUpsScreen> {
                         status: leadController.selectedLeadStatusData.value?.id,
                         leadId: widget.leadId,
                         reminder: rem,
+                        mobileNumber: mobileController.text,
                       );
                     }
                   },
