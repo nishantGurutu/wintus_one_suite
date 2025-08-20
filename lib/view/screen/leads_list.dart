@@ -310,246 +310,249 @@ class _LeadListState extends State<LeadList> {
                               ),
                             ],
                           ),
-                        SizedBox(
-                          height: 8.h,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 40.h,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: boxBorderColor),
+                        if (leadController.isAllLeadSelected.value == true)
+                          SizedBox(
+                            height: 8.h,
+                          ),
+                        if (leadController.isAllLeadSelected.value == true)
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: boxBorderColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.r))),
+                                  child: ClipRRect(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(8.r))),
-                                child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.r)),
-                                  child: Obx(
-                                    () => DropdownButtonHideUnderline(
-                                      child: DropdownButton2<String>(
-                                        isExpanded: true,
-                                        items: leadController.leadTypeList
-                                            .map((String item) {
-                                          return DropdownMenuItem<String>(
-                                            value: item,
-                                            child: Text(
-                                              item ?? "",
-                                              style: TextStyle(
-                                                decoration: TextDecoration.none,
-                                                fontFamily: 'Roboto',
-                                                color: darkGreyColor,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14.sp,
+                                        BorderRadius.all(Radius.circular(8.r)),
+                                    child: Obx(
+                                      () => DropdownButtonHideUnderline(
+                                        child: DropdownButton2<String>(
+                                          isExpanded: true,
+                                          items: leadController.leadTypeList
+                                              .map((String item) {
+                                            return DropdownMenuItem<String>(
+                                              value: item,
+                                              child: Text(
+                                                item ?? "",
+                                                style: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontFamily: 'Roboto',
+                                                  color: darkGreyColor,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14.sp,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          );
-                                        }).toList(),
-                                        value: leadController
-                                                .selectedLeadType.value.isEmpty
-                                            ? null
-                                            : leadController
-                                                .selectedLeadType.value,
-                                        onChanged: (String? value) async {
-                                          leadController
-                                              .selectedLeadType.value = value!;
-                                          print(
-                                              'udey euygdyetftd ${leadController.selectedLeadType.value}');
-                                          await leadController.leadsList(
-                                              leadController
-                                                  .selectedLeadStatusData
-                                                  .value
-                                                  ?.id,
-                                              leadController
+                                            );
+                                          }).toList(),
+                                          value: leadController.selectedLeadType
+                                                  .value.isEmpty
+                                              ? null
+                                              : leadController
                                                   .selectedLeadType.value,
-                                              '');
-                                        },
-                                        buttonStyleData: ButtonStyleData(
-                                          height: 50,
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.only(
-                                              left: 14, right: 14),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5.r),
-                                            color: whiteColor,
-                                          ),
-                                        ),
-                                        hint: Text(
-                                          'Select Lead Type'.tr,
-                                          style: TextStyle(
-                                            decoration: TextDecoration.none,
-                                            fontFamily: 'Roboto',
-                                            color: darkGreyColor,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14.sp,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        iconStyleData: IconStyleData(
-                                          icon: Image.asset(
-                                            'assets/images/png/Vector 3.png',
-                                            color: secondaryColor,
-                                            height: 8.h,
-                                          ),
-                                          iconSize: 14,
-                                          iconEnabledColor: lightGreyColor,
-                                          iconDisabledColor: lightGreyColor,
-                                        ),
-                                        dropdownStyleData: DropdownStyleData(
-                                          maxHeight: 200.h,
-                                          width: 330.w,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.r),
-                                              color: whiteColor,
-                                              border: Border.all(
-                                                  color: boxBorderColor)),
-                                          offset: const Offset(0, 0),
-                                          scrollbarTheme: ScrollbarThemeData(
-                                            radius: const Radius.circular(40),
-                                            thickness:
-                                                WidgetStateProperty.all<double>(
-                                                    6),
-                                            thumbVisibility:
-                                                WidgetStateProperty.all<bool>(
-                                                    true),
-                                          ),
-                                        ),
-                                        menuItemStyleData:
-                                            const MenuItemStyleData(
-                                          height: 40,
-                                          padding: EdgeInsets.only(
-                                              left: 14, right: 14),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 8.w,
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 40.h,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: boxBorderColor),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8.r))),
-                                child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.r)),
-                                  child: Obx(
-                                    () => DropdownButtonHideUnderline(
-                                      child: DropdownButton2<LeadStatusData>(
-                                        isExpanded: true,
-                                        items: leadController.leadStatusData
-                                            .map((LeadStatusData item) {
-                                          return DropdownMenuItem<
-                                              LeadStatusData>(
-                                            value: item,
-                                            child: Text(
-                                              item.name ?? "",
-                                              style: TextStyle(
-                                                decoration: TextDecoration.none,
-                                                fontFamily: 'Roboto',
-                                                color: darkGreyColor,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14.sp,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          );
-                                        }).toList(),
-                                        value: leadController
+                                          onChanged: (String? value) async {
+                                            leadController.selectedLeadType
+                                                .value = value!;
+                                            print(
+                                                'udey euygdyetftd ${leadController.selectedLeadType.value}');
+                                            await leadController.leadsList(
+                                                leadController
                                                     .selectedLeadStatusData
-                                                    .value ==
-                                                null
-                                            ? null
-                                            : leadController
-                                                .selectedLeadStatusData.value,
-                                        onChanged:
-                                            (LeadStatusData? value) async {
-                                          leadController.selectedLeadStatusData
-                                              .value = value;
-                                          await leadController.leadsList(
-                                              leadController
-                                                  .selectedLeadStatusData
-                                                  .value
-                                                  ?.id,
-                                              leadController
-                                                  .selectedLeadType.value,
-                                              '');
-                                        },
-                                        buttonStyleData: ButtonStyleData(
-                                          height: 50,
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.only(
-                                              left: 14, right: 14),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5.r),
-                                            color: whiteColor,
-                                          ),
-                                        ),
-                                        hint: Text(
-                                          'Select Lead Status'.tr,
-                                          style: TextStyle(
-                                            decoration: TextDecoration.none,
-                                            fontFamily: 'Roboto',
-                                            color: darkGreyColor,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14.sp,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        iconStyleData: IconStyleData(
-                                          icon: Image.asset(
-                                            'assets/images/png/Vector 3.png',
-                                            color: secondaryColor,
-                                            height: 8.h,
-                                          ),
-                                          iconSize: 14,
-                                          iconEnabledColor: lightGreyColor,
-                                          iconDisabledColor: lightGreyColor,
-                                        ),
-                                        dropdownStyleData: DropdownStyleData(
-                                          maxHeight: 200.h,
-                                          width: 330.w,
-                                          decoration: BoxDecoration(
+                                                    .value
+                                                    ?.id,
+                                                leadController
+                                                    .selectedLeadType.value,
+                                                '');
+                                          },
+                                          buttonStyleData: ButtonStyleData(
+                                            height: 50,
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.only(
+                                                left: 14, right: 14),
+                                            decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(8.r),
+                                                  BorderRadius.circular(5.r),
                                               color: whiteColor,
-                                              border: Border.all(
-                                                  color: boxBorderColor)),
-                                          offset: const Offset(0, 0),
-                                          scrollbarTheme: ScrollbarThemeData(
-                                            radius: const Radius.circular(40),
-                                            thickness:
-                                                WidgetStateProperty.all<double>(
-                                                    6),
-                                            thumbVisibility:
-                                                WidgetStateProperty.all<bool>(
-                                                    true),
+                                            ),
                                           ),
-                                        ),
-                                        menuItemStyleData:
-                                            const MenuItemStyleData(
-                                          height: 40,
-                                          padding: EdgeInsets.only(
-                                              left: 14, right: 14),
+                                          hint: Text(
+                                            'Select Lead Type'.tr,
+                                            style: TextStyle(
+                                              decoration: TextDecoration.none,
+                                              fontFamily: 'Roboto',
+                                              color: darkGreyColor,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14.sp,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          iconStyleData: IconStyleData(
+                                            icon: Image.asset(
+                                              'assets/images/png/Vector 3.png',
+                                              color: secondaryColor,
+                                              height: 8.h,
+                                            ),
+                                            iconSize: 14,
+                                            iconEnabledColor: lightGreyColor,
+                                            iconDisabledColor: lightGreyColor,
+                                          ),
+                                          dropdownStyleData: DropdownStyleData(
+                                            maxHeight: 200.h,
+                                            width: 330.w,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.r),
+                                                color: whiteColor,
+                                                border: Border.all(
+                                                    color: boxBorderColor)),
+                                            offset: const Offset(0, 0),
+                                            scrollbarTheme: ScrollbarThemeData(
+                                              radius: const Radius.circular(40),
+                                              thickness: WidgetStateProperty
+                                                  .all<double>(6),
+                                              thumbVisibility:
+                                                  WidgetStateProperty.all<bool>(
+                                                      true),
+                                            ),
+                                          ),
+                                          menuItemStyleData:
+                                              const MenuItemStyleData(
+                                            height: 40,
+                                            padding: EdgeInsets.only(
+                                                left: 14, right: 14),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                              SizedBox(
+                                width: 8.w,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: boxBorderColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.r))),
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.r)),
+                                    child: Obx(
+                                      () => DropdownButtonHideUnderline(
+                                        child: DropdownButton2<LeadStatusData>(
+                                          isExpanded: true,
+                                          items: leadController.leadStatusData
+                                              .map((LeadStatusData item) {
+                                            return DropdownMenuItem<
+                                                LeadStatusData>(
+                                              value: item,
+                                              child: Text(
+                                                item.name ?? "",
+                                                style: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontFamily: 'Roboto',
+                                                  color: darkGreyColor,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14.sp,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            );
+                                          }).toList(),
+                                          value: leadController
+                                                      .selectedLeadStatusData
+                                                      .value ==
+                                                  null
+                                              ? null
+                                              : leadController
+                                                  .selectedLeadStatusData.value,
+                                          onChanged:
+                                              (LeadStatusData? value) async {
+                                            leadController
+                                                .selectedLeadStatusData
+                                                .value = value;
+                                            await leadController.leadsList(
+                                                leadController
+                                                    .selectedLeadStatusData
+                                                    .value
+                                                    ?.id,
+                                                leadController
+                                                    .selectedLeadType.value,
+                                                '');
+                                          },
+                                          buttonStyleData: ButtonStyleData(
+                                            height: 50,
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.only(
+                                                left: 14, right: 14),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.r),
+                                              color: whiteColor,
+                                            ),
+                                          ),
+                                          hint: Text(
+                                            'Select Lead Status'.tr,
+                                            style: TextStyle(
+                                              decoration: TextDecoration.none,
+                                              fontFamily: 'Roboto',
+                                              color: darkGreyColor,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14.sp,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          iconStyleData: IconStyleData(
+                                            icon: Image.asset(
+                                              'assets/images/png/Vector 3.png',
+                                              color: secondaryColor,
+                                              height: 8.h,
+                                            ),
+                                            iconSize: 14,
+                                            iconEnabledColor: lightGreyColor,
+                                            iconDisabledColor: lightGreyColor,
+                                          ),
+                                          dropdownStyleData: DropdownStyleData(
+                                            maxHeight: 200.h,
+                                            width: 330.w,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.r),
+                                                color: whiteColor,
+                                                border: Border.all(
+                                                    color: boxBorderColor)),
+                                            offset: const Offset(0, 0),
+                                            scrollbarTheme: ScrollbarThemeData(
+                                              radius: const Radius.circular(40),
+                                              thickness: WidgetStateProperty
+                                                  .all<double>(6),
+                                              thumbVisibility:
+                                                  WidgetStateProperty.all<bool>(
+                                                      true),
+                                            ),
+                                          ),
+                                          menuItemStyleData:
+                                              const MenuItemStyleData(
+                                            height: 40,
+                                            padding: EdgeInsets.only(
+                                                left: 14, right: 14),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         SizedBox(
                           height: 5.h,
                         ),
