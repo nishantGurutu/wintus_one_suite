@@ -2382,81 +2382,77 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                           horizontal: 8.w, vertical: 8.h),
                                       child: Row(
                                         children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                height: 33.h,
-                                                width: 33.w,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xffFF5959),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(17.r),
-                                                  ),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    '${CustomTextConvert().getNameChar(leadController.leadContactData[i].name ?? '')}',
-                                                    style: TextStyle(
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: whiteColor),
-                                                  ),
-                                                ),
+                                          Container(
+                                            height: 33.h,
+                                            width: 33.w,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffFF5959),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(17.r),
                                               ),
-                                              SizedBox(width: 8.w),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '${leadController.leadContactData[i].name ?? ""}',
-                                                    style: TextStyle(
-                                                        fontSize: 15.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  Text(
-                                                    '${leadController.leadContactData[i].phone ?? ""}',
-                                                    style: TextStyle(
-                                                        fontSize: 15.sp,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                  ),
-                                                ],
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '${CustomTextConvert().getNameChar(leadController.leadContactData[i].name ?? '')}',
+                                                style: TextStyle(
+                                                    fontSize: 16.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: whiteColor),
                                               ),
-                                              Spacer(),
-                                              GestureDetector(
-                                                onTap: () async {
-                                                  await callWhatsApp(
-                                                      mobileNo: leadController
-                                                          .leadContactData[i]
-                                                          .phone);
-                                                },
-                                                child: Image.asset(
-                                                  'assets/image/png/whatsapp (2).png',
-                                                  height: 20.h,
-                                                ),
-                                              ),
-                                              SizedBox(width: 12.w),
-                                              GestureDetector(
-                                                onTap: () async {
-                                                  Uri phoneno = Uri.parse(
-                                                      'tel:${leadController.leadContactData[i].phone}');
-                                                  if (await launchUrl(
-                                                      phoneno)) {
-                                                  } else {
-                                                    print('Not working');
-                                                  }
-                                                },
-                                                child: Image.asset(
-                                                  'assets/image/png/phone_call-removebg-preview.png',
-                                                  height: 20.h,
-                                                ),
-                                              )
-                                            ],
+                                            ),
                                           ),
+                                          SizedBox(width: 8.w),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${leadController.leadContactData[i].name ?? ""}',
+                                                  style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  '${leadController.leadContactData[i].phone ?? ""}',
+                                                  style: TextStyle(
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              await callWhatsApp(
+                                                  mobileNo: leadController
+                                                      .leadContactData[i]
+                                                      .phone);
+                                            },
+                                            child: Image.asset(
+                                              'assets/image/png/whatsapp (2).png',
+                                              height: 20.h,
+                                            ),
+                                          ),
+                                          SizedBox(width: 12.w),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              Uri phoneno = Uri.parse(
+                                                  'tel:${leadController.leadContactData[i].phone}');
+                                              if (await launchUrl(phoneno)) {
+                                              } else {
+                                                print('Not working');
+                                              }
+                                            },
+                                            child: Image.asset(
+                                              'assets/image/png/phone_call-removebg-preview.png',
+                                              height: 20.h,
+                                            ),
+                                          )
                                         ],
                                       ),
                                     ),
