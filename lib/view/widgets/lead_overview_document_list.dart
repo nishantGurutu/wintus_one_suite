@@ -159,6 +159,13 @@ class _LeadOverviewDocumentListBotomsheet
                                                       fontWeight:
                                                           FontWeight.w400),
                                                 ),
+                                                Text(
+                                                  '${leadController.leadDocumentListData[index].isRead ?? ""}',
+                                                  style: TextStyle(
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -253,6 +260,11 @@ class _LeadOverviewDocumentListBotomsheet
                                                         .fileUrl ??
                                                     "",
                                                 isNetwork: true,
+                                                from: "lead_document",
+                                                documentId: leadController
+                                                    .leadDocumentListData[index]
+                                                    .id,
+                                                leadId: widget.leadId,
                                               );
 
                                               Navigator.pop(context);
@@ -317,9 +329,10 @@ class _LeadOverviewDocumentListBotomsheet
                                                         onTap: () {
                                                           Get.to(() => NetworkPDFScreen(
                                                               file: leadController
-                                                                  .leadDocumentListData[
-                                                                      index]
-                                                                  .fileUrl));
+                                                                      .leadDocumentListData[
+                                                                          index]
+                                                                      .fileUrl ??
+                                                                  ""));
                                                         },
                                                         child: Image.asset(
                                                           'assets/images/png/pdf-image-removebg-preview.png',

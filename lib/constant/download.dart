@@ -1,11 +1,16 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:task_management/controller/lead_controller.dart';
 
 class DownloadFile {
   Future<void> saveToDownloads(String filePath,
-      {required bool isNetwork}) async {
+      {required bool isNetwork,
+      required String from,
+      int? documentId,
+      required leadId}) async {
     try {
       Directory appDir = await getApplicationDocumentsDirectory();
       String appSavePath = '${appDir.path}/saved_files';
@@ -37,6 +42,12 @@ class DownloadFile {
         File file = File(filePath);
         savedFile = await file.copy(appFilePath);
         await file.copy(downloadFilePath);
+      }
+
+      if (from == 'lead_document') {
+        final LeadController leadController = Get.put(LeadController());
+        await leadController.updateLeadUploadedDocumentViewStatus(
+            documentId: documentId, leadId: leadId);
       }
 
       Fluttertoast.showToast(msg: 'File saved to Document');

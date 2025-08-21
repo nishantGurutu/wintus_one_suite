@@ -1416,6 +1416,36 @@ class LeadService {
     }
   }
 
+  Future<bool> updateLeadDocumentViewState(int? documentId) async {
+    try {
+      var token = StorageHelper.getToken();
+      _dio.options.headers['Authorization'] = "Bearer $token";
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        requestHeader: true,
+        responseBody: true,
+        error: true,
+      ));
+
+      final Map<String, dynamic> formMapData = {
+        "document_id": documentId,
+        "status": 1,
+      };
+
+      final formData = FormData.fromMap(formMapData);
+      final response = await _dio.post(
+          ApiConstant.baseUrl + ApiConstant.read_status_lead_document,
+          data: formData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } on DioException catch (e) {
+      print('documetn update status exception $e');
+      return false;
+    }
+  }
+
   Future<LeadContactListModel?> leadContactList(leadId) async {
     try {
       final token = StorageHelper.getToken();

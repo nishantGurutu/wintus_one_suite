@@ -246,4 +246,5 @@ class ApiConstant {
   static const String update_lead_document = "update-lead-document";
   static const String store_leadquo_remarks = "store-leadquo-remarks";
   static const String view_leadquo_remarks = "view-leadquo-remarks";
+  static const String read_status_lead_document = "read-status-lead-document";
 }

@@ -1048,6 +1048,21 @@ class LeadController extends GetxController {
     isDocumentListLoading.value = false;
   }
 
+  var isDocumentViewStatusChanging = false.obs;
+  Future<void> updateLeadUploadedDocumentViewStatus(
+      {int? documentId, required leadId}) async {
+    isDocumentViewStatusChanging.value = true;
+    try {
+      final result =
+          await LeadService().updateLeadDocumentViewState(documentId);
+      if (result != null) {
+        await leadDocumentList(leadId: leadId, from: '');
+      }
+    } catch (e) {
+      isDocumentViewStatusChanging.value = false;
+    }
+  }
+
   RxList<LeadContactData> leadContactData = <LeadContactData>[].obs;
   RxList<LeadContactData> selectedLeadContactData = <LeadContactData>[].obs;
   RxList<AssignedToUsers> selectedMergeContactData = <AssignedToUsers>[].obs;

@@ -29,12 +29,13 @@ class UploadedDocumentListModel {
 
 class UploadedDocumentData {
   int? id;
-  dynamic documentType;
-  dynamic approvedBy;
-  dynamic fileName;
-  dynamic status;
-  dynamic fileUrl;
-  dynamic uploadedAt;
+  int? documentType;
+  int? approvedBy;
+  String? fileName;
+  int? status;
+  int? isRead;
+  String? fileUrl;
+  String? uploadedAt;
 
   UploadedDocumentData(
       {this.id,
@@ -42,6 +43,7 @@ class UploadedDocumentData {
       this.approvedBy,
       this.fileName,
       this.status,
+      this.isRead,
       this.fileUrl,
       this.uploadedAt});
 
@@ -51,6 +53,7 @@ class UploadedDocumentData {
     approvedBy = json['approved_by'];
     fileName = json['file_name'];
     status = json['status'];
+    isRead = json['is_read'];
     fileUrl = json['file_url'];
     uploadedAt = json['uploaded_at'];
   }
@@ -62,6 +65,7 @@ class UploadedDocumentData {
     data['approved_by'] = this.approvedBy;
     data['file_name'] = this.fileName;
     data['status'] = this.status;
+    data['is_read'] = this.isRead;
     data['file_url'] = this.fileUrl;
     data['uploaded_at'] = this.uploadedAt;
     return data;
