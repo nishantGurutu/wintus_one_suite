@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:task_management/component/open_file_class.dart';
 import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/dialog_class.dart';
 import 'package:task_management/constant/image_constant.dart';
@@ -2407,12 +2406,54 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                                 ),
                                               ),
                                               SizedBox(width: 8.w),
-                                              Text(
-                                                '${leadController.leadContactData[i].name ?? ""}',
-                                                style: TextStyle(
-                                                    fontSize: 15.sp,
-                                                    fontWeight:
-                                                        FontWeight.w500),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${leadController.leadContactData[i].name ?? ""}',
+                                                    style: TextStyle(
+                                                        fontSize: 15.sp,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Text(
+                                                    '${leadController.leadContactData[i].phone ?? ""}',
+                                                    style: TextStyle(
+                                                        fontSize: 15.sp,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  ),
+                                                ],
+                                              ),
+                                              Spacer(),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  await callWhatsApp(
+                                                      mobileNo: leadController
+                                                          .leadContactData[i]
+                                                          .phone);
+                                                },
+                                                child: Image.asset(
+                                                  'assets/image/png/whatsapp (2).png',
+                                                  height: 20.h,
+                                                ),
+                                              ),
+                                              SizedBox(width: 12.w),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  Uri phoneno = Uri.parse(
+                                                      'tel:${leadController.leadContactData[i].phone}');
+                                                  if (await launchUrl(
+                                                      phoneno)) {
+                                                  } else {
+                                                    print('Not working');
+                                                  }
+                                                },
+                                                child: Image.asset(
+                                                  'assets/image/png/phone_call-removebg-preview.png',
+                                                  height: 20.h,
+                                                ),
                                               )
                                             ],
                                           ),
