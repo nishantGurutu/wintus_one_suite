@@ -388,68 +388,75 @@ class _LeadOverviewDocumentListBotomsheet
                                                         .isDocumentCheckBoxSelected[
                                                     index],
                                                 onChanged: (value) async {
-                                                  if ((StorageHelper.getRoleName()
-                                                                  .toString()
-                                                                  .toLowerCase() ==
-                                                              "marketing manager" &&
-                                                          (leadController
-                                                                      .leadDetails
-                                                                      .value
-                                                                      ?.approvalData
-                                                                      ?.first
-                                                                      .managerStatus
-                                                                      .toString()
-                                                                      .toLowerCase() ==
-                                                                  'pending' ||
-                                                              leadController
-                                                                      .leadDetails
-                                                                      .value
-                                                                      ?.approvalData
-                                                                      ?.first
-                                                                      .managerStatus
-                                                                      .toString()
-                                                                      .toLowerCase() ==
-                                                                  "rejected")) ||
-                                                      (StorageHelper.getRoleName()
-                                                                  .toString()
-                                                                  .toLowerCase() ==
-                                                              "branch head" &&
-                                                          (leadController
-                                                                      .leadDetails
-                                                                      .value
-                                                                      ?.approvalData
-                                                                      ?.first
-                                                                      .branchheadStatus
-                                                                      .toString()
-                                                                      .toLowerCase() ==
-                                                                  'pending' ||
-                                                              leadController
-                                                                      .leadDetails
-                                                                      .value
-                                                                      ?.approvalData
-                                                                      ?.first
-                                                                      .branchheadStatus
-                                                                      .toString()
-                                                                      .toLowerCase() ==
-                                                                  "rejected"))) {
-                                                    await leadController
-                                                        .approveDocument(
-                                                      documentId: leadController
+                                                  if (leadController
                                                           .leadDocumentListData[
                                                               index]
-                                                          .id,
-                                                      leadId: widget.leadId,
-                                                      status: leadController
-                                                                  .leadDocumentListData[
-                                                                      index]
-                                                                  .status ==
-                                                              0
-                                                          ? 1
-                                                          : 0,
-                                                    );
-                                                    leadController
-                                                            .isDocumentCheckBoxSelected[
-                                                        index] = value!;
+                                                          .isRead
+                                                          .toString() ==
+                                                      "1") {
+                                                    if ((StorageHelper.getRoleName()
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                "marketing manager" &&
+                                                            (leadController
+                                                                        .leadDetails
+                                                                        .value
+                                                                        ?.approvalData
+                                                                        ?.first
+                                                                        .managerStatus
+                                                                        .toString()
+                                                                        .toLowerCase() ==
+                                                                    'pending' ||
+                                                                leadController
+                                                                        .leadDetails
+                                                                        .value
+                                                                        ?.approvalData
+                                                                        ?.first
+                                                                        .managerStatus
+                                                                        .toString()
+                                                                        .toLowerCase() ==
+                                                                    "rejected")) ||
+                                                        (StorageHelper.getRoleName()
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                "branch head" &&
+                                                            (leadController
+                                                                        .leadDetails
+                                                                        .value
+                                                                        ?.approvalData
+                                                                        ?.first
+                                                                        .branchheadStatus
+                                                                        .toString()
+                                                                        .toLowerCase() ==
+                                                                    'pending' ||
+                                                                leadController
+                                                                        .leadDetails
+                                                                        .value
+                                                                        ?.approvalData
+                                                                        ?.first
+                                                                        .branchheadStatus
+                                                                        .toString()
+                                                                        .toLowerCase() ==
+                                                                    "rejected"))) {
+                                                      await leadController
+                                                          .approveDocument(
+                                                        documentId: leadController
+                                                            .leadDocumentListData[
+                                                                index]
+                                                            .id,
+                                                        leadId: widget.leadId,
+                                                        status: leadController
+                                                                    .leadDocumentListData[
+                                                                        index]
+                                                                    .status ==
+                                                                0
+                                                            ? 1
+                                                            : 0,
+                                                      );
+                                                      leadController
+                                                              .isDocumentCheckBoxSelected[
+                                                          index] = value!;
+                                                    }
                                                   }
                                                 },
                                               ),
