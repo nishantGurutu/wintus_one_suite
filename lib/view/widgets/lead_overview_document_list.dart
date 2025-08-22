@@ -160,7 +160,35 @@ class _LeadOverviewDocumentListBotomsheet
                                                           FontWeight.w400),
                                                 ),
                                                 Text(
-                                                  '${leadController.leadDocumentListData[index].isRead ?? ""}',
+                                                  '${leadController.leadDocumentListData[index].mmIsRead ?? ""}',
+                                                  style: TextStyle(
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                Text(
+                                                  '${leadController.leadDocumentListData[index].bhIsRead ?? ""}',
+                                                  style: TextStyle(
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                Text(
+                                                  '${leadController.leadDocumentListData[index].cmoIsRead ?? ""}',
+                                                  style: TextStyle(
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                Text(
+                                                  '${leadController.leadDocumentListData[index].ceoIsRead ?? ""}',
+                                                  style: TextStyle(
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                Text(
+                                                  '${leadController.leadDetails.value?.approvalData?.first.branchheadStatus ?? ""}',
                                                   style: TextStyle(
                                                       fontSize: 13.sp,
                                                       fontWeight:
@@ -388,12 +416,47 @@ class _LeadOverviewDocumentListBotomsheet
                                                         .isDocumentCheckBoxSelected[
                                                     index],
                                                 onChanged: (value) async {
-                                                  if (leadController
-                                                          .leadDocumentListData[
-                                                              index]
-                                                          .isRead
-                                                          .toString() ==
-                                                      "1") {
+                                                  print(
+                                                      "eij893 e3ye73 ${leadController.leadDocumentListData[index].mmIsRead}");
+                                                  print(
+                                                      "eij893 e3ye73 2 ${leadController.leadDocumentListData[index].bhIsRead}");
+                                                  print(
+                                                      "eij893 e3ye73 3 ${leadController.leadDocumentListData[index].cmoIsRead}");
+                                                  print(
+                                                      "eij893 e3ye73 4 ${leadController.leadDocumentListData[index].ceoIsRead}");
+                                                  if ((StorageHelper.getRoleName()
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              "marketing manager" &&
+                                                          leadController.leadDocumentListData[index].mmIsRead
+                                                                  .toString() !=
+                                                              "0") ||
+                                                      (StorageHelper.getRoleName()
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              "branch head" &&
+                                                          leadController.leadDocumentListData[index].bhIsRead
+                                                                  .toString() !=
+                                                              "0") ||
+                                                      (StorageHelper.getRoleName()
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              "pa" &&
+                                                          leadController
+                                                                  .leadDocumentListData[
+                                                                      index]
+                                                                  .cmoIsRead
+                                                                  .toString() !=
+                                                              "0") ||
+                                                      (StorageHelper.getRoleName()
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              "ceo" &&
+                                                          leadController
+                                                                  .leadDocumentListData[index]
+                                                                  .ceoIsRead
+                                                                  .toString() !=
+                                                              "0")) {
                                                     if ((StorageHelper.getRoleName()
                                                                     .toString()
                                                                     .toLowerCase() ==

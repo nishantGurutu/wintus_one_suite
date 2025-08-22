@@ -45,12 +45,12 @@ class DownloadFile {
         await file.copy(downloadFilePath);
       }
 
-      if (from == 'lead_document' &&
-          StorageHelper.getRoleName() == "Marketing Manager") {
-        final LeadController leadController = Get.put(LeadController());
-        await leadController.updateLeadUploadedDocumentViewStatus(
-            documentId: documentId, leadId: leadId);
-      }
+      // if (from == 'lead_document' &&
+      //     StorageHelper.getRoleName() == "Marketing Manager") {
+      final LeadController leadController = Get.put(LeadController());
+      await leadController.updateLeadUploadedDocumentViewStatus(
+          documentId: documentId, leadId: leadId);
+      // }
 
       Fluttertoast.showToast(msg: 'File saved to Document');
       print('Saved in app: $appFilePath');

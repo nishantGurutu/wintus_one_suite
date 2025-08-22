@@ -28,14 +28,17 @@ class UploadedDocumentListModel {
 }
 
 class UploadedDocumentData {
-  int? id;
-  int? documentType;
-  int? approvedBy;
-  String? fileName;
-  int? status;
-  int? isRead;
-  String? fileUrl;
-  String? uploadedAt;
+  dynamic id;
+  dynamic documentType;
+  dynamic approvedBy;
+  dynamic fileName;
+  dynamic status;
+  dynamic mmIsRead;
+  dynamic bhIsRead;
+  dynamic cmoIsRead;
+  dynamic ceoIsRead;
+  dynamic fileUrl;
+  dynamic uploadedAt;
 
   UploadedDocumentData(
       {this.id,
@@ -43,7 +46,10 @@ class UploadedDocumentData {
       this.approvedBy,
       this.fileName,
       this.status,
-      this.isRead,
+      this.mmIsRead,
+      this.bhIsRead,
+      this.cmoIsRead,
+      this.ceoIsRead,
       this.fileUrl,
       this.uploadedAt});
 
@@ -53,7 +59,10 @@ class UploadedDocumentData {
     approvedBy = json['approved_by'];
     fileName = json['file_name'];
     status = json['status'];
-    isRead = json['is_read'];
+    mmIsRead = json['mm_is_read'];
+    bhIsRead = json['bh_is_read'];
+    cmoIsRead = json['cmo_is_read'];
+    ceoIsRead = json['ceo_is_read'];
     fileUrl = json['file_url'];
     uploadedAt = json['uploaded_at'];
   }
@@ -65,7 +74,10 @@ class UploadedDocumentData {
     data['approved_by'] = this.approvedBy;
     data['file_name'] = this.fileName;
     data['status'] = this.status;
-    data['is_read'] = this.isRead;
+    data['mm_is_read'] = this.mmIsRead;
+    data['bh_is_read'] = this.bhIsRead;
+    data['cmo_is_read'] = this.cmoIsRead;
+    data['ceo_is_read'] = this.ceoIsRead;
     data['file_url'] = this.fileUrl;
     data['uploaded_at'] = this.uploadedAt;
     return data;

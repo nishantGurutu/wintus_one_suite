@@ -1390,7 +1390,6 @@ class LeadService {
         error: true,
       ));
 
-      print("iu4r84 4r948ur98 49849 ${leadId}");
       final Map<String, dynamic> formMapData = {
         "lead_id": leadId,
       };
