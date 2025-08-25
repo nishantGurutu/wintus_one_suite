@@ -34,11 +34,31 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void notificationTapBackground(NotificationResponse notificationResponse) {
   debugPrint('Notification(${notificationResponse.id}) action tapped: '
       '${notificationResponse.actionId} with payload: ${notificationResponse.payload}');
-  if (notificationResponse.input?.isNotEmpty ?? false) {
-    debugPrint(
-        'Notification action tapped with input: ${notificationResponse.input}');
-  }
-  if (notificationResponse.payload != null) {
+
+  if (notificationResponse.actionId == 'snooze_action') {
+    // Handle snooze action
+    if (notificationResponse.payload != null) {
+      final payload = jsonDecode(notificationResponse.payload!);
+      final title = payload['title'] as String;
+      final type = payload['type'] as String;
+      final taskId = payload['taskId'] as int;
+
+      // Reschedule notification for 5 minutes later
+      LocalNotificationService().scheduleNotification(
+        DateTime.now().add(Duration(minutes: 5)),
+        taskId + 1000, // Use a different ID to avoid conflicts
+        title,
+        type,
+      );
+      debugPrint('Notification snoozed for 5 minutes');
+    }
+  } else if (notificationResponse.actionId == 'stop_action') {
+    // Cancel the notification
+    LocalNotificationService._notificationsPlugin
+        .cancel(notificationResponse.id!);
+    debugPrint('Notification stopped');
+  } else if (notificationResponse.payload != null) {
+    // Handle regular tap
     LocalNotificationService.handleNavigation(notificationResponse.payload);
   }
 }
@@ -47,6 +67,69 @@ class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
   static String? pendingPayload;
+
+  // static Future<void> initialize() async {
+  //   tz.initializeTimeZones();
+
+  //   const AndroidInitializationSettings androidInitializationSettings =
+  //       AndroidInitializationSettings('@mipmap/launcher_icon');
+  //   const DarwinInitializationSettings iosInitializationSettings =
+  //       DarwinInitializationSettings();
+
+  //   const InitializationSettings initializationSettings =
+  //       InitializationSettings(
+  //     android: androidInitializationSettings,
+  //     iOS: iosInitializationSettings,
+  //   );
+
+  //   const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  //     'your_channel_id',
+  //     'your_channel_name',
+  //     description: 'Your channel description',
+  //     importance: Importance.max,
+  //     playSound: true,
+  //     enableVibration: true,
+  //     sound: RawResourceAndroidNotificationSound('alarmsound'),
+  //   );
+
+  //   await _notificationsPlugin
+  //       .resolvePlatformSpecificImplementation<
+  //           AndroidFlutterLocalNotificationsPlugin>()
+  //       ?.createNotificationChannel(channel);
+
+  //   await _notificationsPlugin.initialize(
+  //     initializationSettings,
+  //     onDidReceiveNotificationResponse: (NotificationResponse response) {
+  //       debugPrint('Foreground notification payload: ${response.payload}');
+  //       handleNavigation(response.payload);
+  //     },
+  //     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+  //   );
+
+  //   await FirebaseMessaging.instance
+  //       .setForegroundNotificationPresentationOptions(
+  //     alert: true,
+  //     badge: true,
+  //     sound: true,
+  //   );
+
+  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //     debugPrint('Firebase notification clicked (background): ${message.data}');
+  //     handleNavigation(jsonEncode(message.data));
+  //   });
+
+  //   FirebaseMessaging.instance
+  //       .getInitialMessage()
+  //       .then((RemoteMessage? message) {
+  //     if (message != null) {
+  //       debugPrint(
+  //           'Firebase notification clicked (terminated): ${message.data}');
+  //       handleNavigation(jsonEncode(message.data));
+  //     }
+  //   });
+
+  //   await requestBatteryOptimizationExemption();
+  // }
 
   static Future<void> initialize() async {
     tz.initializeTimeZones();
@@ -81,7 +164,28 @@ class LocalNotificationService {
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         debugPrint('Foreground notification payload: ${response.payload}');
-        handleNavigation(response.payload);
+        if (response.actionId == 'snooze_action') {
+          if (response.payload != null) {
+            final payload = jsonDecode(response.payload!);
+            final title = payload['title'] as String;
+            final type = payload['type'] as String;
+            final taskId = payload['taskId'] as int;
+
+            // Reschedule notification for 5 minutes later
+            LocalNotificationService().scheduleNotification(
+              DateTime.now().add(Duration(minutes: 5)),
+              taskId + 1000,
+              title,
+              type,
+            );
+            debugPrint('Notification snoozed for 5 minutes');
+          }
+        } else if (response.actionId == 'stop_action') {
+          _notificationsPlugin.cancel(response.id!);
+          debugPrint('Notification stopped');
+        } else {
+          handleNavigation(response.payload);
+        }
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
@@ -147,6 +251,46 @@ class LocalNotificationService {
     }
   }
 
+  // Future<void> scheduleNotification(
+  //   DateTime dateTime,
+  //   int notificationId,
+  //   String title,
+  //   String s,
+  // ) async {
+  //   print('Scheduled Notification Time: $notificationId $s');
+
+  //   int millisecondsUntilNotification =
+  //       dateTime.millisecondsSinceEpoch - DateTime.now().millisecondsSinceEpoch;
+
+  //   await _notificationsPlugin.zonedSchedule(
+  //     notificationId,
+  //     '$title $s reminder',
+  //     '${s.contains('task') ? "Task is due!" : s.contains('sos') ? "SOS Reminder" : s.contains('event') ? "Event Reminder" : "Calendar Reminder"}',
+  //     tz.TZDateTime.now(tz.local)
+  //         .add(Duration(milliseconds: millisecondsUntilNotification)),
+  //     NotificationDetails(
+  //       android: AndroidNotificationDetails(
+  //         'your_channel_id',
+  //         'your_channel_name',
+  //         channelDescription: 'your channel description',
+  //         sound: RawResourceAndroidNotificationSound("alarmsound"),
+  //         autoCancel: true,
+  //         playSound: true,
+  //         priority: Priority.max,
+  //         enableVibration: true,
+  //         fullScreenIntent: true,
+  //       ),
+  //     ),
+  //     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+  //     uiLocalNotificationDateInterpretation:
+  //         UILocalNotificationDateInterpretation.absoluteTime,
+  //     payload: jsonEncode({'page': s, 'taskId': notificationId}),
+  //   );
+
+  //   Future.delayed(
+  //       Duration(milliseconds: millisecondsUntilNotification), () {});
+  // }
+
   Future<void> scheduleNotification(
     DateTime dateTime,
     int notificationId,
@@ -158,41 +302,54 @@ class LocalNotificationService {
     int millisecondsUntilNotification =
         dateTime.millisecondsSinceEpoch - DateTime.now().millisecondsSinceEpoch;
 
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      channelDescription: 'your channel description',
+      sound: RawResourceAndroidNotificationSound("alarmsound"),
+      autoCancel: false,
+      playSound: true,
+      priority: Priority.max,
+      importance: Importance.max,
+      enableVibration: true,
+      fullScreenIntent: true,
+      actions: [
+        AndroidNotificationAction(
+          'snooze_action',
+          'Snooze',
+          showsUserInterface: true,
+        ),
+        AndroidNotificationAction(
+          'stop_action',
+          'Stop',
+          showsUserInterface: true,
+        ),
+      ],
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+    );
+
     await _notificationsPlugin.zonedSchedule(
       notificationId,
       '$title $s reminder',
       '${s.contains('task') ? "Task is due!" : s.contains('sos') ? "SOS Reminder" : s.contains('event') ? "Event Reminder" : "Calendar Reminder"}',
       tz.TZDateTime.now(tz.local)
           .add(Duration(milliseconds: millisecondsUntilNotification)),
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          'your_channel_id',
-          'your_channel_name',
-          channelDescription: 'your channel description',
-          sound: RawResourceAndroidNotificationSound("alarmsound"),
-          autoCancel: true,
-          playSound: true,
-          priority: Priority.max,
-          enableVibration: true,
-          fullScreenIntent: true,
-        ),
-      ),
+      notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-      payload: jsonEncode({'page': s, 'taskId': notificationId}),
+      payload: jsonEncode({
+        'page': "${s}_alarm",
+        'taskId': notificationId,
+        'title': title,
+        'type': "${s}_alarm",
+      }),
     );
-
-    Future.delayed(
-        Duration(milliseconds: millisecondsUntilNotification), () {});
   }
-  // {sendername: IT Administrator, senderid: 97, productid: 8, type: emi_reminder, title: EMI Due Reminder, message: EMI of 12000 due today for vehicle 789456 on 2025-07-15}
-  // kiej8d99 payload data in push service {"sendername":"IT Administrator","senderid":"97","productid":"1","type":"lead","title":"Lead meeting is created","message":"Lead meeting for this lead Kallo is created"}
-
-  // {"sendername":"IT Administrator","senderid":"97","productid":"18","type":"dailymsg"} -- daily message
-
-  // Discussion
-  // kiej8d99 payload data in push service {"sendername":"IT Administrator","senderid":"97","productid":"1","type":"leadchat","title":"Discussion & Comments","message":"New comment on lead \"Kallo\""}
 
   static void handleNavigation(String? payload) {
     if (payload == null) return;
@@ -259,6 +416,12 @@ class LocalNotificationService {
       } else if (payloadData['type'].toString() == "task") {
         Get.to(() => TaskDetails(
               taskId: int.parse(payloadData['productid'].toString()),
+              assignedStatus: '',
+              initialIndex: 0,
+            ));
+      } else if (payloadData['type'].toString() == "task_alarm") {
+        Get.to(() => TaskDetails(
+              taskId: int.parse(payloadData['taskId'].toString()),
               assignedStatus: '',
               initialIndex: 0,
             ));

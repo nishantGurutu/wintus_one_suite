@@ -315,16 +315,16 @@ Future<void> requestPermissions() async {
 }
 
 Future<void> requestNotificationPermission() async {
-  final NotificationSettings settings = await FirebaseMessaging.instance
-      .requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true,
-      );
+  final NotificationSettings settings =
+      await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
   debugPrint('Notification permission status: ${settings.authorizationStatus}');
 }
 
@@ -360,7 +360,8 @@ class MyApp extends StatelessWidget {
   }
 
   Widget _getInitialScreen() {
-    print('task list data in main payload data 873yd83u9 ${initialPayload}');
+    debugPrint(
+        'task list data in main payload data 873yd83u9 ${initialPayload}');
     if (initialPayload == null) {
       return const SplashScreen();
     }
@@ -390,6 +391,12 @@ class MyApp extends StatelessWidget {
         payloadData['type'].toString().contains("task_list")) {
       return TaskDetails(
         taskId: int.parse(payloadData['productid'].toString()),
+        assignedStatus: '',
+        initialIndex: 0,
+      );
+    } else if (payloadData['type'].toString() == "task_alarm") {
+      return TaskDetails(
+        taskId: int.parse(payloadData['taskId'].toString()),
         assignedStatus: '',
         initialIndex: 0,
       );
