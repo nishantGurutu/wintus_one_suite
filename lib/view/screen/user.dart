@@ -21,7 +21,6 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     taskController.responsiblePersonListApi('', "");
-
     super.initState();
   }
 

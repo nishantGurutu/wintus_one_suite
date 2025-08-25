@@ -22,6 +22,8 @@ import 'package:task_management/view/screen/project.dart';
 import 'package:task_management/view/screen/task_details.dart';
 import 'package:task_management/view/screen/todo_list.dart';
 import 'package:task_management/view/screen/vehical_details.dart';
+import 'package:task_management/view/widgets/alarm_screen.dart'
+    show AlarmScreen;
 import 'package:task_management/view/widgets/humangatepass/human_gatepass_details.dart';
 import 'package:task_management/view/widgets/notes_folder.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -36,30 +38,31 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
       '${notificationResponse.actionId} with payload: ${notificationResponse.payload}');
 
   if (notificationResponse.actionId == 'snooze_action') {
-    // Handle snooze action
     if (notificationResponse.payload != null) {
       final payload = jsonDecode(notificationResponse.payload!);
       final title = payload['title'] as String;
       final type = payload['type'] as String;
       final taskId = payload['taskId'] as int;
 
-      // Reschedule notification for 5 minutes later
       LocalNotificationService().scheduleNotification(
         DateTime.now().add(Duration(minutes: 5)),
-        taskId + 1000, // Use a different ID to avoid conflicts
+        taskId + 1000,
         title,
         type,
       );
       debugPrint('Notification snoozed for 5 minutes');
     }
   } else if (notificationResponse.actionId == 'stop_action') {
-    // Cancel the notification
     LocalNotificationService._notificationsPlugin
         .cancel(notificationResponse.id!);
     debugPrint('Notification stopped');
   } else if (notificationResponse.payload != null) {
-    // Handle regular tap
-    LocalNotificationService.handleNavigation(notificationResponse.payload);
+    Get.to(() => AlarmScreen(
+          title: '',
+          body: '',
+          notificationId: 0,
+        ));
+    // LocalNotificationService.handleNavigation(notificationResponse.payload);
   }
 }
 
@@ -67,69 +70,6 @@ class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
   static String? pendingPayload;
-
-  // static Future<void> initialize() async {
-  //   tz.initializeTimeZones();
-
-  //   const AndroidInitializationSettings androidInitializationSettings =
-  //       AndroidInitializationSettings('@mipmap/launcher_icon');
-  //   const DarwinInitializationSettings iosInitializationSettings =
-  //       DarwinInitializationSettings();
-
-  //   const InitializationSettings initializationSettings =
-  //       InitializationSettings(
-  //     android: androidInitializationSettings,
-  //     iOS: iosInitializationSettings,
-  //   );
-
-  //   const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  //     'your_channel_id',
-  //     'your_channel_name',
-  //     description: 'Your channel description',
-  //     importance: Importance.max,
-  //     playSound: true,
-  //     enableVibration: true,
-  //     sound: RawResourceAndroidNotificationSound('alarmsound'),
-  //   );
-
-  //   await _notificationsPlugin
-  //       .resolvePlatformSpecificImplementation<
-  //           AndroidFlutterLocalNotificationsPlugin>()
-  //       ?.createNotificationChannel(channel);
-
-  //   await _notificationsPlugin.initialize(
-  //     initializationSettings,
-  //     onDidReceiveNotificationResponse: (NotificationResponse response) {
-  //       debugPrint('Foreground notification payload: ${response.payload}');
-  //       handleNavigation(response.payload);
-  //     },
-  //     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-  //   );
-
-  //   await FirebaseMessaging.instance
-  //       .setForegroundNotificationPresentationOptions(
-  //     alert: true,
-  //     badge: true,
-  //     sound: true,
-  //   );
-
-  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  //     debugPrint('Firebase notification clicked (background): ${message.data}');
-  //     handleNavigation(jsonEncode(message.data));
-  //   });
-
-  //   FirebaseMessaging.instance
-  //       .getInitialMessage()
-  //       .then((RemoteMessage? message) {
-  //     if (message != null) {
-  //       debugPrint(
-  //           'Firebase notification clicked (terminated): ${message.data}');
-  //       handleNavigation(jsonEncode(message.data));
-  //     }
-  //   });
-
-  //   await requestBatteryOptimizationExemption();
-  // }
 
   static Future<void> initialize() async {
     tz.initializeTimeZones();
@@ -251,46 +191,6 @@ class LocalNotificationService {
     }
   }
 
-  // Future<void> scheduleNotification(
-  //   DateTime dateTime,
-  //   int notificationId,
-  //   String title,
-  //   String s,
-  // ) async {
-  //   print('Scheduled Notification Time: $notificationId $s');
-
-  //   int millisecondsUntilNotification =
-  //       dateTime.millisecondsSinceEpoch - DateTime.now().millisecondsSinceEpoch;
-
-  //   await _notificationsPlugin.zonedSchedule(
-  //     notificationId,
-  //     '$title $s reminder',
-  //     '${s.contains('task') ? "Task is due!" : s.contains('sos') ? "SOS Reminder" : s.contains('event') ? "Event Reminder" : "Calendar Reminder"}',
-  //     tz.TZDateTime.now(tz.local)
-  //         .add(Duration(milliseconds: millisecondsUntilNotification)),
-  //     NotificationDetails(
-  //       android: AndroidNotificationDetails(
-  //         'your_channel_id',
-  //         'your_channel_name',
-  //         channelDescription: 'your channel description',
-  //         sound: RawResourceAndroidNotificationSound("alarmsound"),
-  //         autoCancel: true,
-  //         playSound: true,
-  //         priority: Priority.max,
-  //         enableVibration: true,
-  //         fullScreenIntent: true,
-  //       ),
-  //     ),
-  //     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-  //     uiLocalNotificationDateInterpretation:
-  //         UILocalNotificationDateInterpretation.absoluteTime,
-  //     payload: jsonEncode({'page': s, 'taskId': notificationId}),
-  //   );
-
-  //   Future.delayed(
-  //       Duration(milliseconds: millisecondsUntilNotification), () {});
-  // }
-
   Future<void> scheduleNotification(
     DateTime dateTime,
     int notificationId,
@@ -363,16 +263,6 @@ class LocalNotificationService {
         pendingPayload = payload;
         return;
       }
-      //{"page":"followup","taskId":44}
-      // {"sendername":"Nishant Kumar Schotest","senderid":"99","productid":"32","type":"leadchat","title":"Discussion & Comments","message":"New comment on lead \"weuiyiew\""}
-      // {"sendername":"Nishant Kumar Schotest","senderid":"99","productid":"1","type":"leadquotation","title":"Lead Quotation is created","message":"Lead Quotation for this lead New is created"}
-      // {"sendername":"Nishant Kumar Schotest","senderid":"99","productid":"38","type":"lead_followup","title":"New Lead Followup Created","message":"FollowUp for this lead New is created"}
-
-      // {"sendername":"Nishant Kumar45","senderid":"235","productid":"70","type":"note","title":"You have successfully added a note: Sbsb","message":"Sbsb"}
-      // {"sendername":"Nishant Kumar Schotest","senderid":"99","productid":"17","type":"gatepass","title":"Thank you for creating the gatepass.!","message":"you will get notified when further action is taken"}
-
-      // {sendername: IT Administrator, senderid: 97, productid: 23, type: sos, title: You got a SOS message please check! , message: Canwinn Foundation SOS}
-      // {"sendername":"Nishant Kumar","senderid":"99","productid":"37","type":"challan"}
       String? page = payloadData['page'];
       String? taskId = payloadData['taskId'].toString();
 
