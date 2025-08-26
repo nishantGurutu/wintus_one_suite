@@ -52,7 +52,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
         backgroundColor: backgroundColor,
         elevation: 0,
         actions: [
-          if (widget.legalStatus == 2 &&
+          if (widget.legalStatus.toString().toLowerCase() == 'approved' &&
               StorageHelper.getRoleName().toString().toLowerCase() ==
                   "branch head")
             GestureDetector(
@@ -200,9 +200,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          type == "approve"
-                              ? "Approve Document"
-                              : "Raise Concern",
+                          "Update Document",
                           style: TextStyle(
                               fontSize: 14.sp, fontWeight: FontWeight.w500),
                         ),
@@ -223,281 +221,59 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                           SizedBox(
                             height: 5.h,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Remarks",
-                                  style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              Container(
-                                width: 100.w,
-                                child: Text(
-                                  'Upload Document',
-                                  style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            ],
+                          Container(
+                            width: 100.w,
+                            child: Text(
+                              'Upload Document',
+                              style: TextStyle(
+                                  fontSize: 11.sp, fontWeight: FontWeight.w500),
+                            ),
                           ),
                           SizedBox(
                             height: 5.h,
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TaskCustomTextField(
-                                  controller: remarkControlelr,
-                                  focusedIndexNotifier: focusedIndexNotifier,
-                                  index: 1,
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  hintText: "Enter remarks",
-                                  data: "",
+                          InkWell(
+                            onTap: () {
+                              takeDocument(from: 'upload');
+                            },
+                            child: Container(
+                              height: 50.h,
+                              width: 100.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.r),
                                 ),
                               ),
-                              SizedBox(
-                                width: 5.w,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  takeDocument(from: 'upload');
+                              child: Obx(
+                                () {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    child: Image.file(
+                                      leadController.leadpickedFile.value,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.r),
+                                              border: Border.all(
+                                                  color: lightBorderColor)),
+                                          height: 40.h,
+                                          width: 100.w,
+                                          child: Image.asset(
+                                            'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
+                                            height: 15.h,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
                                 },
-                                child: Container(
-                                  height: 40.h,
-                                  width: 100.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10.r),
-                                    ),
-                                  ),
-                                  child: Obx(
-                                    () {
-                                      return ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(10.r),
-                                        child: Image.file(
-                                          leadController.leadpickedFile.value,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.r),
-                                                  border: Border.all(
-                                                      color: lightBorderColor)),
-                                              height: 40.h,
-                                              width: 100.w,
-                                              child: Image.asset(
-                                                'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                                height: 15.h,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
                               ),
-                            ],
+                            ),
                           ),
                         ],
-                      ),
-                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                        "pa")
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Legal Remarks",
-                                  style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Upload Document',
-                                  style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          TaskCustomTextField(
-                            controller: legalRemarkControlelr,
-                            focusedIndexNotifier: focusedIndexNotifier,
-                            index: 1,
-                            textCapitalization: TextCapitalization.sentences,
-                            hintText: "Enter legal remarks",
-                            data: "",
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Work Order",
-                                  style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Aditional Document',
-                                  style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5.w,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    takeDocument(from: "workorder");
-                                  },
-                                  child: Container(
-                                    height: 40.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.r),
-                                      ),
-                                    ),
-                                    child: Obx(
-                                      () {
-                                        return ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                          child: Image.file(
-                                            leadController
-                                                .leadWorkpickedFile.value,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.r),
-                                                    border: Border.all(
-                                                        color:
-                                                            lightBorderColor)),
-                                                height: 40.h,
-                                                width: 100.w,
-                                                child: leadController
-                                                        .leadWorkpickedFile
-                                                        .value
-                                                        .toString()
-                                                        .contains('.pdf')
-                                                    ? Image.asset(
-                                                        'assets/image/png/pdf.png')
-                                                    : Image.asset(
-                                                        'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                                        height: 15.h,
-                                                      ),
-                                              );
-                                            },
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5.w,
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    takeDocument(from: "aditional");
-                                  },
-                                  child: Container(
-                                    height: 40.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.r),
-                                      ),
-                                    ),
-                                    child: Obx(
-                                      () {
-                                        return ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                          child: Image.file(
-                                            leadController
-                                                .leadAditionalpickedFile.value,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.r),
-                                                    border: Border.all(
-                                                        color:
-                                                            lightBorderColor)),
-                                                height: 40.h,
-                                                width: 100.w,
-                                                child: leadController
-                                                        .leadAditionalpickedFile
-                                                        .value
-                                                        .toString()
-                                                        .contains('.pdf')
-                                                    ? Image.asset(
-                                                        'assets/image/png/pdf.png')
-                                                    : Image.asset(
-                                                        'assets/image/png/Upload-Icon-Image-Background-PNG-Image.png',
-                                                        height: 15.h,
-                                                      ),
-                                              );
-                                            },
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                        "marketing manager")
-                      TaskCustomTextField(
-                        controller: remarkControlelr,
-                        focusedIndexNotifier: focusedIndexNotifier,
-                        index: 1,
-                        textCapitalization: TextCapitalization.sentences,
-                        hintText: "Enter remarks",
-                        data: "",
                       ),
                     SizedBox(height: 8.h),
                     InkWell(
@@ -544,7 +320,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                         ),
                         child: Center(
                           child: Text(
-                            type == 'approve' ? 'Approve' : "Concern",
+                            "Update",
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,

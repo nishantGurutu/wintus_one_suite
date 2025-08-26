@@ -5,7 +5,7 @@ class CustomToast {
   void showCustomToast(String message) {
     Fluttertoast.showToast(
       backgroundColor: primaryColor,
-      msg: message.replaceAll('  ', '  '),
+      msg: message,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.TOP,
       timeInSecForIosWeb: 1,

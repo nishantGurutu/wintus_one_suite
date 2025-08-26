@@ -282,7 +282,6 @@ class LocalNotificationService {
         Get.put<BottomBarController>(BottomBarController())
             .currentPageIndex
             .value = 0;
-// lead_meeting
         Get.to(() =>
             BottomNavigationBarExample(from: 'true', payloadData: payloadData));
       } else if (payloadData['type'] == "leadquotation") {

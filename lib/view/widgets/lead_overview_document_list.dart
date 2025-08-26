@@ -159,41 +159,6 @@ class _LeadOverviewDocumentListBotomsheet
                                                       fontWeight:
                                                           FontWeight.w400),
                                                 ),
-                                                Text(
-                                                  '${leadController.leadDocumentListData[index].mmIsRead ?? ""}',
-                                                  style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                Text(
-                                                  '${leadController.leadDocumentListData[index].bhIsRead ?? ""}',
-                                                  style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                Text(
-                                                  '${leadController.leadDocumentListData[index].cmoIsRead ?? ""}',
-                                                  style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                Text(
-                                                  '${leadController.leadDocumentListData[index].ceoIsRead ?? ""}',
-                                                  style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                Text(
-                                                  '${leadController.leadDetails.value?.approvalData?.first.branchheadStatus ?? ""}',
-                                                  style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
                                               ],
                                             ),
                                           ),
@@ -428,36 +393,29 @@ class _LeadOverviewDocumentListBotomsheet
                                                                   .toString()
                                                                   .toLowerCase() ==
                                                               "marketing manager" &&
-                                                          leadController.leadDocumentListData[index].mmIsRead
-                                                                  .toString() !=
-                                                              "0") ||
+                                                          (leadController.leadDocumentListData[index].mmIsRead.toString() != "0" &&
+                                                              leadController.leadDocumentListData[index].mmIsRead.toString() !=
+                                                                  "null")) ||
                                                       (StorageHelper.getRoleName()
                                                                   .toString()
                                                                   .toLowerCase() ==
                                                               "branch head" &&
-                                                          leadController.leadDocumentListData[index].bhIsRead
-                                                                  .toString() !=
-                                                              "0") ||
+                                                          (leadController.leadDocumentListData[index].bhIsRead.toString() != "0" &&
+                                                              leadController.leadDocumentListData[index].bhIsRead.toString() !=
+                                                                  "null")) ||
                                                       (StorageHelper.getRoleName()
                                                                   .toString()
                                                                   .toLowerCase() ==
                                                               "pa" &&
-                                                          leadController
-                                                                  .leadDocumentListData[
-                                                                      index]
-                                                                  .cmoIsRead
-                                                                  .toString() !=
-                                                              "0") ||
-                                                      (StorageHelper.getRoleName()
-                                                                  .toString()
-                                                                  .toLowerCase() ==
-                                                              "ceo" &&
-                                                          leadController
-                                                                  .leadDocumentListData[index]
-                                                                  .ceoIsRead
-                                                                  .toString() !=
-                                                              "0")) {
-                                                    if ((StorageHelper.getRoleName()
+                                                          (leadController.leadDocumentListData[index].cmoIsRead.toString() != "0" &&
+                                                              leadController
+                                                                      .leadDocumentListData[index]
+                                                                      .cmoIsRead
+                                                                      .toString() !=
+                                                                  "null")) ||
+                                                      (StorageHelper.getRoleName().toString().toLowerCase() == "ceo" && (leadController.leadDocumentListData[index].ceoIsRead.toString() != "0" && leadController.leadDocumentListData[index].ceoIsRead.toString() != "null"))) {
+                                                    if ((StorageHelper.getRoleName().toString().toLowerCase() == "null" || StorageHelper.getRoleName().toString().toLowerCase() == "") ||
+                                                        (StorageHelper.getRoleName()
                                                                     .toString()
                                                                     .toLowerCase() ==
                                                                 "marketing manager" &&
@@ -520,6 +478,10 @@ class _LeadOverviewDocumentListBotomsheet
                                                               .isDocumentCheckBoxSelected[
                                                           index] = value!;
                                                     }
+                                                  } else {
+                                                    CustomToast()
+                                                        .showCustomToast(
+                                                            'View Document');
                                                   }
                                                 },
                                               ),
@@ -1017,16 +979,21 @@ class _LeadOverviewDocumentListBotomsheet
                       onTap: () async {
                         debugPrint("Approve Button Clicked");
 
-                        if (StorageHelper.getRoleName()
-                                .toString()
-                                .toLowerCase() ==
-                            "marketing manager") {
+                        final role = (StorageHelper.getRoleName() ??
+                                StorageHelper.getRole() ??
+                                "")
+                            .trim()
+                            .toLowerCase();
+
+                        if (role == "marketing manager") {
                           await leadController.approveMarketingManager(
                             leadId: widget.leadId,
                             remark: remarkControlelr.text,
                             status: type == "approve" ? 1 : 2,
                           );
-                        } else {
+                        } else if (role == "branch head" &&
+                            leadController
+                                .leadpickedFile.value.path.isNotEmpty) {
                           await leadController.branchheadManagerApproving(
                             leadId: widget.leadId,
                             remark: remarkControlelr.text,
@@ -1039,6 +1006,26 @@ class _LeadOverviewDocumentListBotomsheet
                             legalRemark: legalRemarkControlelr.text,
                             legalStatus: type == "approve" ? 1 : 2,
                           );
+                        } else if (role == "pa" &&
+                            leadController
+                                .leadWorkpickedFile.value.path.isNotEmpty &&
+                            leadController.leadAditionalpickedFile.value.path
+                                .isNotEmpty) {
+                          await leadController.branchheadManagerApproving(
+                            leadId: widget.leadId,
+                            remark: remarkControlelr.text,
+                            status: type == "approve" ? 1 : 2,
+                            attachment: leadController.leadpickedFile.value,
+                            workAttachment:
+                                leadController.leadWorkpickedFile.value,
+                            aditional:
+                                leadController.leadAditionalpickedFile.value,
+                            legalRemark: legalRemarkControlelr.text,
+                            legalStatus: type == "approve" ? 1 : 2,
+                          );
+                        } else {
+                          CustomToast()
+                              .showCustomToast('Please select attachment');
                         }
                       },
                       child: Container(
