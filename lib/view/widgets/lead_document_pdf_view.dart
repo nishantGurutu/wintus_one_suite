@@ -56,7 +56,7 @@ class _WorkOrderPdfDocumentApproveState
         backgroundColor: backgroundColor,
         elevation: 0,
         actions: [
-          if (widget.legalStatus == 2 &&
+          if (widget.legalStatus == "rejected" &&
               StorageHelper.getRoleName().toString().toLowerCase() ==
                   "branch head")
             GestureDetector(

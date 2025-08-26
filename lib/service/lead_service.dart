@@ -242,6 +242,8 @@ class LeadService {
     try {
       final token = StorageHelper.getToken();
       print("Token wiuye873 38798e3s79j9used: $id");
+      print("Token wiuye873 38798e3s79j9used: $leadTypeValue");
+      print("Token wiuye873 38798e3s79j9used: $from");
       var userId = StorageHelper.getId();
       _dio.options.headers["Authorization"] = "Bearer $token";
       _dio.interceptors.add(LogInterceptor(
