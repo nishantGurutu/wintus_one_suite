@@ -515,21 +515,33 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                           await leadController.ceoApproving(
                             leadId: widget.leadId,
                             remark: remarkControlelr.text,
-                            status: type == "approve" ? 1 : 2,
+                            status: type == "approve"
+                                ? 1
+                                : type == 'edit'
+                                    ? 1
+                                    : 2,
                             attachment: leadController.leadpickedFile.value,
                           );
                         } else {
                           await leadController.branchheadManagerApproving(
                             leadId: widget.leadId,
                             remark: remarkControlelr.text,
-                            status: type == "approve" ? 1 : 2,
+                            status: type == "approve"
+                                ? 1
+                                : type == 'edit'
+                                    ? 1
+                                    : 2,
                             attachment: leadController.leadpickedFile.value,
                             workAttachment:
                                 leadController.leadWorkpickedFile.value,
                             aditional:
                                 leadController.leadAditionalpickedFile.value,
                             legalRemark: legalRemarkControlelr.text,
-                            legalStatus: type == "approve" ? 1 : 2,
+                            legalStatus: type == "approve"
+                                ? 1
+                                : type == 'edit'
+                                    ? 1
+                                    : 2,
                           );
                         }
                       },
