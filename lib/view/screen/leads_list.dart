@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:screenshot/screenshot.dart';
@@ -12,6 +13,7 @@ import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/button_widget.dart';
 import 'package:task_management/helper/call_helper.dart';
 import 'package:task_management/helper/storage_helper.dart';
+import 'package:task_management/model/lead_list_model.dart';
 import 'package:task_management/model/lead_status_lead.dart';
 import 'package:task_management/model/responsible_person_list_model.dart'
     show ResponsiblePersonData;
@@ -126,8 +128,12 @@ class _LeadListState extends State<LeadList> {
     }
   }
 
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    RxList<LeadListData> rxFilteredList =
+        RxList<LeadListData>(leadController.leadsListData);
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -293,6 +299,86 @@ class _LeadListState extends State<LeadList> {
                           ),
                         ],
                       ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 0.w),
+                    //   child: TextFormField(
+                    //     controller: _searchController,
+                    //     onChanged: (value) {
+                    //       rxFilteredList.value = leadController.leadsListData
+                    //           .where((person) =>
+                    //               person.leadName
+                    //                   ?.toLowerCase()
+                    //                   .contains(value.toLowerCase()) ??
+                    //               false)
+                    //           .toList();
+                    //     },
+                    //     decoration: InputDecoration(
+                    //       prefixIcon: Padding(
+                    //         padding: EdgeInsets.symmetric(vertical: 10.sp),
+                    //         child: SvgPicture.asset(searchIcon),
+                    //       ),
+                    //       hintText: 'Search here...',
+                    //       fillColor: whiteColor,
+                    //       filled: true,
+                    //       border: OutlineInputBorder(
+                    //           borderSide: BorderSide(color: borderColor)),
+                    //       enabledBorder: OutlineInputBorder(
+                    //         // borderSide: BorderSide.none,
+
+                    //         borderRadius:
+                    //             BorderRadius.all(Radius.circular(30.r)),
+                    //       ),
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderSide: BorderSide.none,
+                    //         borderRadius:
+                    //             BorderRadius.all(Radius.circular(30.r)),
+                    //       ),
+                    //       contentPadding: EdgeInsets.symmetric(
+                    //           horizontal: 10.w, vertical: 10.h),
+                    //     ),
+                    //   ),
+                    // ),
+                    TextFormField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        rxFilteredList.value = leadController.leadsListData
+                            .where((person) =>
+                                person.leadName
+                                    ?.toLowerCase()
+                                    .contains(value.toLowerCase()) ??
+                                false)
+                            .toList();
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Search here...',
+                        fillColor: Colors.white,
+                        filled: true,
+                        labelStyle: TextStyle(
+                          color: secondaryColor,
+                        ),
+                        counterText: "",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor),
+                          borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor),
+                          borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor),
+                          borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 10.w, vertical: 10.h),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
                     if (leadController.isAllLeadSelected.value == true)
                       SizedBox(
                         height: 8.h,
@@ -537,7 +623,7 @@ class _LeadListState extends State<LeadList> {
                       height: 5.h,
                     ),
                     leadController.isAllLeadSelected.value == true
-                        ? allLeadList()
+                        ? allLeadList(rxFilteredList)
                         : documentLeadList()
                   ],
                 ),
@@ -546,7 +632,8 @@ class _LeadListState extends State<LeadList> {
     );
   }
 
-  Widget allLeadList() {
+  Widget allLeadList(RxList<LeadListData> rxFilteredList) {
+    final TextEditingController _searchController = TextEditingController();
     return Obx(
       () => Expanded(
         child: RefreshIndicator(
@@ -556,7 +643,7 @@ class _LeadListState extends State<LeadList> {
                 leadController.selectedLeadType.value,
                 '');
           },
-          child: leadController.leadsListData.isEmpty
+          child: rxFilteredList.isEmpty
               ? Center(
                   child: Text(
                     'No Lead data',
@@ -569,16 +656,15 @@ class _LeadListState extends State<LeadList> {
                 )
               : ListView.builder(
                   controller: _scrollController,
-                  itemCount: leadController.leadsListData.length,
+                  itemCount: rxFilteredList.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: EdgeInsets.symmetric(vertical: 5.h),
                       child: GestureDetector(
                         onTap: () {
                           Get.to(() => LeadOverviewScreen(
-                                leadId: leadController.leadsListData[index].id,
-                                leadNumber: leadController
-                                    .leadsListData[index].leadNumber,
+                                leadId: rxFilteredList[index].id,
+                                leadNumber: rxFilteredList[index].leadNumber,
                               ));
                         },
                         child: Container(
@@ -609,7 +695,7 @@ class _LeadListState extends State<LeadList> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        '${leadController.leadsListData[index].leadName ?? ""}',
+                                        '${rxFilteredList[index].leadName ?? ""}',
                                         style: TextStyle(
                                             fontSize: 15.sp,
                                             fontWeight: FontWeight.w500),
@@ -617,7 +703,7 @@ class _LeadListState extends State<LeadList> {
                                     ),
                                     Expanded(
                                       child: Text(
-                                        '${leadController.leadsListData[index].leadNumber ?? ""}',
+                                        '${rxFilteredList[index].leadNumber ?? ""}',
                                         style: TextStyle(
                                             fontSize: 15.sp,
                                             fontWeight: FontWeight.w500),
@@ -638,10 +724,10 @@ class _LeadListState extends State<LeadList> {
                                                       false) {
                                                     await leadController
                                                         .deleteLeadApi(
-                                                            leadId: leadController
-                                                                .leadsListData[
-                                                                    index]
-                                                                .id);
+                                                            leadId:
+                                                                rxFilteredList[
+                                                                        index]
+                                                                    .id);
                                                   }
                                                 },
                                                 child: Row(
@@ -662,9 +748,7 @@ class _LeadListState extends State<LeadList> {
                                                     controller.clearAll();
                                                     assignandaddUser(
                                                       context,
-                                                      leadController
-                                                          .leadsListData[index]
-                                                          .id,
+                                                      rxFilteredList[index].id,
                                                       "add-people",
                                                     );
                                                   });
@@ -688,9 +772,7 @@ class _LeadListState extends State<LeadList> {
                                                   controller.clearAll();
                                                   assignandaddUser(
                                                     context,
-                                                    leadController
-                                                        .leadsListData[index]
-                                                        .id,
+                                                    rxFilteredList[index].id,
                                                     "assign",
                                                   );
                                                 },
@@ -731,14 +813,13 @@ class _LeadListState extends State<LeadList> {
                                             width: 2.w,
                                           ),
                                           Text(
-                                            '${leadController.leadsListData[index].company ?? ""}',
+                                            '${rxFilteredList[index].company ?? ""}',
                                             style: TextStyle(
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w400),
                                           ),
                                           Spacer(),
-                                          if ((leadController
-                                                      .leadsListData[index]
+                                          if ((rxFilteredList[index]
                                                       .leadNumber ??
                                                   "")
                                               .isEmpty)
@@ -746,9 +827,7 @@ class _LeadListState extends State<LeadList> {
                                               onTap: () {
                                                 leadController
                                                     .uploadOfflineLead(
-                                                        leadController
-                                                                .leadsListData[
-                                                            index]);
+                                                        rxFilteredList[index]);
                                               },
                                               child: Container(
                                                 child: Row(
@@ -793,7 +872,7 @@ class _LeadListState extends State<LeadList> {
                                             width: 2.w,
                                           ),
                                           Text(
-                                            '${leadController.leadsListData[index].phone ?? ""}',
+                                            '${rxFilteredList[index].phone ?? ""}',
                                             style: TextStyle(
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w400),
@@ -813,7 +892,7 @@ class _LeadListState extends State<LeadList> {
                                           ),
                                           Expanded(
                                             child: Text(
-                                              '${leadController.leadsListData[index].email ?? ""}',
+                                              '${rxFilteredList[index].email ?? ""}',
                                               style: TextStyle(
                                                   fontSize: 13.sp,
                                                   fontWeight: FontWeight.w400),
@@ -997,7 +1076,7 @@ class _LeadListState extends State<LeadList> {
                                       ],
                                     ),
                                     Text(
-                                      '${_formatDate(leadController.leadsListData[index].createdAt ?? "")}',
+                                      '${_formatDate(rxFilteredList[index].createdAt ?? "")}',
                                       style: TextStyle(
                                           fontSize: 13.sp,
                                           fontWeight: FontWeight.w400),
@@ -1008,8 +1087,7 @@ class _LeadListState extends State<LeadList> {
                                         GestureDetector(
                                           onTap: () async {
                                             await CallHelper().callWhatsApp(
-                                                mobileNo: leadController
-                                                    .leadsListData[index]
+                                                mobileNo: rxFilteredList[index]
                                                     .phone);
                                           },
                                           child: Image.asset(
@@ -1021,8 +1099,7 @@ class _LeadListState extends State<LeadList> {
                                         GestureDetector(
                                           onTap: () async {
                                             CallHelper().callPhone(
-                                                mobileNo: leadController
-                                                    .leadsListData[index]
+                                                mobileNo: rxFilteredList[index]
                                                     .phone);
                                           },
                                           child: Image.asset(
@@ -1052,8 +1129,7 @@ class _LeadListState extends State<LeadList> {
                                         onTap: () {
                                           Get.to(
                                             () => LeadOverviewScreen(
-                                              leadId: leadController
-                                                  .leadsListData[index].id,
+                                              leadId: rxFilteredList[index].id,
                                               index: 1,
                                             ),
                                           );
@@ -1083,8 +1159,8 @@ class _LeadListState extends State<LeadList> {
                                       child: GestureDetector(
                                         onTap: () {
                                           Get.to(() => LeadOverviewScreen(
-                                                leadId: leadController
-                                                    .leadsListData[index].id,
+                                                leadId:
+                                                    rxFilteredList[index].id,
                                                 index: 5,
                                               ));
                                         },
@@ -1112,12 +1188,12 @@ class _LeadListState extends State<LeadList> {
                                       child: GestureDetector(
                                         onTap: () {
                                           Get.to(() => LeadOverviewScreen(
-                                                leadId: leadController
-                                                    .leadsListData[index].id,
+                                                leadId:
+                                                    rxFilteredList[index].id,
                                                 index: 2,
-                                                leadNumber: leadController
-                                                    .leadsListData[index]
-                                                    .leadNumber,
+                                                leadNumber:
+                                                    rxFilteredList[index]
+                                                        .leadNumber,
                                               ));
                                         },
                                         child: SizedBox(
@@ -1141,17 +1217,15 @@ class _LeadListState extends State<LeadList> {
                                       ),
                                     ),
                                     if (StorageHelper.getId().toString() ==
-                                        leadController
-                                            .leadsListData[index].userId
-                                            .toString())
+                                        rxFilteredList[index].userId.toString())
                                       Expanded(
                                         child: GestureDetector(
                                           onTap: () {
                                             Get.to(() => LeadDetailUpdate(
-                                                leadId: leadController
-                                                    .leadsListData[index].id,
-                                                leadDetails: leadController
-                                                    .leadsListData[index]));
+                                                leadId:
+                                                    rxFilteredList[index].id,
+                                                leadDetails:
+                                                    rxFilteredList[index]));
                                           },
                                           child: Container(
                                             child: Padding(
