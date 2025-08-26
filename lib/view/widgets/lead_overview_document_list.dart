@@ -277,7 +277,18 @@ class _LeadOverviewDocumentListBotomsheet
                                                     .path
                                                     .isNotEmpty
                                                 ? InkWell(
-                                                    onTap: () {
+                                                    onTap: () async {
+                                                      print('iu2ye83 e38y83');
+                                                      await leadController
+                                                          .updateLeadUploadedDocumentViewStatus(
+                                                              documentId:
+                                                                  leadController
+                                                                      .leadDocumentListData[
+                                                                          index]
+                                                                      .id,
+                                                              leadId: widget
+                                                                  .leadId);
+
                                                       Get.to(
                                                         () => ImageScreen(
                                                           file: leadController

@@ -32,6 +32,7 @@ class _WorkOrderPdfDocumentApproveState
   final GlobalKey<SfPdfViewerState> _pdfViewerKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    print("iueu83 3e8738ye3 389e ${widget.legalStatus}");
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
