@@ -1628,9 +1628,6 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                 ),
                               ),
                             ),
-                          // SizedBox(
-                          //   height: 10.h,
-                          // ),
                         ],
                       ),
                     ),
@@ -1793,10 +1790,6 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                       Expanded(
                                         child: GestureDetector(
                                           onTap: () {
-                                            // OpenFileClass().openUrl(
-                                            //     leadDatavalue
-                                            //         ?.approvalData?[i]
-                                            //         .legalWorkorder);
                                             Get.to(() =>
                                                 WorkOrderDocumentApprove(
                                                     documentUrl: leadDatavalue

@@ -29,6 +29,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
   final LeadController leadController = Get.find();
   @override
   Widget build(BuildContext context) {
+    print("ye837 38eh83 387y8 ${widget.legalStatus}");
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -52,9 +53,11 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
         backgroundColor: backgroundColor,
         elevation: 0,
         actions: [
-          if (widget.legalStatus.toString().toLowerCase() == 'approved' &&
-              StorageHelper.getRoleName().toString().toLowerCase() ==
-                  "branch head")
+          if ((widget.legalStatus.toString().toLowerCase() == 'approved' &&
+                  StorageHelper.getRoleName().toString().toLowerCase() ==
+                      "branch head") ||
+              (widget.legalStatus.toString().toLowerCase() == 'approved' &&
+                  StorageHelper.getRoleName().toString().toLowerCase() == "pa"))
             GestureDetector(
               onTap: () {
                 documentApprovedDialog(context, "approve", "edit");
