@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
+import 'package:task_management/constant/custom_toast.dart';
 import 'package:task_management/constant/image_constant.dart';
 import 'package:task_management/constant/style_constant.dart';
 import 'package:task_management/controller/chat_controller.dart';
@@ -69,7 +70,6 @@ class NewGroupSecond extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       controller: groupNameTextEditingController,
-                      // autofocus: true,
                       decoration: InputDecoration(
                           hintText: 'Group Name',
                           hintStyle: TextStyle(color: lightGreyColor)),
@@ -144,7 +144,6 @@ class NewGroupSecond extends StatelessWidget {
                       ],
                     ),
                   );
-                  // : SizedBox();
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(
@@ -158,9 +157,13 @@ class NewGroupSecond extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (chatController.isGroupCreating.value == false) {
-            chatController.groupCreateApi(
-                groupNameTextEditingController.text, selectedList);
+          if (groupNameTextEditingController.text.isNotEmpty) {
+            if (chatController.isGroupCreating.value == false) {
+              chatController.groupCreateApi(
+                  groupNameTextEditingController.text.trim(), selectedList);
+            }
+          } else {
+            CustomToast().showCustomToast('Enter group name');
           }
         },
         shape: CircleBorder(),

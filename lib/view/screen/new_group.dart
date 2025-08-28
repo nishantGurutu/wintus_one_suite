@@ -18,20 +18,41 @@ class NewGroup extends StatefulWidget {
 }
 
 class _NewGroupState extends State<NewGroup> {
-  RxList<ResponsiblePersonData> selectedList = <ResponsiblePersonData>[].obs;
+  final RxList<ResponsiblePersonData> selectedList =
+      <ResponsiblePersonData>[].obs;
+  final RxList<ResponsiblePersonData> filteredList =
+      <ResponsiblePersonData>[].obs;
+  final TextEditingController searchAssignController = TextEditingController();
 
   @override
   void initState() {
-    print('e6t37et3 e8738e83 ${selectedList.length}');
-    selectedList.clear();
     super.initState();
+    filteredList.value = widget.responsiblePersonList;
+    ever(widget.responsiblePersonList, (_) {
+      _updateFilteredList();
+    });
+    searchAssignController.addListener(() {
+      _updateFilteredList();
+    });
+    selectedList.clear();
   }
 
-  final TextEditingController searchAssignController = TextEditingController();
+  void _updateFilteredList() {
+    final searchText = searchAssignController.text.toLowerCase();
+    filteredList.value = widget.responsiblePersonList
+        .where((person) =>
+            person.name?.toLowerCase().contains(searchText) ?? false)
+        .toList();
+  }
+
+  @override
+  void dispose() {
+    searchAssignController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    RxList<ResponsiblePersonData> filteredList =
-        RxList<ResponsiblePersonData>(widget.responsiblePersonList);
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(
@@ -47,7 +68,10 @@ class _NewGroupState extends State<NewGroup> {
         title: Text(
           newGroup,
           style: TextStyle(
-              color: textColor, fontSize: 21, fontWeight: FontWeight.bold),
+            color: textColor,
+            fontSize: 21,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: false,
       ),
@@ -55,29 +79,16 @@ class _NewGroupState extends State<NewGroup> {
         child: Obx(
           () => Column(
             children: [
-              SizedBox(
-                height: 5.h,
-              ),
+              SizedBox(height: 5.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: TextFormField(
                   controller: searchAssignController,
-                  onChanged: (value) {
-                    filteredList.value = widget.responsiblePersonList
-                        .where((person) =>
-                            person.name
-                                ?.toLowerCase()
-                                .contains(value.toLowerCase()) ??
-                            false)
-                        .toList();
-                  },
                   decoration: InputDecoration(
                     hintText: 'Search here...',
                     fillColor: searchBackgroundColor,
                     filled: true,
-                    labelStyle: TextStyle(
-                      color: searchBackgroundColor,
-                    ),
+                    labelStyle: TextStyle(color: searchBackgroundColor),
                     counterText: "",
                     border: OutlineInputBorder(borderSide: BorderSide.none),
                     enabledBorder: OutlineInputBorder(
@@ -93,86 +104,99 @@ class _NewGroupState extends State<NewGroup> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 5.h,
-              ),
+              SizedBox(height: 5.h),
               Expanded(
-                child: ListView.separated(
-                  itemCount: filteredList.length,
-                  itemBuilder: (context, index) {
-                    return Obx(
-                      () => InkWell(
-                        onTap: () {
-                          if (selectedList.contains(filteredList[index])) {
-                            selectedList.remove(filteredList[index]);
-                          } else {
-                            selectedList.add(filteredList[index]);
-                          }
-                          print('iue38ue83 36e63r53 ${selectedList.length}');
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 12.w, top: 10.h, right: 15.w),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 40.h,
-                                width: 40.w,
-                                decoration: BoxDecoration(
-                                  color: lightGreyColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20.r),
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(22.5),
-                                  ),
-                                  child: Image.network(
-                                    '${filteredList[index].image}',
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(20.r),
-                                          ),
-                                        ),
-                                        child: Image.asset(backgroundLogo),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 7.w,
-                              ),
-                              Text(
-                                "${filteredList[index].name}",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: textColor),
-                              ),
-                              Spacer(),
-                              selectedList.contains(filteredList[index])
-                                  ? SvgPicture.asset(
-                                      'assets/images/svg/done.svg',
-                                      height: 16.h,
-                                    )
-                                  : SizedBox(),
-                            ],
+                child: filteredList.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No contacts found',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                            color: textColor,
                           ),
                         ),
+                      )
+                    : ListView.separated(
+                        itemCount: filteredList.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              if (selectedList.contains(filteredList[index])) {
+                                selectedList.remove(filteredList[index]);
+                              } else {
+                                selectedList.add(filteredList[index]);
+                              }
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 12.w,
+                                top: 10.h,
+                                right: 15.w,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 40.h,
+                                    width: 40.w,
+                                    decoration: BoxDecoration(
+                                      color: lightGreyColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20.r),
+                                      ),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(22.5),
+                                      ),
+                                      child: Image.network(
+                                        filteredList[index].image ?? '',
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(20.r),
+                                              ),
+                                            ),
+                                            child: Image.asset(backgroundLogo),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 7.w),
+                                  Expanded(
+                                    child: Text(
+                                      "${filteredList[index].name}",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: textColor,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Obx(
+                                    () => selectedList
+                                            .contains(filteredList[index])
+                                        ? SvgPicture.asset(
+                                            'assets/images/svg/done.svg',
+                                            height: 16.h,
+                                          )
+                                        : SizedBox(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return SizedBox(height: 8.h);
+                        },
                       ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      height: 8.h,
-                    );
-                  },
-                ),
               ),
             ],
           ),
@@ -184,7 +208,7 @@ class _NewGroupState extends State<NewGroup> {
           if (selectedList.isNotEmpty) {
             Get.to(NewGroupSecond(selectedList));
           } else {
-            CustomToast().showCustomToast('Please select person.');
+            CustomToast().showCustomToast('Please select at least one person.');
           }
         },
         backgroundColor: primaryColor,
