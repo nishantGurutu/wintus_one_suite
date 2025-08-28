@@ -47,143 +47,137 @@ class _OutScreenChalanListState extends State<OutScreenChalanList> {
         ),
         centerTitle: true,
       ),
-      body: Container(
-        color: backgroundColor,
-        child: Obx(
-          () => outScreenController.isChalanLoading.value == true &&
-                  outScreenController.isInChalanLoading.value == true
-              ? Center(
-                  child: CircularProgressIndicator(
-                    color: secondaryColor,
-                  ),
-                )
-              : outScreenController.chalanList.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No chalan created',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
+      body: SafeArea(
+        child: Container(
+          color: backgroundColor,
+          child: Obx(
+            () => outScreenController.isChalanLoading.value == true &&
+                    outScreenController.isInChalanLoading.value == true
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: secondaryColor,
+                    ),
+                  )
+                : Column(
+                    children: [
+                      SizedBox(
+                        height: 10.h,
                       ),
-                    )
-                  : Column(
-                      children: [
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12.w),
-                          child: Container(
-                            height: 35.h,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: whiteColor,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20.r),
-                              ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w),
+                        child: Container(
+                          height: 35.h,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.r),
                             ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (outScreenController
-                                              .isOutSelected.value ==
-                                          false) {
-                                        outScreenController
-                                            .isOutSelected.value = true;
-                                        outScreenController.isInSelected.value =
-                                            false;
-                                      }
-                                    },
-                                    child: Container(
-                                      height: 35.h,
-                                      decoration: BoxDecoration(
-                                        color: outScreenController
-                                                    .isOutSelected.value ==
-                                                true
-                                            ? Color(0xffDDE4FF)
-                                            : whiteColor,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(20.r),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (outScreenController
+                                            .isOutSelected.value ==
+                                        false) {
+                                      outScreenController.isOutSelected.value =
+                                          true;
+                                      outScreenController.isInSelected.value =
+                                          false;
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 35.h,
+                                    decoration: BoxDecoration(
+                                      color: outScreenController
+                                                  .isOutSelected.value ==
+                                              true
+                                          ? Color(0xffDDE4FF)
+                                          : whiteColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20.r),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(replyAllIcon),
+                                        SizedBox(
+                                          width: 5.w,
                                         ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SvgPicture.asset(replyAllIcon),
-                                          SizedBox(
-                                            width: 5.w,
-                                          ),
-                                          Text(
-                                            "Out Chalan List",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Color(0xff263B8D)),
-                                          ),
-                                        ],
-                                      ),
+                                        Text(
+                                          "Out Chalan List",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xff263B8D)),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (outScreenController
-                                              .isInSelected.value ==
-                                          false) {
-                                        outScreenController.isInSelected.value =
-                                            true;
-                                        outScreenController
-                                            .isOutSelected.value = false;
-                                      }
-                                    },
-                                    child: Container(
-                                      height: 35.h,
-                                      decoration: BoxDecoration(
-                                        color: outScreenController
-                                                    .isInSelected.value ==
-                                                true
-                                            ? Color(0xffDDE4FF)
-                                            : whiteColor,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(20.r),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SvgPicture.asset(forwardIcon),
-                                          SizedBox(
-                                            width: 5.w,
-                                          ),
-                                          Text(
-                                            "In Chalan List",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Color(0xff263B8D)),
-                                          ),
-                                        ],
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (outScreenController
+                                            .isInSelected.value ==
+                                        false) {
+                                      outScreenController.isInSelected.value =
+                                          true;
+                                      outScreenController.isOutSelected.value =
+                                          false;
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 35.h,
+                                    decoration: BoxDecoration(
+                                      color: outScreenController
+                                                  .isInSelected.value ==
+                                              true
+                                          ? Color(0xffDDE4FF)
+                                          : whiteColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20.r),
                                       ),
                                     ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(forwardIcon),
+                                        SizedBox(
+                                          width: 5.w,
+                                        ),
+                                        Text(
+                                          "In Chalan List",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xff263B8D)),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                )
-                              ],
-                            ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                        Expanded(
-                          child: outScreenController.isOutSelected.value == true
-                              ? OutChalanlist(outScreenController.chalanList)
-                              : InChalanlist(
-                                  outScreenController.inScreenChalanList,
-                                  outScreenController),
-                        ),
-                      ],
-                    ),
+                      ),
+                      Expanded(
+                        child: outScreenController.isOutSelected.value == true
+                            ? OutChalanlist(outScreenController.chalanList)
+                            : InChalanlist(
+                                outScreenController.inScreenChalanList,
+                                outScreenController),
+                      ),
+                    ],
+                  ),
+          ),
         ),
       ),
     );

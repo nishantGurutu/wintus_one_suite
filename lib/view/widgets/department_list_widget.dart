@@ -19,7 +19,6 @@ class DepartmentList extends StatelessWidget {
       () {
         menuController.text =
             profileController.selectedDepartMentListData.value?.name ?? '';
-
         return Container(
           height: 45.h,
           decoration: BoxDecoration(
@@ -32,11 +31,8 @@ class DepartmentList extends StatelessWidget {
           child: DropdownMenu<DepartmentListData>(
             controller: menuController,
             width: double.infinity,
-            trailingIcon: Image.asset(
-              'assets/images/png/Vector 3.png',
-              color: secondaryColor,
-              height: 8.h,
-            ),
+            trailingIcon: Image.asset('assets/images/png/Vector 3.png',
+                color: secondaryColor, height: 8.h),
             selectedTrailingIcon: Image.asset(
               'assets/images/png/Vector 3.png',
               color: secondaryColor,

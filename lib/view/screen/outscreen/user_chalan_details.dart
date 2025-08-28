@@ -831,18 +831,23 @@ class _UserChalanDetailsState extends State<UserChalanDetails> {
 
   Future<void> generatePdf() async {
     final pdf = pw.Document();
+
     Future<pw.Font> loadFont() async {
       final fontData =
           await rootBundle.load("assets/fonts/NotoSansDevanagari-Regular.ttf");
       return pw.Font.ttf(fontData);
     }
 
+    final imageData =
+        await rootBundle.load('assets/images/png/Layer_x0020_1.png');
+    final image = pw.MemoryImage(imageData.buffer.asUint8List());
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return pw.Container(
-            padding: pw.EdgeInsets.all(10),
+            padding: const pw.EdgeInsets.all(10),
             decoration: pw.BoxDecoration(
               border: pw.Border.all(color: PdfColors.grey, width: 1),
               borderRadius: pw.BorderRadius.circular(10),
@@ -850,27 +855,45 @@ class _UserChalanDetailsState extends State<UserChalanDetails> {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Text(
-                    'Chalan Number: ${outScreenController.outScreenChalanDetailsModel.value?.data?.challanNumber ?? ""}',
-                    style: pw.TextStyle(
-                        fontSize: 16, fontWeight: pw.FontWeight.bold)),
-                pw.Text(
-                    'Date: ${formatDateTime(outScreenController.outScreenChalanDetailsModel.value?.data?.createdAt ?? '')}',
-                    style: pw.TextStyle(fontSize: 16)),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.center,
+                  children: [
+                    pw.Image(
+                      image,
+                      width: 100,
+                      height: 100,
+                    ),
+                  ],
+                ),
                 pw.SizedBox(height: 10),
+                pw.Text(
+                  'Chalan Number: ${outScreenController.outScreenChalanDetailsModel.value?.data?.challanNumber ?? ""}',
+                  style: pw.TextStyle(
+                    fontSize: 16,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.Text(
+                  'Date: ${formatDateTime(outScreenController.outScreenChalanDetailsModel.value?.data?.createdAt ?? '')}',
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
                 pw.SizedBox(height: 10),
                 pw.Text(
-                    'Department Name: ${outScreenController.outScreenChalanDetailsModel.value?.data?.departmentName ?? ""}',
-                    style: pw.TextStyle(fontSize: 16)),
+                  'Department Name: ${outScreenController.outScreenChalanDetailsModel.value?.data?.departmentName ?? ""}',
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
                 pw.Text(
-                    'Dispatch To: ${outScreenController.outScreenChalanDetailsModel.value?.data?.dispatchTo ?? ""}',
-                    style: pw.TextStyle(fontSize: 16)),
+                  'Dispatch To: ${outScreenController.outScreenChalanDetailsModel.value?.data?.dispatchTo ?? ""}',
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
                 pw.Text(
-                    'Contact: ${outScreenController.outScreenChalanDetailsModel.value?.data?.contact ?? ""}',
-                    style: pw.TextStyle(fontSize: 16)),
+                  'Contact: ${outScreenController.outScreenChalanDetailsModel.value?.data?.contact ?? ""}',
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
                 pw.Text(
-                    'Status: ${outScreenController.outScreenChalanDetailsModel.value?.data?.status.toString() == "1" ? "Approve" : outScreenController.outScreenChalanDetailsModel.value?.data?.status.toString() == "2" ? "Reject" : outScreenController.outScreenChalanDetailsModel.value?.data?.status.toString() == "3" ? "OUT" : ""}',
-                    style: pw.TextStyle(fontSize: 16)),
+                  'Status: ${outScreenController.outScreenChalanDetailsModel.value?.data?.status.toString() == "1" ? "Approve" : outScreenController.outScreenChalanDetailsModel.value?.data?.status.toString() == "2" ? "Reject" : outScreenController.outScreenChalanDetailsModel.value?.data?.status.toString() == "3" ? "OUT" : ""}',
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
                 pw.SizedBox(height: 10),
                 pw.Table.fromTextArray(
                   headers: ['S. No.', 'Items', 'Type', 'QTY', 'Remarks'],
@@ -913,9 +936,9 @@ class _UserChalanDetailsState extends State<UserChalanDetails> {
     final now = DateTime.now();
     final formattedDate =
         '${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}-${now.year}_${now.second}';
-    final fileName = 'chalan_${formattedDate}.pdf';
+    final fileName = 'chalan_$formattedDate.pdf';
     final filePath = '$folderPath/$fileName';
-    print('afc agfgadg agfag $fileName');
+    print('PDF generated: $fileName');
     final file = File(filePath);
     await file.writeAsBytes(await pdf.save());
 

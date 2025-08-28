@@ -32,11 +32,9 @@ class _SelectContactState extends State<SelectContact> {
   void initState() {
     super.initState();
     _fetchData();
-    // Update filteredList when responsiblePersonList changes
     ever(taskController.responsiblePersonList, (_) {
       _updateFilteredList();
     });
-    // Update filteredList when search text changes
     searchAssignController.addListener(() {
       _updateFilteredList();
     });

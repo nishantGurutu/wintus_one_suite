@@ -21,7 +21,6 @@ import 'package:task_management/model/priority_model.dart' show PriorityData;
 import 'package:task_management/model/responsible_person_list_model.dart';
 import 'package:task_management/view/widgets/add_contact.dart';
 import 'package:task_management/view/widgets/custom_calender.dart';
-import 'package:task_management/view/widgets/custom_dropdawn.dart';
 import 'package:task_management/view/widgets/custom_timer.dart';
 import 'package:task_management/view/widgets/department_list_widget.dart';
 import 'package:task_management/view/widgets/image_screen.dart';
@@ -837,17 +836,6 @@ class _AddTaskState extends State<AddTask> {
                                         ),
                                       ),
                                     ),
-                                    // CustomDropdown<PriorityData>(
-                                    //   items: priorityController.priorityList,
-                                    //   itemLabel: (item) =>
-                                    //       item.priorityName ?? "",
-                                    //   selectedValue: null,
-                                    //   onChanged: (value) {
-                                    //     priorityController
-                                    //         .selectedPriorityData.value = value;
-                                    //   },
-                                    //   hintText: selectPriority,
-                                    // ),
                                   ],
                                 ),
                               ),
