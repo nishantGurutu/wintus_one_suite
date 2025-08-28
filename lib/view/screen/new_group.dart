@@ -22,12 +22,16 @@ class _NewGroupState extends State<NewGroup> {
 
   @override
   void initState() {
+    print('e6t37et3 e8738e83 ${selectedList.length}');
     selectedList.clear();
     super.initState();
   }
 
+  final TextEditingController searchAssignController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    RxList<ResponsiblePersonData> filteredList =
+        RxList<ResponsiblePersonData>(widget.responsiblePersonList);
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(
@@ -47,93 +51,131 @@ class _NewGroupState extends State<NewGroup> {
         ),
         centerTitle: false,
       ),
-      body: Obx(
-        () => Column(
-          children: [
-            SizedBox(
-              height: 5.h,
-            ),
-            Expanded(
-              child: ListView.separated(
-                itemCount: widget.responsiblePersonList.length,
-                itemBuilder: (context, index) {
-                  return Obx(
-                    () => InkWell(
-                      onTap: () {
-                        if (selectedList
-                            .contains(widget.responsiblePersonList[index])) {
-                          selectedList
-                              .remove(widget.responsiblePersonList[index]);
-                        } else {
-                          selectedList.add(widget.responsiblePersonList[index]);
-                        }
-                      },
-                      child: Padding(
-                        padding:
-                            EdgeInsets.only(left: 12.w, top: 10.h, right: 15.w),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 40.h,
-                              width: 40.w,
-                              decoration: BoxDecoration(
-                                color: lightGreyColor,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20.r),
+      body: SafeArea(
+        child: Obx(
+          () => Column(
+            children: [
+              SizedBox(
+                height: 5.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                child: TextFormField(
+                  controller: searchAssignController,
+                  onChanged: (value) {
+                    filteredList.value = widget.responsiblePersonList
+                        .where((person) =>
+                            person.name
+                                ?.toLowerCase()
+                                .contains(value.toLowerCase()) ??
+                            false)
+                        .toList();
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search here...',
+                    fillColor: searchBackgroundColor,
+                    filled: true,
+                    labelStyle: TextStyle(
+                      color: searchBackgroundColor,
+                    ),
+                    counterText: "",
+                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.all(Radius.circular(30.r)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.all(Radius.circular(30.r)),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: filteredList.length,
+                  itemBuilder: (context, index) {
+                    return Obx(
+                      () => InkWell(
+                        onTap: () {
+                          if (selectedList.contains(filteredList[index])) {
+                            selectedList.remove(filteredList[index]);
+                          } else {
+                            selectedList.add(filteredList[index]);
+                          }
+                          print('iue38ue83 36e63r53 ${selectedList.length}');
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: 12.w, top: 10.h, right: 15.w),
+                          child: Row(
+                            children: [
+                              Container(
+                                height: 40.h,
+                                width: 40.w,
+                                decoration: BoxDecoration(
+                                  color: lightGreyColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20.r),
+                                  ),
                                 ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(22.5),
-                                ),
-                                child: Image.network(
-                                  '${widget.responsiblePersonList[index].image}',
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(20.r),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(22.5),
+                                  ),
+                                  child: Image.network(
+                                    '${filteredList[index].image}',
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20.r),
+                                          ),
                                         ),
-                                      ),
-                                      child: Image.asset(backgroundLogo),
-                                    );
-                                  },
+                                        child: Image.asset(backgroundLogo),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 7.w,
-                            ),
-                            Text(
-                              "${widget.responsiblePersonList[index].name}",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: textColor),
-                            ),
-                            Spacer(),
-                            selectedList.contains(
-                                    widget.responsiblePersonList[index])
-                                ? SvgPicture.asset(
-                                    'assets/images/svg/done.svg',
-                                    height: 16.h,
-                                  )
-                                : SizedBox(),
-                          ],
+                              SizedBox(
+                                width: 7.w,
+                              ),
+                              Text(
+                                "${filteredList[index].name}",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: textColor),
+                              ),
+                              Spacer(),
+                              selectedList.contains(filteredList[index])
+                                  ? SvgPicture.asset(
+                                      'assets/images/svg/done.svg',
+                                      height: 16.h,
+                                    )
+                                  : SizedBox(),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    height: 8.h,
-                  );
-                },
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      height: 8.h,
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
