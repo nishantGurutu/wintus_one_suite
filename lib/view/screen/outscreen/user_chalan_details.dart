@@ -68,8 +68,36 @@ class _UserChalanDetailsState extends State<UserChalanDetails> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              generatePdf();
+            onPressed: () async {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: whiteColor,
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(width: 16),
+                        Text("Downloading..."),
+                      ],
+                    ),
+                  );
+                },
+              );
+
+              try {
+                await generatePdf();
+              } catch (e) {
+                Fluttertoast.showToast(
+                  msg: 'Error generating PDF: $e',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.TOP,
+                );
+              } finally {
+                Navigator.of(context).pop();
+              }
             },
             icon: Icon(
               Icons.download,
