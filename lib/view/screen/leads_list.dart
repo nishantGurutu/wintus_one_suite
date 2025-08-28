@@ -13,6 +13,7 @@ import 'package:task_management/controller/lead_controller.dart';
 import 'package:task_management/custom_widget/button_widget.dart';
 import 'package:task_management/helper/call_helper.dart';
 import 'package:task_management/helper/storage_helper.dart';
+import 'package:task_management/model/added_document_lead_list_model.dart';
 import 'package:task_management/model/lead_list_model.dart';
 import 'package:task_management/model/lead_status_lead.dart';
 import 'package:task_management/model/responsible_person_list_model.dart'
@@ -129,11 +130,10 @@ class _LeadListState extends State<LeadList> {
   }
 
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController2 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    RxList<LeadListData> rxFilteredList =
-        RxList<LeadListData>(leadController.leadsListData);
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -302,40 +302,72 @@ class _LeadListState extends State<LeadList> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    TextFormField(
-                      controller: _searchController,
-                      onChanged: (value) {
-                        rxFilteredList.value = leadController.leadsListData
-                            .where((person) =>
-                                person.leadName
-                                    ?.toLowerCase()
-                                    .contains(value.toLowerCase()) ??
-                                false)
-                            .toList();
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Search here...',
-                        fillColor: Colors.white,
-                        filled: true,
-                        labelStyle: TextStyle(
-                          color: secondaryColor,
-                        ),
-                        counterText: "",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.all(Radius.circular(5.r)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.all(Radius.circular(5.r)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.all(Radius.circular(5.r)),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 10.w, vertical: 10.h),
-                      ),
+                    Obx(
+                      () => leadController.isAllLeadSelected.value == true
+                          ? TextFormField(
+                              controller: _searchController,
+                              onChanged: (value) {
+                                setState(() {});
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Search here...',
+                                fillColor: Colors.white,
+                                filled: true,
+                                labelStyle: TextStyle(
+                                  color: secondaryColor,
+                                ),
+                                counterText: "",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: secondaryColor),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.r)),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: secondaryColor),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.r)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: secondaryColor),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.r)),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 10.w, vertical: 10.h),
+                              ),
+                            )
+                          : TextFormField(
+                              controller: _searchController2,
+                              onChanged: (value) {
+                                setState(() {});
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Search here...',
+                                fillColor: Colors.white,
+                                filled: true,
+                                labelStyle: TextStyle(
+                                  color: secondaryColor,
+                                ),
+                                counterText: "",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: secondaryColor),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.r)),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: secondaryColor),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.r)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: secondaryColor),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.r)),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 10.w, vertical: 10.h),
+                              ),
+                            ),
                     ),
                     SizedBox(
                       height: 5.h,
@@ -584,8 +616,20 @@ class _LeadListState extends State<LeadList> {
                       height: 5.h,
                     ),
                     leadController.isAllLeadSelected.value == true
-                        ? allLeadList(rxFilteredList)
-                        : documentLeadList()
+                        ? allLeadList(RxList<LeadListData>(leadController
+                            .leadsListData
+                            .where((person) =>
+                                person.leadName?.toLowerCase().contains(
+                                    _searchController.text.toLowerCase()) ??
+                                false)
+                            .toList()))
+                        : documentLeadList(RxList<AddedDocumentLeadData>(
+                            leadController.addedDocumentLeadDataList
+                                .where((person) =>
+                                    person.leadName?.toLowerCase().contains(
+                                        _searchController2.text.toLowerCase()) ??
+                                    false)
+                                .toList()))
                   ],
                 ),
               ),
@@ -914,9 +958,7 @@ class _LeadListState extends State<LeadList> {
                                                     (LeadStatusData? value) {
                                                   changeStatusDialog(
                                                       context,
-                                                      leadController
-                                                          .leadsListData[index]
-                                                          .id,
+                                                      rxFilteredList[index].id,
                                                       value);
                                                 },
                                                 buttonStyleData:
@@ -936,37 +978,37 @@ class _LeadListState extends State<LeadList> {
                                                     color: leadController
                                                                 .selectedStatusPerLead[
                                                                     index]
-                                                                .name
+                                                                ?.name
                                                                 ?.toLowerCase() ==
                                                             "new lead"
                                                         ? Colors.blue
                                                         : leadController
                                                                     .selectedStatusPerLead[
                                                                         index]
-                                                                    .name
+                                                                    ?.name
                                                                     ?.toLowerCase() ==
                                                                 "pl"
                                                             ? Colors.yellow
                                                             : leadController
                                                                         .selectedStatusPerLead[
                                                                             index]
-                                                                        .name
+                                                                        ?.name
                                                                         ?.toLowerCase() ==
                                                                     "spl"
                                                                 ? Colors.purple
                                                                 : leadController
                                                                             .selectedStatusPerLead[
                                                                                 index]
-                                                                            .name
+                                                                            ?.name
                                                                             ?.toLowerCase() ==
                                                                         "quotation"
                                                                     ? Colors
                                                                         .orange
-                                                                    : leadController.selectedStatusPerLead[index].name?.toLowerCase() ==
+                                                                    : leadController.selectedStatusPerLead[index]?.name?.toLowerCase() ==
                                                                             "won"
                                                                         ? Colors
                                                                             .green
-                                                                        : leadController.selectedStatusPerLead[index].name?.toLowerCase() ==
+                                                                        : leadController.selectedStatusPerLead[index]?.name?.toLowerCase() ==
                                                                                 "lost"
                                                                             ? Colors.red
                                                                             : whiteColor,
@@ -1222,14 +1264,14 @@ class _LeadListState extends State<LeadList> {
     );
   }
 
-  Widget documentLeadList() {
+  Widget documentLeadList(RxList<AddedDocumentLeadData> rxFilteredList2) {
     return Obx(
       () => Expanded(
         child: RefreshIndicator(
           onRefresh: () async {
             await leadController.addedDocumentLeadList();
           },
-          child: leadController.addedDocumentLeadDataList.isEmpty
+          child: rxFilteredList2.isEmpty
               ? Center(
                   child: Text(
                     'No Lead data',
@@ -1241,18 +1283,15 @@ class _LeadListState extends State<LeadList> {
                   ),
                 )
               : ListView.builder(
-                  itemCount: leadController.addedDocumentLeadDataList.length,
+                  itemCount: rxFilteredList2.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: EdgeInsets.symmetric(vertical: 5.h),
                       child: GestureDetector(
                         onTap: () {
                           Get.to(() => LeadOverviewScreen(
-                                leadId: leadController
-                                    .addedDocumentLeadDataList[index].id,
-                                leadNumber: leadController
-                                    .addedDocumentLeadDataList[index]
-                                    .leadNumber,
+                                leadId: rxFilteredList2[index].id,
+                                leadNumber: rxFilteredList2[index].leadNumber,
                               ));
                         },
                         child: Container(
@@ -1283,7 +1322,7 @@ class _LeadListState extends State<LeadList> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        '${leadController.addedDocumentLeadDataList[index].leadName ?? ""}',
+                                        '${rxFilteredList2[index].leadName ?? ""}',
                                         style: TextStyle(
                                             fontSize: 15.sp,
                                             fontWeight: FontWeight.w500),
@@ -1291,7 +1330,7 @@ class _LeadListState extends State<LeadList> {
                                     ),
                                     Expanded(
                                       child: Text(
-                                        '${leadController.addedDocumentLeadDataList[index].leadNumber ?? ""}',
+                                        '${rxFilteredList2[index].leadNumber ?? ""}',
                                         style: TextStyle(
                                             fontSize: 15.sp,
                                             fontWeight: FontWeight.w500),
@@ -1339,10 +1378,7 @@ class _LeadListState extends State<LeadList> {
                                                     controller.clearAll();
                                                     assignandaddUser(
                                                       context,
-                                                      leadController
-                                                          .addedDocumentLeadDataList[
-                                                              index]
-                                                          .id,
+                                                      rxFilteredList2[index].id,
                                                       "add-people",
                                                     );
                                                   });
@@ -1366,10 +1402,7 @@ class _LeadListState extends State<LeadList> {
                                                   controller.clearAll();
                                                   assignandaddUser(
                                                     context,
-                                                    leadController
-                                                        .addedDocumentLeadDataList[
-                                                            index]
-                                                        .id,
+                                                    rxFilteredList2[index].id,
                                                     "assign",
                                                   );
                                                 },
@@ -1410,15 +1443,13 @@ class _LeadListState extends State<LeadList> {
                                             width: 2.w,
                                           ),
                                           Text(
-                                            '${leadController.addedDocumentLeadDataList[index].company ?? ""}',
+                                            '${rxFilteredList2[index].company ?? ""}',
                                             style: TextStyle(
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w400),
                                           ),
                                           Spacer(),
-                                          if ((leadController
-                                                      .addedDocumentLeadDataList[
-                                                          index]
+                                          if ((rxFilteredList2[index]
                                                       .leadNumber ??
                                                   "")
                                               .isEmpty)
@@ -1471,7 +1502,7 @@ class _LeadListState extends State<LeadList> {
                                             width: 2.w,
                                           ),
                                           Text(
-                                            '${leadController.addedDocumentLeadDataList[index].phone ?? ""}',
+                                            '${rxFilteredList2[index].phone ?? ""}',
                                             style: TextStyle(
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w400),
@@ -1491,7 +1522,7 @@ class _LeadListState extends State<LeadList> {
                                           ),
                                           Expanded(
                                             child: Text(
-                                              '${leadController.addedDocumentLeadDataList[index].email ?? ""}',
+                                              '${rxFilteredList2[index].email ?? ""}',
                                               style: TextStyle(
                                                   fontSize: 13.sp,
                                                   fontWeight: FontWeight.w400),
@@ -1553,9 +1584,7 @@ class _LeadListState extends State<LeadList> {
                                                     (LeadStatusData? value) {
                                                   changeStatusDialog(
                                                       context,
-                                                      leadController
-                                                          .leadsListData[index]
-                                                          .id,
+                                                      rxFilteredList2[index].id,
                                                       value);
                                                 },
                                                 buttonStyleData:
@@ -1575,37 +1604,37 @@ class _LeadListState extends State<LeadList> {
                                                     color: leadController
                                                                 .selectedStatusPerLeadforDocumentLead[
                                                                     index]
-                                                                .name
+                                                                ?.name
                                                                 ?.toLowerCase() ==
                                                             "new lead"
                                                         ? Colors.blue
                                                         : leadController
                                                                     .selectedStatusPerLeadforDocumentLead[
                                                                         index]
-                                                                    .name
+                                                                    ?.name
                                                                     ?.toLowerCase() ==
                                                                 "pl"
                                                             ? Colors.yellow
                                                             : leadController
                                                                         .selectedStatusPerLeadforDocumentLead[
                                                                             index]
-                                                                        .name
+                                                                        ?.name
                                                                         ?.toLowerCase() ==
                                                                     "spl"
                                                                 ? Colors.purple
                                                                 : leadController
                                                                             .selectedStatusPerLeadforDocumentLead[
                                                                                 index]
-                                                                            .name
+                                                                            ?.name
                                                                             ?.toLowerCase() ==
                                                                         "quotation"
                                                                     ? Colors
                                                                         .orange
-                                                                    : leadController.selectedStatusPerLeadforDocumentLead[index].name?.toLowerCase() ==
+                                                                    : leadController.selectedStatusPerLeadforDocumentLead[index]?.name?.toLowerCase() ==
                                                                             "won"
                                                                         ? Colors
                                                                             .green
-                                                                        : leadController.selectedStatusPerLeadforDocumentLead[index].name?.toLowerCase() ==
+                                                                        : leadController.selectedStatusPerLeadforDocumentLead[index]?.name?.toLowerCase() ==
                                                                                 "lost"
                                                                             ? Colors.red
                                                                             : whiteColor,
@@ -1675,7 +1704,7 @@ class _LeadListState extends State<LeadList> {
                                       ],
                                     ),
                                     Text(
-                                      '${_formatDate(leadController.addedDocumentLeadDataList[index].createdAt ?? "")}',
+                                      '${_formatDate(rxFilteredList2[index].createdAt ?? "")}',
                                       style: TextStyle(
                                           fontSize: 13.sp,
                                           fontWeight: FontWeight.w400),
@@ -1686,9 +1715,7 @@ class _LeadListState extends State<LeadList> {
                                         GestureDetector(
                                           onTap: () async {
                                             await CallHelper().callWhatsApp(
-                                                mobileNo: leadController
-                                                    .addedDocumentLeadDataList[
-                                                        index]
+                                                mobileNo: rxFilteredList2[index]
                                                     .phone);
                                           },
                                           child: Image.asset(
@@ -1700,9 +1727,7 @@ class _LeadListState extends State<LeadList> {
                                         GestureDetector(
                                           onTap: () async {
                                             CallHelper().callPhone(
-                                                mobileNo: leadController
-                                                    .addedDocumentLeadDataList[
-                                                        index]
+                                                mobileNo: rxFilteredList2[index]
                                                     .phone);
                                           },
                                           child: Image.asset(
@@ -1715,7 +1740,7 @@ class _LeadListState extends State<LeadList> {
                                         ),
                                         IconButton(
                                             onPressed: () {
-                                              _shareSingleCard(index);
+                                              _shareSingleDocumentCard(index);
                                             },
                                             icon: Icon(Icons.share))
                                       ],
@@ -1732,10 +1757,7 @@ class _LeadListState extends State<LeadList> {
                                         onTap: () {
                                           Get.to(
                                             () => LeadOverviewScreen(
-                                              leadId: leadController
-                                                  .addedDocumentLeadDataList[
-                                                      index]
-                                                  .id,
+                                              leadId: rxFilteredList2[index].id,
                                               index: 1,
                                             ),
                                           );
@@ -1765,10 +1787,8 @@ class _LeadListState extends State<LeadList> {
                                       child: GestureDetector(
                                         onTap: () {
                                           Get.to(() => LeadOverviewScreen(
-                                                leadId: leadController
-                                                    .addedDocumentLeadDataList[
-                                                        index]
-                                                    .id,
+                                                leadId:
+                                                    rxFilteredList2[index].id,
                                                 index: 5,
                                               ));
                                         },
@@ -1796,15 +1816,12 @@ class _LeadListState extends State<LeadList> {
                                       child: GestureDetector(
                                         onTap: () {
                                           Get.to(() => LeadOverviewScreen(
-                                                leadId: leadController
-                                                    .addedDocumentLeadDataList[
-                                                        index]
-                                                    .id,
+                                                leadId:
+                                                    rxFilteredList2[index].id,
                                                 index: 2,
-                                                leadNumber: leadController
-                                                    .addedDocumentLeadDataList[
-                                                        index]
-                                                    .leadNumber,
+                                                leadNumber:
+                                                    rxFilteredList2[index]
+                                                        .leadNumber,
                                               ));
                                         },
                                         child: SizedBox(
@@ -1828,8 +1845,7 @@ class _LeadListState extends State<LeadList> {
                                       ),
                                     ),
                                     if (StorageHelper.getId().toString() ==
-                                        leadController
-                                            .addedDocumentLeadDataList[index]
+                                        rxFilteredList2[index]
                                             .userId
                                             .toString())
                                       Expanded(
@@ -1880,6 +1896,26 @@ class _LeadListState extends State<LeadList> {
 
   Future<void> _shareSingleCard(int index) async {
     final ap = leadController.leadsListData[index];
+
+    final locationUrl =
+        'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(ap.latitude.toString())},${Uri.encodeComponent(ap.longitude.toString())}';
+
+    final message = '''
+      LeadName: ${ap.leadName}
+      LeadNumber: ${ap.leadNumber}
+      Company: ${ap.company}
+      Phone: ${ap.phone}
+      Location: $locationUrl
+      ''';
+
+    await Share.share(message);
+
+    print("latitude:---${ap.latitude}");
+    print("longitude:---${ap.longitude}");
+  }
+
+  Future<void> _shareSingleDocumentCard(int index) async {
+    final ap = leadController.addedDocumentLeadDataList[index];
 
     final locationUrl =
         'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(ap.latitude.toString())},${Uri.encodeComponent(ap.longitude.toString())}';

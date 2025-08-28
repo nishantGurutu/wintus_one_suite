@@ -456,7 +456,6 @@ class LeadController extends GetxController {
         isAddedDocumentLeadLoading.value = false;
         isAddedDocumentLeadLoading.refresh();
         addedDocumentLeadDataList.assignAll(result.data!);
-        // selectedStatusPerLeadforDocumentLead.addAll(addedDocumentLeadDataList.length )
         selectedStatusPerLeadforDocumentLead.addAll(List<LeadStatusData>.filled(
             addedDocumentLeadDataList.length, LeadStatusData()));
       }
