@@ -48,6 +48,13 @@ class _TaskListPageState extends State<TaskScreenPage> {
   ScrollController _scrollController = ScrollController();
   final HomeController homeController = Get.find();
   final TextEditingController dueDateController = TextEditingController();
+  final TextEditingController _searchAllController = TextEditingController();
+  final TextEditingController _searchNewController = TextEditingController();
+  final TextEditingController _searchProgressController =
+      TextEditingController();
+  final TextEditingController _searchCompleteController =
+      TextEditingController();
+
   @override
   void initState() {
     taskController.pagevalue.value = 1;
@@ -86,13 +93,15 @@ class _TaskListPageState extends State<TaskScreenPage> {
           widget.userId);
     } else if (_scrollController.position.pixels ==
         _scrollController.position.minScrollExtent) {
-      taskController.pagevalue.value -= 1;
-      await taskController.taskListApi(
-          widget.taskType,
-          taskController.selectedAssignedTask.value,
-          'scroll',
-          '',
-          widget.userId);
+      if (taskController.pagevalue.value > 1) {
+        taskController.pagevalue.value -= 1;
+        await taskController.taskListApi(
+            widget.taskType,
+            taskController.selectedAssignedTask.value,
+            'scroll',
+            '',
+            widget.userId);
+      }
     }
   }
 
@@ -105,6 +114,10 @@ class _TaskListPageState extends State<TaskScreenPage> {
     profileController.selectedDepartMentListData.value = null;
     taskController.selectedTaskType.value = 'All Task';
     taskController.selectedAssignedTask.value = 'Task created by me';
+    _searchAllController.dispose();
+    _searchNewController.dispose();
+    _searchProgressController.dispose();
+    _searchCompleteController.dispose();
     super.dispose();
   }
 
@@ -137,15 +150,14 @@ class _TaskListPageState extends State<TaskScreenPage> {
         Get.back();
       }
       return true;
-    } else {
-      return true;
     }
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => _onWillPop(),
+      onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
@@ -174,7 +186,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                 onTap: () {
                   taskController.selectedAllProjectListData.value =
                       taskController.allProjectDataList.first;
-
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
@@ -224,7 +235,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2100),
                       );
-
                       if (pickedDate != null) {
                         String formattedDate =
                             DateFormat('dd-MM-yyyy').format(pickedDate);
@@ -287,6 +297,11 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                 : taskController.selectedTaskType.value,
                             onChanged: (String? value) {
                               taskController.updateTaskType(value);
+                              // Clear search controllers when task type changes
+                              _searchAllController.clear();
+                              _searchNewController.clear();
+                              _searchProgressController.clear();
+                              _searchCompleteController.clear();
                             },
                             buttonStyleData: ButtonStyleData(
                               height: 50,
@@ -378,6 +393,11 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                 : taskController.selectedAssignedTask.value,
                             onChanged: (String? value) {
                               taskController.updateAssignedTask(value);
+                              // Clear search controllers when assigned type changes
+                              _searchAllController.clear();
+                              _searchNewController.clear();
+                              _searchProgressController.clear();
+                              _searchCompleteController.clear();
                             },
                             buttonStyleData: ButtonStyleData(
                               height: 50,
@@ -436,6 +456,52 @@ class _TaskListPageState extends State<TaskScreenPage> {
                 ],
               ),
             ),
+            SizedBox(height: 8.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: Obx(
+                () => TextFormField(
+                  controller: taskController.selectedTaskType.value ==
+                          "All Task"
+                      ? _searchAllController
+                      : taskController.selectedTaskType.value == "New Task" ||
+                              taskController.selectedTaskType.value ==
+                                  "Past Due" ||
+                              taskController.selectedTaskType.value ==
+                                  "Due Today"
+                          ? _searchNewController
+                          : taskController.selectedTaskType.value == "Progress"
+                              ? _searchProgressController
+                              : _searchCompleteController,
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search here...',
+                    fillColor: Colors.white,
+                    filled: true,
+                    labelStyle: TextStyle(
+                      color: secondaryColor,
+                    ),
+                    counterText: "",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                      borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                      borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                      borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                  ),
+                ),
+              ),
+            ),
             SizedBox(height: 5.h),
             Expanded(
               child: Container(
@@ -457,22 +523,26 @@ class _TaskListPageState extends State<TaskScreenPage> {
                             Obx(
                               () => taskController.selectedTaskType.value ==
                                       "All Task"
-                                  ? allTaskList(taskController.allTaskList)
-                                  : taskController.selectedTaskType.value ==
-                                              "New Task" ||
-                                          taskController
-                                                  .selectedTaskType.value ==
+                                  ? allTaskList(RxList(taskController.allTaskList
+                                      .where((task) => task['title']
+                                          .toString()
+                                          .toLowerCase()
+                                          .contains(_searchAllController.text
+                                              .toLowerCase()))
+                                      .toList()))
+                                  : taskController.selectedTaskType.value == "New Task" ||
+                                          taskController.selectedTaskType.value ==
                                               "Past Due" ||
-                                          taskController
-                                                  .selectedTaskType.value ==
+                                          taskController.selectedTaskType.value ==
                                               "Due Today"
-                                      ? newTaskList(taskController.newTaskList)
-                                      : taskController.selectedTaskType.value ==
-                                              "Progress"
-                                          ? progressTaskList(
-                                              taskController.progressTaskList)
-                                          : completeTaskList(
-                                              taskController.completeTaskList),
+                                      ? newTaskList(RxList(taskController
+                                          .newTaskList
+                                          .where((task) =>
+                                              task['title'].toString().toLowerCase().contains(_searchNewController.text.toLowerCase()))
+                                          .toList()))
+                                      : taskController.selectedTaskType.value == "Progress"
+                                          ? progressTaskList(RxList(taskController.progressTaskList.where((task) => task['title'].toString().toLowerCase().contains(_searchProgressController.text.toLowerCase())).toList()))
+                                          : completeTaskList(RxList(taskController.completeTaskList.where((task) => task['title'].toString().toLowerCase().contains(_searchCompleteController.text.toLowerCase())).toList())),
                             ),
                           ],
                         ),
@@ -490,6 +560,7 @@ class _TaskListPageState extends State<TaskScreenPage> {
   final TextEditingController startDateController3 = TextEditingController();
   final TextEditingController dueDateController3 = TextEditingController();
   final TextEditingController dueTimeController3 = TextEditingController();
+
   Widget allTaskList(RxList newTaskList) {
     return Obx(
       () => taskController.isTaskLoading.value == true
@@ -1002,17 +1073,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       Container(
                                         width: 90.w,
                                         decoration: BoxDecoration(
-                                          // color: newTaskList[index]
-                                          //                 ['priority_name']
-                                          //             ?.toLowerCase() ==
-                                          //         'medium'
-                                          //     ? softYellowColor
-                                          //     : newTaskList[index]
-                                          //                     ['priority_name']
-                                          //                 ?.toLowerCase() ==
-                                          //             'low'
-                                          //         ? completeBackgroundColor
-                                          //         : softredColor,
                                           color: newTaskList[index]
                                                           ['priority_name']
                                                       ?.toLowerCase() ==
@@ -1037,19 +1097,7 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
-                                                  color: whiteColor
-                                                  // newTaskList[index][
-                                                  //                 'priority_name']
-                                                  //             ?.toLowerCase() ==
-                                                  //         'medium'
-                                                  //     ? mediumColor
-                                                  //     : newTaskList[index][
-                                                  //                     'priority_name']
-                                                  //                 ?.toLowerCase() ==
-                                                  //             'low'
-                                                  //         ? blueColor
-                                                  //         : slightlyDarkColor,
-                                                  ),
+                                                  color: whiteColor),
                                             ),
                                           ),
                                         ),
@@ -1060,20 +1108,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       Container(
                                         width: 90.w,
                                         decoration: BoxDecoration(
-                                          // color: newTaskList[index]
-                                          //                 ['effective_status']
-                                          //             .toString()
-                                          //             .toLowerCase() ==
-                                          //         "pending"
-                                          //     ? pendingBackgroundColor
-                                          //     : newTaskList[index][
-                                          //                     'effective_status']
-                                          //                 .toString()
-                                          //                 .toLowerCase() ==
-                                          //             "progress"
-                                          //         ? progressBackgroundColor
-                                          //         : completeBackgroundColor,
-
                                           color: newTaskList[index]
                                                           ['effective_status']
                                                       .toString()
@@ -1101,21 +1135,7 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
-                                                  color: whiteColor
-                                                  // newTaskList[index][
-                                                  //                 'effective_status']
-                                                  //             .toString()
-                                                  //             .toLowerCase() ==
-                                                  //         "pending"
-                                                  //     ? pendingColor
-                                                  //     : newTaskList[index][
-                                                  //                     'effective_status']
-                                                  //                 .toString()
-                                                  //                 .toLowerCase() ==
-                                                  //             "progress"
-                                                  //         ? elegentGreenColor
-                                                  //         : blueColor,
-                                                  ),
+                                                  color: whiteColor),
                                             ),
                                           ),
                                         ),
@@ -1202,7 +1222,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       newTaskList[index]['due_date'];
                                   dueTimeController3.text =
                                       newTaskList[index]['due_time'];
-
                                   for (var priorityData
                                       in priorityController.priorityList) {
                                     if (priorityData.id.toString() ==
@@ -1213,7 +1232,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       break;
                                     }
                                   }
-
                                   for (var deptData
                                       in profileController.departmentDataList) {
                                     if (deptData.id.toString() ==
@@ -1436,17 +1454,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       Container(
                                         width: 90.w,
                                         decoration: BoxDecoration(
-                                          // color: newTaskList[index]
-                                          //                 ['priority_name']
-                                          //             ?.toLowerCase() ==
-                                          //         'medium'
-                                          //     ? softYellowColor
-                                          //     : newTaskList[index]
-                                          //                     ['priority_name']
-                                          //                 ?.toLowerCase() ==
-                                          //             'low'
-                                          //         ? completeBackgroundColor
-                                          //         : softredColor,
                                           color: newTaskList[index]
                                                           ['priority_name']
                                                       ?.toLowerCase() ==
@@ -1471,19 +1478,7 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
-                                                  color: whiteColor
-                                                  // newTaskList[index][
-                                                  //                 'priority_name']
-                                                  //             ?.toLowerCase() ==
-                                                  //         'medium'
-                                                  //     ? mediumColor
-                                                  //     : newTaskList[index][
-                                                  //                     'priority_name']
-                                                  //                 ?.toLowerCase() ==
-                                                  //             'low'
-                                                  //         ? blueColor
-                                                  //         : slightlyDarkColor,
-                                                  ),
+                                                  color: whiteColor),
                                             ),
                                           ),
                                         ),
@@ -1494,19 +1489,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       Container(
                                         width: 90.w,
                                         decoration: BoxDecoration(
-                                          // color: newTaskList[index]
-                                          //                 ['effective_status']
-                                          //             .toString()
-                                          //             .toLowerCase() ==
-                                          //         "pending"
-                                          //     ? pendingBackgroundColor
-                                          //     : newTaskList[index][
-                                          //                     'effective_status']
-                                          //                 .toString()
-                                          //                 .toLowerCase() ==
-                                          //             "progress"
-                                          //         ? progressBackgroundColor
-                                          //         : completeBackgroundColor,
                                           color: newTaskList[index]
                                                           ['effective_status']
                                                       .toString()
@@ -1534,21 +1516,7 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
-                                                  color: whiteColor
-                                                  // newTaskList[index][
-                                                  //                 'effective_status']
-                                                  //             .toString()
-                                                  //             .toLowerCase() ==
-                                                  //         "pending"
-                                                  //     ? pendingColor
-                                                  //     : newTaskList[index][
-                                                  //                     'effective_status']
-                                                  //                 .toString()
-                                                  //                 .toLowerCase() ==
-                                                  //             "progress"
-                                                  //         ? elegentGreenColor
-                                                  //         : blueColor,
-                                                  ),
+                                                  color: whiteColor),
                                             ),
                                           ),
                                         ),
@@ -1635,7 +1603,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       newTaskList[index]['due_date'];
                                   dueTimeController3.text =
                                       newTaskList[index]['due_time'];
-
                                   for (var priorityData
                                       in priorityController.priorityList) {
                                     if (priorityData.id.toString() ==
@@ -1646,7 +1613,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       break;
                                     }
                                   }
-
                                   for (var deptData
                                       in profileController.departmentDataList) {
                                     if (deptData.id.toString() ==
@@ -1880,17 +1846,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                                       'low'
                                                   ? Color(0xffFFCD57)
                                                   : Color(0xffFF0005),
-                                          // color: newTaskList[index]
-                                          //                 ['priority_name']
-                                          //             ?.toLowerCase() ==
-                                          //         'medium'
-                                          //     ? softYellowColor
-                                          //     : newTaskList[index]
-                                          //                     ['priority_name']
-                                          //                 ?.toLowerCase() ==
-                                          //             'low'
-                                          //         ? completeBackgroundColor
-                                          //         : softredColor,
                                           borderRadius: BorderRadius.all(
                                             Radius.circular(12.r),
                                           ),
@@ -1904,19 +1859,7 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
-                                                  color: whiteColor
-                                                  //  newTaskList[index][
-                                                  //                 'priority_name']
-                                                  //             ?.toLowerCase() ==
-                                                  //         'medium'
-                                                  //     ? mediumColor
-                                                  //     : newTaskList[index][
-                                                  //                     'priority_name']
-                                                  //                 ?.toLowerCase() ==
-                                                  //             'low'
-                                                  //         ? blueColor
-                                                  //         : slightlyDarkColor,
-                                                  ),
+                                                  color: whiteColor),
                                             ),
                                           ),
                                         ),
@@ -1927,19 +1870,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       Container(
                                         width: 90.w,
                                         decoration: BoxDecoration(
-                                          // color: newTaskList[index]
-                                          //                 ['effective_status']
-                                          //             .toString()
-                                          //             .toLowerCase() ==
-                                          //         "pending"
-                                          //     ? pendingBackgroundColor
-                                          //     : newTaskList[index][
-                                          //                     'effective_status']
-                                          //                 .toString()
-                                          //                 .toLowerCase() ==
-                                          //             "progress"
-                                          //         ? progressBackgroundColor
-                                          //         : completeBackgroundColor,
                                           color: newTaskList[index]
                                                           ['effective_status']
                                                       .toString()
@@ -1967,21 +1897,7 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
-                                                  color: whiteColor
-                                                  // newTaskList[index][
-                                                  //                 'effective_status']
-                                                  //             .toString()
-                                                  //             .toLowerCase() ==
-                                                  //         "pending"
-                                                  //     ? pendingColor
-                                                  //     : newTaskList[index][
-                                                  //                     'effective_status']
-                                                  //                 .toString()
-                                                  //                 .toLowerCase() ==
-                                                  //             "progress"
-                                                  //         ? elegentGreenColor
-                                                  //         : blueColor,
-                                                  ),
+                                                  color: whiteColor),
                                             ),
                                           ),
                                         ),
@@ -2068,7 +1984,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       newTaskList[index]['due_date'];
                                   dueTimeController3.text =
                                       newTaskList[index]['due_time'];
-
                                   for (var priorityData
                                       in priorityController.priorityList) {
                                     if (priorityData.id.toString() ==
@@ -2079,7 +1994,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                                       break;
                                     }
                                   }
-
                                   for (var deptData
                                       in profileController.departmentDataList) {
                                     if (deptData.id.toString() ==
@@ -2200,6 +2114,7 @@ class _TaskListPageState extends State<TaskScreenPage> {
 
   ValueNotifier<int?> focusedIndexNotifier = ValueNotifier<int?>(null);
   final TextEditingController statusRemarkController = TextEditingController();
+
   Future<void> changeStatusDialog(
     BuildContext context,
     newTaskListId,
@@ -2498,7 +2413,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
 
   void openFile(File file) {
     String fileExtension = file.path.split('.').last.toLowerCase();
-
     if (['jpg', 'jpeg', 'png'].contains(fileExtension)) {
       Navigator.push(
         context,
