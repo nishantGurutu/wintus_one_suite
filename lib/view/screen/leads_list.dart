@@ -302,45 +302,6 @@ class _LeadListState extends State<LeadList> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    // Padding(
-                    //   padding: EdgeInsets.symmetric(horizontal: 0.w),
-                    //   child: TextFormField(
-                    //     controller: _searchController,
-                    //     onChanged: (value) {
-                    //       rxFilteredList.value = leadController.leadsListData
-                    //           .where((person) =>
-                    //               person.leadName
-                    //                   ?.toLowerCase()
-                    //                   .contains(value.toLowerCase()) ??
-                    //               false)
-                    //           .toList();
-                    //     },
-                    //     decoration: InputDecoration(
-                    //       prefixIcon: Padding(
-                    //         padding: EdgeInsets.symmetric(vertical: 10.sp),
-                    //         child: SvgPicture.asset(searchIcon),
-                    //       ),
-                    //       hintText: 'Search here...',
-                    //       fillColor: whiteColor,
-                    //       filled: true,
-                    //       border: OutlineInputBorder(
-                    //           borderSide: BorderSide(color: borderColor)),
-                    //       enabledBorder: OutlineInputBorder(
-                    //         // borderSide: BorderSide.none,
-
-                    //         borderRadius:
-                    //             BorderRadius.all(Radius.circular(30.r)),
-                    //       ),
-                    //       focusedBorder: OutlineInputBorder(
-                    //         borderSide: BorderSide.none,
-                    //         borderRadius:
-                    //             BorderRadius.all(Radius.circular(30.r)),
-                    //       ),
-                    //       contentPadding: EdgeInsets.symmetric(
-                    //           horizontal: 10.w, vertical: 10.h),
-                    //     ),
-                    //   ),
-                    // ),
                     TextFormField(
                       controller: _searchController,
                       onChanged: (value) {
@@ -633,7 +594,6 @@ class _LeadListState extends State<LeadList> {
   }
 
   Widget allLeadList(RxList<LeadListData> rxFilteredList) {
-    final TextEditingController _searchController = TextEditingController();
     return Obx(
       () => Expanded(
         child: RefreshIndicator(
