@@ -18,6 +18,7 @@ class NewGroupSecond extends StatelessWidget {
 
   final TextEditingController groupNameTextEditingController =
       TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
