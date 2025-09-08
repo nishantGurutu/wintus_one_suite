@@ -1,7 +1,7 @@
 class ApiConstant {
   static const String baseUrl =
-      "https://taskmaster.electionmaster.in/public/api/";
-  // "https://onesuite.winntus.in/public/api/";
+      // "https://taskmaster.electionmaster.in/public/api/";
+      "https://onesuite.winntus.in/public/api/";
   // "https://canwinnpro.canwinn.in/public/api/";
   static const String register = "auth/register";
   static const String login = "auth/login";
@@ -247,4 +247,6 @@ class ApiConstant {
   static const String store_leadquo_remarks = "store-leadquo-remarks";
   static const String view_leadquo_remarks = "view-leadquo-remarks";
   static const String read_status_lead_document = "read-status-lead-document";
+  static const String mark_seen = "mark-seen";
+  static const String chat_typing = "chat-typing";
 }

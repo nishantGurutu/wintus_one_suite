@@ -5,14 +5,15 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class AlarmScreen extends StatefulWidget {
+  final DateTime alarmTime;
   final String title;
-  final String body;
+  final String type;
   final int notificationId;
-
   const AlarmScreen({
     Key? key,
+    required this.alarmTime,
     required this.title,
-    required this.body,
+    required this.type,
     required this.notificationId,
   }) : super(key: key);
 
@@ -35,7 +36,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
     _notificationsPlugin.zonedSchedule(
       widget.notificationId + 1000,
       widget.title,
-      widget.body,
+      widget.type,
       tz.TZDateTime.now(tz.local).add(Duration(minutes: 5)),
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -56,9 +57,9 @@ class _AlarmScreenState extends State<AlarmScreen> {
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: jsonEncode({
         'title': widget.title,
-        'body': widget.body,
+        'body': widget.title,
         'taskId': widget.notificationId + 1000,
-        'type': widget.body.contains('Task') ? 'task' : 'event',
+        'type': widget.type.contains('Task') ? 'task' : 'event',
       }),
     );
     // Close the screen
@@ -90,7 +91,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
             ),
             SizedBox(height: 20),
             Text(
-              widget.body,
+              widget.type,
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
             SizedBox(height: 40),

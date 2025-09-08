@@ -32,8 +32,7 @@ class HomeController extends GetxController {
       final result = await HomeService().homeDataApi(id);
       if (result != null) {
         homeDataModel.value = result.data;
-        totalTask.value = (homeDataModel.value?.totalTaskAssigned ?? 0) +
-            (homeDataModel.value?.taskCreatedByMe ?? 0);
+        totalTask.value = homeDataModel.value?.totalTask ?? 0;
         refresh();
         print('API response: $result');
       }

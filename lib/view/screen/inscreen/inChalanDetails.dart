@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -58,8 +59,37 @@ class _InChalanDetailsState extends State<InChalanDetails> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {
-              generatePdf();
+            onPressed: () async {
+              // generatePdf();
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: whiteColor,
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(width: 16),
+                        Text("Downloading..."),
+                      ],
+                    ),
+                  );
+                },
+              );
+
+              try {
+                await generatePdf();
+              } catch (e) {
+                Fluttertoast.showToast(
+                  msg: 'Error generating PDF: $e',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.TOP,
+                );
+              } finally {
+                Navigator.of(context).pop();
+              }
             },
             icon: Icon(
               Icons.download,
@@ -712,6 +742,10 @@ class _InChalanDetailsState extends State<InChalanDetails> {
   Future<void> generatePdf() async {
     final pdf = pw.Document();
 
+    final imageData =
+        await rootBundle.load('assets/images/png/Layer_x0020_1.png');
+    final image = pw.MemoryImage(imageData.buffer.asUint8List());
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -725,6 +759,17 @@ class _InChalanDetailsState extends State<InChalanDetails> {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.center,
+                  children: [
+                    pw.Image(
+                      image,
+                      width: 100,
+                      height: 100,
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 10),
                 pw.Text(
                     'Chalan Number: ${outScreenController.inScreenChalanDetailsModel.value?.data?.challanNumber ?? ""}',
                     style: pw.TextStyle(

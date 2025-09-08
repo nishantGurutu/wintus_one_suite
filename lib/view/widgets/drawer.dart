@@ -36,6 +36,7 @@ import 'package:task_management/view/screen/task_screen.dart';
 import 'package:task_management/view/screen/todo_list.dart';
 import 'package:task_management/view/screen/user.dart';
 import 'package:task_management/view/screen/vehicleManagement.dart';
+import 'package:task_management/view/widgets/alarm_bell_screen.dart';
 import 'package:task_management/view/widgets/all_assets.dart';
 import 'package:task_management/view/widgets/select_user.dart';
 import '../screen/outscreen/hr_screen.dart';
@@ -273,104 +274,55 @@ class _SideDrawerState extends State<SideDrawer> {
                             ),
                           ),
                         ),
-                        // SizedBox(height: 10.h),
-                        // InkWell(
-                        //   onTap: () {
-                        //     bottomBarController.selectedTabIndex.value = 50;
-                        //     Get.back();
-                        //     Get.to(() => LocationPage());
-                        //   },
-                        //   child: Container(
-                        //     decoration: BoxDecoration(
-                        //       color:
-                        //           bottomBarController.selectedTabIndex.value ==
-                        //                   50
-                        //               ? selectedTabColor
-                        //               : whiteColor,
-                        //       borderRadius: BorderRadius.all(
-                        //         Radius.circular(6.r),
-                        //       ),
-                        //     ),
-                        //     child: Padding(
-                        //       padding: EdgeInsets.only(
-                        //           left: 10.w, top: 7.h, bottom: 7.h),
-                        //       child: Row(
-                        //         spacing: 10.w,
-                        //         children: [
-                        //           SvgPicture.asset(
-                        //             drawerTaskicon,
-                        //             color: bottomBarController
-                        //                         .selectedTabIndex.value ==
-                        //                     50
-                        //                 ? whiteColor
-                        //                 : textColor,
-                        //             height: 20.h,
-                        //           ),
-                        //           Text(
-                        //             "Location Page",
-                        //             style: TextStyle(
-                        //                 color: bottomBarController
-                        //                             .selectedTabIndex.value ==
-                        //                         50
-                        //                     ? whiteColor
-                        //                     : textColor,
-                        //                 fontSize: 18,
-                        //                 fontWeight: FontWeight.w500),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                        // SizedBox(height: 10.h),
-                        // InkWell(
-                        //   onTap: () {
-                        //     bottomBarController.selectedTabIndex.value = 50;
-                        //     Get.back();
-                        //     Get.to(() => StoredLocationPage());
-                        //   },
-                        //   child: Container(
-                        //     decoration: BoxDecoration(
-                        //       color:
-                        //           bottomBarController.selectedTabIndex.value ==
-                        //                   50
-                        //               ? selectedTabColor
-                        //               : whiteColor,
-                        //       borderRadius: BorderRadius.all(
-                        //         Radius.circular(6.r),
-                        //       ),
-                        //     ),
-                        //     child: Padding(
-                        //       padding: EdgeInsets.only(
-                        //           left: 10.w, top: 7.h, bottom: 7.h),
-                        //       child: Row(
-                        //         spacing: 10.w,
-                        //         children: [
-                        //           SvgPicture.asset(
-                        //             drawerTaskicon,
-                        //             color: bottomBarController
-                        //                         .selectedTabIndex.value ==
-                        //                     50
-                        //                 ? whiteColor
-                        //                 : textColor,
-                        //             height: 20.h,
-                        //           ),
-                        //           Text(
-                        //             "Stored Location",
-                        //             style: TextStyle(
-                        //                 color: bottomBarController
-                        //                             .selectedTabIndex.value ==
-                        //                         50
-                        //                     ? whiteColor
-                        //                     : textColor,
-                        //                 fontSize: 18,
-                        //                 fontWeight: FontWeight.w500),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
+                        SizedBox(height: 10.h),
+                        InkWell(
+                          onTap: () {
+                            bottomBarController.selectedTabIndex.value = 2;
+                            Get.back();
+                            Get.to(() => AlarmScreen());
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  bottomBarController.selectedTabIndex.value ==
+                                          2
+                                      ? selectedTabColor
+                                      : whiteColor,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6.r),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 10.w, top: 7.h, bottom: 7.h),
+                              child: Row(
+                                spacing: 10.w,
+                                children: [
+                                  Image.asset(
+                                    taskIcon,
+                                    color: bottomBarController
+                                                .selectedTabIndex.value ==
+                                            2
+                                        ? whiteColor
+                                        : textColor,
+                                    height: 20.h,
+                                  ),
+                                  Text(
+                                    "Alarm Screen",
+                                    style: TextStyle(
+                                        color: bottomBarController
+                                                    .selectedTabIndex.value ==
+                                                2
+                                            ? whiteColor
+                                            : textColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 10.h),
                         InkWell(
                           onTap: () {

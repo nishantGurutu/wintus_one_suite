@@ -63,7 +63,7 @@ class _AddItemShetState extends State<AddItemShet> {
                             Spacer(),
                             InkWell(
                               onTap: () {
-                                Get.back(); // close
+                                Get.back();
                               },
                               child: Icon(Icons.close),
                             )
@@ -105,6 +105,8 @@ class _AddItemShetState extends State<AddItemShet> {
                                       if (value != null) {
                                         leadController
                                             .selectedProductData.value = value;
+                                        print(
+                                            "e2r635 3e65r365 ${leadController.selectedProductData.value}");
                                       }
                                     },
                                     buttonStyleData: ButtonStyleData(

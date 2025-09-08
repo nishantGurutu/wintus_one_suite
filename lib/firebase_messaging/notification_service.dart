@@ -57,11 +57,11 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
         .cancel(notificationResponse.id!);
     debugPrint('Notification stopped');
   } else if (notificationResponse.payload != null) {
-    Get.to(() => AlarmScreen(
-          title: '',
-          body: '',
-          notificationId: 0,
-        ));
+    // Get.to(() => AlarmScreen(
+    //       title: '',
+    //       body: '',
+    //       notificationId: 0,
+    //     ));
     // LocalNotificationService.handleNavigation(notificationResponse.payload);
   }
 }
@@ -214,6 +214,7 @@ class LocalNotificationService {
       importance: Importance.max,
       enableVibration: true,
       fullScreenIntent: true,
+      groupAlertBehavior: GroupAlertBehavior.all,
       actions: [
         AndroidNotificationAction(
           'snooze_action',
