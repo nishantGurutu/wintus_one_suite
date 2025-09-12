@@ -375,7 +375,20 @@ class LeadController extends GetxController {
       selectedStatusPerLead.addAll(
         List<LeadStatusData>.filled(leadsListData.length, LeadStatusData()),
       );
+      isLeadLoading.value = false;
+      leadsListData.refresh();
+      isLeadLoading.refresh();
+        selectedStatusPerLead.refresh();
+        print("udt6w3 37e6t7 ${selectedStatusPerLead.length}");
 
+      // for (int i = 0; i < leadsListData.length; i++) {
+      //   for (int j = 0; j < leadStatusData.length; j++) {
+      //     if (leadsListData[i].status == leadStatusData[j].id) {
+      //       selectedStatusPerLead[i] = leadStatusData[j];
+      //       break;
+      //     }
+      //   }
+      // }
       for (int i = 0; i < leadsListData.length; i++) {
         for (int j = 0; j < leadStatusData.length; j++) {
           if (leadsListData[i].status == leadStatusData[j].id) {
@@ -384,14 +397,9 @@ class LeadController extends GetxController {
           }
         }
       }
-      for (int i = 0; i < leadsListData.length; i++) {
-        for (int j = 0; j < leadStatusData.length; j++) {
-          if (leadsListData[i].status == leadStatusData[j].id) {
-            selectedStatusPerLead[i] = leadStatusData[j];
-            break;
-          }
-        }
-      }
+       isLeadLoading.value = false;
+       leadsListData.refresh();
+        isLeadLoading.refresh();
     } catch (e) {
       debugPrint("Error fetching leads: $e");
       Get.snackbar(
@@ -512,7 +520,7 @@ class LeadController extends GetxController {
     if (result != null) {
       leadDetails.value = result.data;
       await sourceList(source: leadDetails.value?.source);
-      await offLineStatusdata(status: leadDetails.value?.status.toString());
+      // await offLineStatusdata(status: leadDetails.value?.status.toString());
       selectedGender.value = leadDetails.value?.gender ?? "";
     }
     isLeadDetailsLoading.value = false;

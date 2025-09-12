@@ -162,7 +162,7 @@ class _AddTaskState extends State<AddTask> {
                             children: [
                               SizedBox(height: 10.h),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     createNewTask,
@@ -171,6 +171,7 @@ class _AddTaskState extends State<AddTask> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
+                                  GestureDetector( onTap: (){Get.back();},child: SizedBox(width: 25.w,child: Icon(Icons.close),))
                                 ],
                               ),
                               SizedBox(height: 15.h),

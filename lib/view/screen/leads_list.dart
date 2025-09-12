@@ -41,11 +41,7 @@ class _LeadListState extends State<LeadList> {
     super.initState();
     Future.microtask(() {
       apiCalling();
-    });
-    // Initialize filtered leads with all leads
-    filteredLeads.assignAll(leadController.leadsListData);
-    // Add listener for search functionality
-    _searchController.addListener(_filterLeads);
+    }); 
   }
 
   String _formatDate(String rawDate) {
@@ -96,9 +92,13 @@ class _LeadListState extends State<LeadList> {
     } else if (widget.status == "lost") {
       await leadController.offLineStatusdata(status: widget.status);
     }
-    isLoading.value = false;
+    
     filteredLeads.assignAll(leadController.leadsListData);
     await leadController.taskResponsiblePersonListApi();
+    filteredLeads.assignAll(leadController.leadsListData);
+    _searchController.addListener(_filterLeads);
+    leadController.statusListApi(status: '${widget.status}');
+    isLoading.value = false;
   }
 
   void _filterLeads() {
@@ -747,8 +747,7 @@ class _LeadListState extends State<LeadList> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Row(
-                                                  children: [
+                                                
                                                     SizedBox(
                                                       width: 100.w,
                                                       child: Obx(
@@ -933,8 +932,7 @@ class _LeadListState extends State<LeadList> {
                                                         ),
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
+                                                  
                                                 Text(
                                                   '${_formatDate(filteredLeads[index].createdAt ?? "")}',
                                                   style: TextStyle(

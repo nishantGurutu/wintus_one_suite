@@ -220,4 +220,7 @@ class ApiConstant {
   static const String get_lead_document = "get-lead-document";
   static const String upload_lead_document = "upload-lead-document";
   static const String get_document_types = "get-document-types";
+  static const String change_lead_followup_status =
+      "change-lead-followup-status";
+        static const String visit_type_list = "visit-type-list";
 }

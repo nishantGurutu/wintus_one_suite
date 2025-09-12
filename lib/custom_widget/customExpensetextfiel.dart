@@ -60,7 +60,7 @@ class CustomExpanseTextField extends StatelessWidget {
         counterText: "",
         fillColor: whiteColor,
         filled: true,
-        hintStyle: changeTextColor(rubikRegular, darkGreyColor),
+        hintStyle: changeTextColor(heading9, darkGreyColor),
         border: OutlineInputBorder(
           borderSide: BorderSide(color: lightBorderColor),
           borderRadius: BorderRadius.all(Radius.circular(8.r)),
