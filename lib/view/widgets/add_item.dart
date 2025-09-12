@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/style_constant.dart';
 import 'package:task_management/controller/lead_controller.dart';
@@ -34,6 +35,7 @@ class _AddItemShetState extends State<AddItemShet> {
     super.dispose();
     leadController.qtyControlelr.clear();
   }
+    TextEditingController productSearchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,7 @@ class _AddItemShetState extends State<AddItemShet> {
                             Spacer(),
                             InkWell(
                               onTap: () {
-                                Get.back(); // close
+                                Get.back(); 
                               },
                               child: Icon(Icons.close),
                             )
@@ -71,51 +73,71 @@ class _AddItemShetState extends State<AddItemShet> {
                         SizedBox(height: 15.h),
                         Row(
                           children: [
-                            Expanded(
-                              child: Obx(
+                            Expanded( 
+                           child:  Obx(
                                 () => DropdownButtonHideUnderline(
                                   child: DropdownButton2<ProductListData>(
                                     isExpanded: true,
-                                    items: leadController
-                                            .productListData.isEmpty
-                                        ? null
-                                        : leadController.productListData
-                                            .map((ProductListData item) {
-                                            return DropdownMenuItem<
-                                                ProductListData>(
-                                              value: item,
-                                              child: Text(
-                                                item.name ?? '',
-                                                style: TextStyle(
-                                                  decoration:
-                                                      TextDecoration.none,
-                                                  fontFamily: 'Roboto',
-                                                  color: darkGreyColor,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 16,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            );
-                                          }).toList(),
-                                    value: leadController
-                                        .selectedProductData.value,
+                                    items: leadController.productListData
+                                        .map((ProductListData item) {
+                                      return DropdownMenuItem<ProductListData>(
+                                        value: item,
+                                        child: Text(
+                                          item.name ?? '',
+                                          style: TextStyle(
+                                            decoration: TextDecoration.none,
+                                            fontFamily: 'Roboto',
+                                            color: darkGreyColor,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      );
+                                    }).toList(),
+                                    value: leadController.selectedProductData.value,
                                     onChanged: (ProductListData? value) {
                                       if (value != null) {
-                                        leadController
-                                            .selectedProductData.value = value;
+                                        leadController.selectedProductData.value = value;
                                       }
                                     },
+
+                                    dropdownSearchData: DropdownSearchData<ProductListData>(
+                                      searchController: productSearchController,
+                                      searchInnerWidgetHeight: 50,
+                                      searchInnerWidget: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: TextField(
+                                          controller: productSearchController,
+                                          decoration: InputDecoration(
+                                            isDense: true,
+                                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                            hintText: 'Search product...',
+                                            hintStyle: const TextStyle(fontSize: 12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      searchMatchFn: (item, searchValue) {
+                                        return (item.value?.name ?? '')
+                                            .toLowerCase()
+                                            .contains(searchValue.toLowerCase());
+                                      },
+                                    ),
+                                    onMenuStateChange: (isOpen) {
+                                      if (!isOpen) {
+                                      }
+                                    },
+
                                     buttonStyleData: ButtonStyleData(
                                       height: 50,
                                       width: double.infinity,
-                                      padding: const EdgeInsets.only(
-                                          left: 14, right: 14),
+                                      padding: const EdgeInsets.only(left: 14, right: 14),
                                       decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(14.r),
-                                        border:
-                                            Border.all(color: lightBorderColor),
+                                        borderRadius: BorderRadius.circular(14.r),
+                                        border: Border.all(color: lightBorderColor),
                                         color: whiteColor,
                                       ),
                                     ),
@@ -144,28 +166,23 @@ class _AddItemShetState extends State<AddItemShet> {
                                       maxHeight: 200.h,
                                       width: 330.w,
                                       decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(14.r),
+                                          borderRadius: BorderRadius.circular(14.r),
                                           color: whiteColor,
-                                          border: Border.all(
-                                              color: lightBorderColor)),
+                                          border: Border.all(color: lightBorderColor)),
                                       offset: const Offset(0, 0),
                                       scrollbarTheme: ScrollbarThemeData(
                                         radius: const Radius.circular(40),
-                                        thickness:
-                                            WidgetStateProperty.all<double>(6),
-                                        thumbVisibility:
-                                            WidgetStateProperty.all<bool>(true),
+                                        thickness: WidgetStateProperty.all<double>(6),
+                                        thumbVisibility: WidgetStateProperty.all<bool>(true),
                                       ),
                                     ),
                                     menuItemStyleData: const MenuItemStyleData(
                                       height: 40,
-                                      padding:
-                                          EdgeInsets.only(left: 14, right: 14),
+                                      padding: EdgeInsets.only(left: 14, right: 14),
                                     ),
                                   ),
                                 ),
-                              ),
+                              )
                             ),
                             SizedBox(width: 10.w),
                             Expanded(
