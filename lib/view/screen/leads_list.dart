@@ -21,6 +21,7 @@ import 'package:task_management/view/screen/lead_overview.dart';
 import 'package:task_management/view/screen/update_leads.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 class LeadList extends StatefulWidget {
   final String? status;
   const LeadList({super.key, this.status});
@@ -32,6 +33,8 @@ class LeadList extends StatefulWidget {
 class _LeadListState extends State<LeadList> {
   final LeadController leadController = Get.put(LeadController());
   List<ScreenshotController> screenshotControllers = [];
+  final TextEditingController _searchController = TextEditingController();
+  RxList<dynamic> filteredLeads = <dynamic>[].obs;
 
   @override
   void initState() {
@@ -39,6 +42,10 @@ class _LeadListState extends State<LeadList> {
     Future.microtask(() {
       apiCalling();
     });
+    // Initialize filtered leads with all leads
+    filteredLeads.assignAll(leadController.leadsListData);
+    // Add listener for search functionality
+    _searchController.addListener(_filterLeads);
   }
 
   String _formatDate(String rawDate) {
@@ -90,11 +97,29 @@ class _LeadListState extends State<LeadList> {
       await leadController.offLineStatusdata(status: widget.status);
     }
     isLoading.value = false;
+    filteredLeads.assignAll(leadController.leadsListData);
     await leadController.taskResponsiblePersonListApi();
+  }
+
+  void _filterLeads() {
+    String query = _searchController.text.toLowerCase();
+    if (query.isEmpty) {
+      filteredLeads.assignAll(leadController.leadsListData);
+    } else {
+      filteredLeads.assignAll(leadController.leadsListData.where((lead) {
+        return (lead.leadName?.toLowerCase().contains(query) ?? false) ||
+            (lead.leadNumber?.toLowerCase().contains(query) ?? false) ||
+            (lead.company?.toLowerCase().contains(query) ?? false) ||
+            (lead.phone?.toLowerCase().contains(query) ?? false) ||
+            (lead.email?.toLowerCase().contains(query) ?? false);
+      }).toList());
+    }
   }
 
   @override
   void dispose() {
+    _searchController.removeListener(_filterLeads);
+    _searchController.dispose();
     Future.microtask(() {
       leadController.selectedLeadStatusData.value = null;
       leadController.selectedLeadStatusUpdateData.value = null;
@@ -168,9 +193,34 @@ class _LeadListState extends State<LeadList> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          height: 5.h,
+                        SizedBox(height: 5.h), 
+                        TextFormField(
+                          controller: _searchController, 
+                           decoration: InputDecoration(
+                                              hintText: 'Search here...',
+                                              fillColor: Colors.white,
+                                              filled: true,
+                                              labelStyle: TextStyle(color: borderColor),
+                                              counterText: "",
+                                              border: OutlineInputBorder(
+                                                borderSide: BorderSide(color: secondaryColor),
+                                                borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(color: borderColor),
+                                                borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(color: borderColor),
+                                                borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                                              ),
+                                              contentPadding: EdgeInsets.symmetric(
+                                                horizontal: 10.w,
+                                                vertical: 10.h,
+                                              ),
+                                            ),
                         ),
+                        SizedBox(height: 7.h),
                         Row(
                           children: [
                             Expanded(
@@ -406,108 +456,138 @@ class _LeadListState extends State<LeadList> {
                           height: 5.h,
                         ),
                         Expanded(
-                          child: ListView.builder(
-                            itemCount: leadController.leadsListData.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 5.h),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => LeadOverviewScreen(
-                                          leadId: leadController
-                                              .leadsListData[index].id,
-                                          leadNumber: leadController
-                                              .leadsListData[index].leadNumber,
-                                        ));
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: whiteColor,
-                                      border:
-                                          Border.all(color: lightBorderColor),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.r),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color:
-                                              lightGreyColor.withOpacity(0.1),
-                                          blurRadius: 6.0,
-                                          spreadRadius: 2,
-                                          blurStyle: BlurStyle.inner,
-                                          offset: Offset(0, 1),
+                          child: Obx(
+                            () => ListView.builder(
+                              itemCount: filteredLeads.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 5.h),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => LeadOverviewScreen(
+                                            leadId: filteredLeads[index].id,
+                                            leadNumber:
+                                                filteredLeads[index].leadNumber,
+                                          ));
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                        border:
+                                            Border.all(color: lightBorderColor),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10.r),
                                         ),
-                                      ],
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8.w, vertical: 5.h),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  '${leadController.leadsListData[index].leadName ?? ""}',
-                                                  style: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.w500),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                lightGreyColor.withOpacity(0.1),
+                                            blurRadius: 6.0,
+                                            spreadRadius: 2,
+                                            blurStyle: BlurStyle.inner,
+                                            offset: Offset(0, 1),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8.w, vertical: 5.h),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    '${filteredLeads[index].leadName ?? ""}',
+                                                    style: TextStyle(
+                                                        fontSize: 15.sp,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
                                                 ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  '${leadController.leadsListData[index].leadNumber ?? ""}',
-                                                  style: TextStyle(
-                                                      fontSize: 15.sp,
-                                                      fontWeight:
-                                                          FontWeight.w500),
+                                                Expanded(
+                                                  child: Text(
+                                                    '${filteredLeads[index].leadNumber ?? ""}',
+                                                    style: TextStyle(
+                                                        fontSize: 15.sp,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
                                                 ),
-                                              ),
-                                              Container(
-                                                width: 30.w,
-                                                child: Center(
-                                                  child: PopupMenuButton(
-                                                    color: whiteColor,
-                                                    itemBuilder: (context) {
-                                                      return [
-                                                        PopupMenuItem(
-                                                          onTap: () {
-                                                            Get.to(() => UpdateLeads(
-                                                                leadListData:
-                                                                    leadController
-                                                                            .leadsListData[
-                                                                        index]));
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(Icons.edit),
-                                                              SizedBox(
-                                                                  width: 3.w),
-                                                              Text(edit),
-                                                            ],
+                                                Container(
+                                                  width: 30.w,
+                                                  child: Center(
+                                                    child: PopupMenuButton(
+                                                      color: whiteColor,
+                                                      itemBuilder: (context) {
+                                                        return [
+                                                          PopupMenuItem(
+                                                            onTap: () {
+                                                              Get.to(() =>
+                                                                  UpdateLeads(
+                                                                      leadListData:
+                                                                          filteredLeads[
+                                                                              index]));
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(Icons.edit),
+                                                                SizedBox(
+                                                                    width: 3.w),
+                                                                Text(edit),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                        PopupMenuItem(
-                                                          onTap: () {},
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(
-                                                                  Icons.delete),
-                                                              SizedBox(
-                                                                  width: 3.w),
-                                                              Text(delete),
-                                                            ],
+                                                          PopupMenuItem(
+                                                            onTap: () {},
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .delete),
+                                                                SizedBox(
+                                                                    width: 3.w),
+                                                                Text(delete),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                        PopupMenuItem(
-                                                          onTap: () {
-                                                            Future.delayed(
-                                                                Duration.zero,
-                                                                () {
+                                                          PopupMenuItem(
+                                                            onTap: () {
+                                                              Future.delayed(
+                                                                  Duration.zero,
+                                                                  () {
+                                                                leadController
+                                                                    .selectdePersonIds
+                                                                    .clear();
+                                                                controller
+                                                                    .clearAll();
+                                                                assignandaddUser(
+                                                                  context,
+                                                                  filteredLeads[
+                                                                          index]
+                                                                      .id,
+                                                                  "add-people",
+                                                                );
+                                                              });
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Image.asset(
+                                                                  'assets/image/png/add_people-removebg-preview.png',
+                                                                  height: 1.h,
+                                                                ),
+                                                                SizedBox(
+                                                                    width: 3.w),
+                                                                Text(
+                                                                    "Add People"),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          PopupMenuItem(
+                                                            onTap: () {
                                                               leadController
                                                                   .selectdePersonIds
                                                                   .clear();
@@ -515,605 +595,570 @@ class _LeadListState extends State<LeadList> {
                                                                   .clearAll();
                                                               assignandaddUser(
                                                                 context,
-                                                                leadController
-                                                                    .leadsListData[
+                                                                filteredLeads[
                                                                         index]
                                                                     .id,
-                                                                "add-people",
+                                                                "assign",
                                                               );
-                                                            });
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Image.asset(
-                                                                'assets/image/png/add_people-removebg-preview.png',
-                                                                height: 1.h,
-                                                              ),
-                                                              SizedBox(
-                                                                  width: 3.w),
-                                                              Text(
-                                                                  "Add People"),
-                                                            ],
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Image.asset(
+                                                                  'assets/image/png/assign_people-removebg-preview.png',
+                                                                  height: 1.h,
+                                                                ),
+                                                                SizedBox(
+                                                                    width: 3.w),
+                                                                Text(
+                                                                    "Assign Lead"),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                        PopupMenuItem(
-                                                          onTap: () {
-                                                            leadController
-                                                                .selectdePersonIds
-                                                                .clear();
-                                                            controller
-                                                                .clearAll();
-                                                            assignandaddUser(
-                                                              context,
-                                                              leadController
-                                                                  .leadsListData[
-                                                                      index]
-                                                                  .id,
-                                                              "assign",
-                                                            );
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Image.asset(
-                                                                'assets/image/png/assign_people-removebg-preview.png',
-                                                                height: 1.h,
-                                                              ),
-                                                              SizedBox(
-                                                                  width: 3.w),
-                                                              Text(
-                                                                  "Assign Lead"),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ];
-                                                    },
+                                                        ];
+                                                      },
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 3,
-                                          ),
-                                          SizedBox(
-                                            height: 3.h,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.business,
-                                                      size: 16.sp,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 2.w,
-                                                    ),
-                                                    Text(
-                                                      '${leadController.leadsListData[index].company ?? ""}',
-                                                      style: TextStyle(
-                                                          fontSize: 13.sp,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                    Spacer(),
-                                                    if ((leadController
-                                                                .leadsListData[
-                                                                    index]
-                                                                .leadNumber ??
-                                                            "")
-                                                        .isEmpty)
-                                                      InkWell(
-                                                        onTap: () {
-                                                          leadController
-                                                              .uploadOfflineLead(
-                                                                  leadController
-                                                                          .leadsListData[
-                                                                      index]);
-                                                        },
-                                                        child: Container(
-                                                          child: Row(
-                                                            children: [
-                                                              Text('Async'),
-                                                              SizedBox(
-                                                                width: 4.w,
-                                                              ),
-                                                              Container(
-                                                                height: 12.h,
-                                                                width: 12.w,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color:
-                                                                      redColor,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .all(
-                                                                    Radius
-                                                                        .circular(
-                                                                            6.r),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 4.h,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.phone,
-                                                      size: 16.sp,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 2.w,
-                                                    ),
-                                                    Text(
-                                                      '${leadController.leadsListData[index].phone ?? ""}',
-                                                      style: TextStyle(
-                                                          fontSize: 13.sp,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.email,
-                                                      size: 16.sp,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 2.w,
-                                                    ),
-                                                    Expanded(
-                                                      child: Text(
-                                                        '${leadController.leadsListData[index].email ?? ""}',
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 3,
+                                            ),
+                                            SizedBox(
+                                              height: 3.h,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.business,
+                                                        size: 16.sp,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 2.w,
+                                                      ),
+                                                      Text(
+                                                        '${filteredLeads[index].company ?? ""}',
                                                         style: TextStyle(
                                                             fontSize: 13.sp,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w400),
+                                                                FontWeight.w400),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 5.h,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 100.w,
-                                                    child: Obx(
-                                                      () =>
-                                                          DropdownButtonHideUnderline(
-                                                        child: DropdownButton2<
-                                                            LeadStatusData>(
-                                                          isExpanded: true,
-                                                          items: leadController
-                                                              .leadStatusData
-                                                              .map(
-                                                                  (LeadStatusData
-                                                                      item) {
-                                                            return DropdownMenuItem<
-                                                                LeadStatusData>(
-                                                              value: item,
-                                                              child: Text(
-                                                                item.name ?? "",
-                                                                style:
-                                                                    TextStyle(
-                                                                  decoration:
-                                                                      TextDecoration
-                                                                          .none,
-                                                                  fontFamily:
-                                                                      'Roboto',
-                                                                  color:
-                                                                      darkGreyColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 16,
-                                                                ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            );
-                                                          }).toList(),
-                                                          value: leadController
-                                                                  .leadStatusData
-                                                                  .contains(
-                                                                      leadController
-                                                                              .selectedStatusPerLead[
-                                                                          index])
-                                                              ? leadController
-                                                                      .selectedStatusPerLead[
-                                                                  index]
-                                                              : null,
-                                                          onChanged:
-                                                              (LeadStatusData?
-                                                                  value) {
-                                                            changeStatusDialog(
-                                                                context,
-                                                                leadController
-                                                                    .leadsListData[
-                                                                        index]
-                                                                    .id,
-                                                                value);
+                                                      Spacer(),
+                                                      if ((filteredLeads[index]
+                                                                  .leadNumber ??
+                                                              "")
+                                                          .isEmpty)
+                                                        InkWell(
+                                                          onTap: () {
+                                                            leadController
+                                                                .uploadOfflineLead(
+                                                                    filteredLeads[
+                                                                        index]);
                                                           },
-                                                          buttonStyleData:
-                                                              ButtonStyleData(
-                                                            height: 30,
-                                                            width:
-                                                                double.infinity,
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    left: 14,
-                                                                    right: 14),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              border: Border.all(
-                                                                  color:
-                                                                      lightBorderColor),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5.r),
-                                                              color: leadController
-                                                                          .selectedStatusPerLead[
-                                                                              index]
-                                                                          .name
-                                                                          ?.toLowerCase() ==
-                                                                      "new lead"
-                                                                  ? Colors.blue
-                                                                  : leadController
-                                                                              .selectedStatusPerLead[
-                                                                                  index]
-                                                                              .name
-                                                                              ?.toLowerCase() ==
-                                                                          "pl"
-                                                                      ? Colors
-                                                                          .yellow
-                                                                      : leadController.selectedStatusPerLead[index].name?.toLowerCase() ==
-                                                                              "spl"
-                                                                          ? Colors
-                                                                              .purple
-                                                                          : leadController.selectedStatusPerLead[index].name?.toLowerCase() == "quotation"
-                                                                              ? Colors.orange
-                                                                              : leadController.selectedStatusPerLead[index].name?.toLowerCase() == "won"
-                                                                                  ? Colors.green
-                                                                                  : leadController.selectedStatusPerLead[index].name?.toLowerCase() == "lost"
-                                                                                      ? Colors.red
-                                                                                      : whiteColor,
+                                                          child: Container(
+                                                            child: Row(
+                                                              children: [
+                                                                Text('Async'),
+                                                                SizedBox(
+                                                                  width: 4.w,
+                                                                ),
+                                                                Container(
+                                                                  height: 12.h,
+                                                                  width: 12.w,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color:
+                                                                        redColor,
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .all(
+                                                                      Radius
+                                                                          .circular(
+                                                                              6.r),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
                                                           ),
-                                                          hint: Text(
-                                                            'Status'.tr,
-                                                            style: TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .none,
-                                                              fontFamily:
-                                                                  'Roboto',
-                                                              color:
-                                                                  darkGreyColor,
+                                                        )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 4.h,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.phone,
+                                                        size: 16.sp,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 2.w,
+                                                      ),
+                                                      Text(
+                                                        '${filteredLeads[index].phone ?? ""}',
+                                                        style: TextStyle(
+                                                            fontSize: 13.sp,
+                                                            fontWeight:
+                                                                FontWeight.w400),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.email,
+                                                        size: 16.sp,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 2.w,
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          '${filteredLeads[index].email ?? ""}',
+                                                          style: TextStyle(
+                                                              fontSize: 13.sp,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w400,
-                                                              fontSize: 14.sp,
-                                                            ),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                          iconStyleData:
-                                                              IconStyleData(
-                                                            icon: Image.asset(
-                                                              'assets/images/png/Vector 3.png',
-                                                              color:
-                                                                  secondaryColor,
-                                                              height: 8.h,
-                                                            ),
-                                                            iconSize: 14,
-                                                            iconEnabledColor:
-                                                                lightGreyColor,
-                                                            iconDisabledColor:
-                                                                lightGreyColor,
-                                                          ),
-                                                          dropdownStyleData:
-                                                              DropdownStyleData(
-                                                            maxHeight: 200.h,
-                                                            width: 100.w,
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(8
-                                                                            .r),
-                                                                color:
-                                                                    whiteColor,
+                                                                      .w400),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 5.h,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 100.w,
+                                                      child: Obx(
+                                                        () =>
+                                                            DropdownButtonHideUnderline(
+                                                          child: DropdownButton2<
+                                                              LeadStatusData>(
+                                                            isExpanded: true,
+                                                            items: leadController
+                                                                .leadStatusData
+                                                                .map(
+                                                                    (LeadStatusData
+                                                                        item) {
+                                                              return DropdownMenuItem<
+                                                                  LeadStatusData>(
+                                                                value: item,
+                                                                child: Text(
+                                                                  item.name ??
+                                                                      "",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .none,
+                                                                    fontFamily:
+                                                                        'Roboto',
+                                                                    color:
+                                                                        darkGreyColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        16,
+                                                                  ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                            value: leadController
+                                                                    .leadStatusData
+                                                                    .contains(
+                                                                        leadController
+                                                                            .selectedStatusPerLead[index])
+                                                                ? leadController
+                                                                        .selectedStatusPerLead[
+                                                                    index]
+                                                                : null,
+                                                            onChanged:
+                                                                (LeadStatusData?
+                                                                    value) {
+                                                              changeStatusDialog(
+                                                                  context,
+                                                                  filteredLeads[
+                                                                          index]
+                                                                      .id,
+                                                                  value);
+                                                            },
+                                                            buttonStyleData:
+                                                                ButtonStyleData(
+                                                              height: 30,
+                                                              width: double
+                                                                  .infinity,
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 14,
+                                                                      right: 14),
+                                                              decoration:
+                                                                  BoxDecoration(
                                                                 border: Border.all(
                                                                     color:
-                                                                        lightBorderColor)),
-                                                            offset:
-                                                                const Offset(
-                                                                    0, 0),
-                                                            scrollbarTheme:
-                                                                ScrollbarThemeData(
-                                                              radius:
-                                                                  const Radius
-                                                                      .circular(
-                                                                      40),
-                                                              thickness:
-                                                                  WidgetStateProperty
-                                                                      .all<double>(
-                                                                          6),
-                                                              thumbVisibility:
-                                                                  WidgetStateProperty
-                                                                      .all<bool>(
-                                                                          true),
+                                                                        lightBorderColor),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5.r),
+                                                                color: leadController
+                                                                            .selectedStatusPerLead[
+                                                                                index]
+                                                                            .name
+                                                                            ?.toLowerCase() ==
+                                                                        "new lead"
+                                                                    ? Colors.blue
+                                                                    : leadController
+                                                                                .selectedStatusPerLead[index]
+                                                                                .name
+                                                                                ?.toLowerCase() ==
+                                                                            "pl"
+                                                                        ? Colors
+                                                                            .yellow
+                                                                        : leadController.selectedStatusPerLead[index].name?.toLowerCase() ==
+                                                                                "spl"
+                                                                            ? Colors
+                                                                                .purple
+                                                                            : leadController.selectedStatusPerLead[index].name?.toLowerCase() == "quotation"
+                                                                                ? Colors.orange
+                                                                                : leadController.selectedStatusPerLead[index].name?.toLowerCase() == "won"
+                                                                                    ? Colors.green
+                                                                                    : leadController.selectedStatusPerLead[index].name?.toLowerCase() == "lost"
+                                                                                        ? Colors.red
+                                                                                        : whiteColor,
+                                                              ),
                                                             ),
-                                                          ),
-                                                          menuItemStyleData:
-                                                              const MenuItemStyleData(
-                                                            height: 30,
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    left: 14,
-                                                                    right: 14),
+                                                            hint: Text(
+                                                              'Status'.tr,
+                                                              style: TextStyle(
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .none,
+                                                                fontFamily:
+                                                                    'Roboto',
+                                                                color:
+                                                                    darkGreyColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                fontSize: 14.sp,
+                                                              ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            iconStyleData:
+                                                                IconStyleData(
+                                                              icon: Image.asset(
+                                                                'assets/images/png/Vector 3.png',
+                                                                color:
+                                                                    secondaryColor,
+                                                                height: 8.h,
+                                                              ),
+                                                              iconSize: 14,
+                                                              iconEnabledColor:
+                                                                  lightGreyColor,
+                                                              iconDisabledColor:
+                                                                  lightGreyColor,
+                                                            ),
+                                                            dropdownStyleData:
+                                                                DropdownStyleData(
+                                                              maxHeight: 200.h,
+                                                              width: 100.w,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.r),
+                                                                  color:
+                                                                      whiteColor,
+                                                                  border: Border.all(
+                                                                      color:
+                                                                          lightBorderColor)),
+                                                              offset: const Offset(
+                                                                  0, 0),
+                                                              scrollbarTheme:
+                                                                  ScrollbarThemeData(
+                                                                radius:
+                                                                    const Radius
+                                                                        .circular(
+                                                                        40),
+                                                                thickness:
+                                                                    WidgetStateProperty
+                                                                        .all<
+                                                                            double>(
+                                                                            6),
+                                                                thumbVisibility:
+                                                                    WidgetStateProperty
+                                                                        .all<
+                                                                            bool>(
+                                                                            true),
+                                                              ),
+                                                            ),
+                                                            menuItemStyleData:
+                                                                const MenuItemStyleData(
+                                                              height: 30,
+                                                              padding:
+                                                                  EdgeInsets.only(
+                                                                      left: 14,
+                                                                      right: 14),
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Text(
-                                                '${_formatDate(leadController.leadsListData[index].createdAt ?? "")}',
-                                                style: TextStyle(
-                                                    fontSize: 13.sp,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      await callWhatsApp(
-                                                          mobileNo:
-                                                              leadController
-                                                                  .leadsListData[
-                                                                      index]
-                                                                  .phone);
-                                                    },
-                                                    child: Image.asset(
-                                                      'assets/image/png/whatsapp (2).png',
-                                                      height: 20.h,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 12.w),
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      Uri phoneno = Uri.parse(
-                                                          'tel:${leadController.leadsListData[index].phone}');
-                                                      if (await launchUrl(
-                                                          phoneno)) {
-                                                      } else {
-                                                        print('Not working');
-                                                      }
-                                                    },
-                                                    child: Image.asset(
-                                                      'assets/image/png/phone_call-removebg-preview.png',
-                                                      height: 20.h,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 12,
-                                                  ),
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        _shareSingleCard(index);
+                                                  ],
+                                                ),
+                                                Text(
+                                                  '${_formatDate(filteredLeads[index].createdAt ?? "")}',
+                                                  style: TextStyle(
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () async {
+                                                        await callWhatsApp(
+                                                            mobileNo:
+                                                                filteredLeads[
+                                                                        index]
+                                                                    .phone);
                                                       },
-                                                      icon: Icon(Icons.share))
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 8.h,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(
-                                                      () => LeadOverviewScreen(
-                                                        leadId: leadController
-                                                            .leadsListData[
-                                                                index]
-                                                            .id,
-                                                        index: 1,
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: SizedBox(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 3.h),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Image.asset(
-                                                            getPassIcon,
-                                                            color: textColor,
-                                                            height: 17.h,
-                                                          ),
-                                                          SizedBox(width: 3.w),
-                                                          Text(followups, style: TextStyle(
-                                                            fontSize: 13.sp
-                                                          ),),
-                                                        ],
+                                                      child: Image.asset(
+                                                        'assets/image/png/whatsapp (2).png',
+                                                        height: 20.h,
                                                       ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() =>
-                                                        LeadOverviewScreen(
-                                                          leadId: leadController
-                                                              .leadsListData[
-                                                                  index]
-                                                              .id,
-                                                          index: 5,
-                                                        ));
-                                                  },
-                                                  child: SizedBox(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 3.h),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Image.asset(
-                                                            'assets/image/png/location-mark.png',
-                                                            height: 17.sp,
-                                                          ),
-                                                          SizedBox(width: 3.w),
-                                                          Text(visit, style: TextStyle(
-                                                            fontSize: 13.sp
-                                                          ),),
-                                                        ],
+                                                    SizedBox(width: 12.w),
+                                                    GestureDetector(
+                                                      onTap: () async {
+                                                        Uri phoneno = Uri.parse(
+                                                            'tel:${filteredLeads[index].phone}');
+                                                        if (await launchUrl(
+                                                            phoneno)) {
+                                                        } else {
+                                                          print('Not working');
+                                                        }
+                                                      },
+                                                      child: Image.asset(
+                                                        'assets/image/png/phone_call-removebg-preview.png',
+                                                        height: 20.h,
                                                       ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Get.to(() =>
-                                                        LeadOverviewScreen(
-                                                          leadId: leadController
-                                                              .leadsListData[
-                                                                  index]
-                                                              .id,
-                                                          index: 2,
-                                                          leadNumber:
-                                                              leadController
-                                                                  .leadsListData[
-                                                                      index]
-                                                                  .leadNumber,
-                                                        ));
-                                                  },
-                                                  child: SizedBox(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 3.h),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Image.asset(
-                                                            'assets/image/png/quotation_icon-removebg-preview.png',
-                                                            height: 17.sp,
-                                                          ),
-                                                          SizedBox(width: 3.w),
-                                                          Text('Quotation', style: TextStyle(
-                                                            fontSize: 13.sp
-                                                          ),),
-                                                        ],
-                                                      ),
+                                                    SizedBox(
+                                                      width: 12,
                                                     ),
-                                                  ),
+                                                    IconButton(
+                                                        onPressed: () {
+                                                          _shareSingleCard(
+                                                              index);
+                                                        },
+                                                        icon: Icon(Icons.share))
+                                                  ],
                                                 ),
-                                              ),
-                                              if (StorageHelper.getId()
-                                                      .toString() ==
-                                                  leadController
-                                                      .leadsListData[index]
-                                                      .userId
-                                                      .toString())
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 8.h,
+                                            ),
+                                            Row(
+                                              children: [
                                                 Expanded(
                                                   child: GestureDetector(
                                                     onTap: () {
-                                                      Get.to(() => LeadDetailUpdate(
-                                                          leadId: leadController
-                                                              .leadsListData[
+                                                      Get.to(
+                                                        () =>
+                                                            LeadOverviewScreen(
+                                                          leadId: filteredLeads[
                                                                   index]
                                                               .id,
-                                                          leadDetails:
-                                                              leadController
-                                                                      .leadsListData[
-                                                                  index]));
+                                                          index: 1,
+                                                        ),
+                                                      );
                                                     },
-                                                    child: Container(
+                                                    child: SizedBox(
                                                       child: Padding(
                                                         padding:
-                                                            EdgeInsets.only(
-                                                                left: 15.w,
-                                                                top: 3.h,
-                                                                bottom: 3.h),
+                                                            EdgeInsets.symmetric(
+                                                                vertical: 3.h),
                                                         child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
                                                           children: [
                                                             Image.asset(
-                                                              'assets/image/png/update_icon-removebg-preview.png',
-                                                              height: 17.sp,
+                                                              getPassIcon,
+                                                              color: textColor,
+                                                              height: 17.h,
                                                             ),
-                                                            SizedBox(
-                                                                width: 3.w),
-                                                            Text('Update', style: TextStyle(
-                                                            fontSize: 13.sp
-                                                          ),),
+                                                            SizedBox(width: 3.w),
+                                                            Text(followups, style: TextStyle(
+                                                              fontSize: 13.sp
+                                                            ),),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                            ],
-                                          )
-                                        ],
+                                                Expanded(
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Get.to(() =>
+                                                          LeadOverviewScreen(
+                                                            leadId:
+                                                                filteredLeads[
+                                                                        index]
+                                                                    .id,
+                                                            index: 5,
+                                                          ));
+                                                    },
+                                                    child: SizedBox(
+                                                      child: Padding(
+                                                        padding:
+                                                            EdgeInsets.symmetric(
+                                                                vertical: 3.h),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Image.asset(
+                                                              'assets/image/png/location-mark.png',
+                                                              height: 17.sp,
+                                                            ),
+                                                            SizedBox(width: 3.w),
+                                                            Text(visit, style: TextStyle(
+                                                              fontSize: 13.sp
+                                                            ),),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Get.to(() =>
+                                                          LeadOverviewScreen(
+                                                            leadId:
+                                                                filteredLeads[
+                                                                        index]
+                                                                    .id,
+                                                            index: 2,
+                                                            leadNumber:
+                                                                filteredLeads[
+                                                                        index]
+                                                                    .leadNumber,
+                                                          ));
+                                                    },
+                                                    child: SizedBox(
+                                                      child: Padding(
+                                                        padding:
+                                                            EdgeInsets.symmetric(
+                                                                vertical: 3.h),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Image.asset(
+                                                              'assets/image/png/quotation_icon-removebg-preview.png',
+                                                              height: 17.sp,
+                                                            ),
+                                                            SizedBox(width: 3.w),
+                                                            Text('Quotation', style: TextStyle(
+                                                              fontSize: 13.sp
+                                                            ),),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (StorageHelper.getId()
+                                                        .toString() ==
+                                                    filteredLeads[index]
+                                                        .userId
+                                                        .toString())
+                                                  Expanded(
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        Get.to(() =>
+                                                            LeadDetailUpdate(
+                                                                leadId:
+                                                                    filteredLeads[
+                                                                            index]
+                                                                        .id,
+                                                                leadDetails:
+                                                                    filteredLeads[
+                                                                        index]));
+                                                      },
+                                                      child: Container(
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 15.w,
+                                                                  top: 3.h,
+                                                                  bottom: 3.h),
+                                                          child: Row(
+                                                            children: [
+                                                              Image.asset(
+                                                                'assets/image/png/update_icon-removebg-preview.png',
+                                                                height: 17.sp,
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 3.w),
+                                                              Text('Update', style: TextStyle(
+                                                                fontSize: 13.sp
+                                                              ),),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         )
                       ],
@@ -1142,7 +1187,7 @@ class _LeadListState extends State<LeadList> {
   }
 
   Future<void> _shareSingleCard(int index) async {
-    final ap = leadController.leadsListData[index];
+    final ap = filteredLeads[index];
 
     final locationUrl =
         'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(ap.latitude.toString())},${Uri.encodeComponent(ap.longitude.toString())}';

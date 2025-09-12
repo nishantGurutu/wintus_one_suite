@@ -515,31 +515,6 @@ class _TaskListPageState extends State<TaskScreenPage> {
                 ),
               ),
               SizedBox(height: 5.h),
-
-              // Expanded(
-              //   child: Obx(() {
-              //     if (taskController.isTaskLoading.value) {
-              //       return Center(
-              //         child: CircularProgressIndicator(color: primaryColor),
-              //       );
-              //     }
-
-              //     if (taskController.selectedTaskType.value == "All Task") {
-              //       return allTaskList(taskController.allTaskList);
-              //     } else if ([
-              //       "New Task",
-              //       "Past Due",
-              //       "Due Today",
-              //     ].contains(taskController.selectedTaskType.value)) {
-              //       return newTaskList(taskController.newTaskList);
-              //     } else if (taskController.selectedTaskType.value ==
-              //         "Progress") {
-              //       return progressTaskList(taskController.progressTaskList);
-              //     } else {
-              //       return completeTaskList(taskController.completeTaskList);
-              //     }
-              //   }),
-              // ),
               Expanded(
                 child: Container(
                   width: double.infinity,
