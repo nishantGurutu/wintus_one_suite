@@ -606,6 +606,8 @@ class LeadController extends GetxController {
                   leadId,
                   dt.leadsName ?? '',
                   'followup',
+                  '',
+                  ''
                 );
               }
             } else {
@@ -1257,6 +1259,8 @@ class LeadController extends GetxController {
                     leadId,
                     dt.meetingTitle ?? '',
                     'lead_meeting',
+                    '',
+                    ''
                   );
                 }
               } else {

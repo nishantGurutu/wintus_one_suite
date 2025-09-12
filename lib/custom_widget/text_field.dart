@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
   final bool readonly;
   final String? data;
   final VoidCallback? onTap;
+  final List<TextInputFormatter>? inputFormatters;
 
   CustomTextField({
     super.key,
@@ -35,6 +37,7 @@ class CustomTextField extends StatelessWidget {
     this.data,
     this.onTap,
     this.readonly = false,
+    this.inputFormatters,
   });
 
   final RegisterController registerController = Get.put(RegisterController());
@@ -51,6 +54,7 @@ class CustomTextField extends StatelessWidget {
       enabled: enable,
       onTap: onTap,
       obscureText: obscureText ?? false,
+      inputFormatters: inputFormatters,
       style:
           enable == false ? changeTextColor(rubikRegular, darkGreyColor) : null,
       validator: (value) {
@@ -99,7 +103,7 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(14.r)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: secondaryColor),
+          borderSide: BorderSide(color: canwinnPurple),
           borderRadius: BorderRadius.all(Radius.circular(14.r)),
         ),
         contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),

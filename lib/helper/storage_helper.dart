@@ -19,7 +19,8 @@ class StorageHelper {
   static const String _keydob = "dob";
   static const String _keyImage = "image";
   static const String _keyDepartmentId = "department_id";
-  static const String _role = "role";
+  static const String _role = "role_id";
+  static const String _roleName = "role_name";
   static const String _type = "type";
   static const String _token = "token";
   static const String _tokenType = "token_type";
@@ -36,6 +37,7 @@ class StorageHelper {
   static const String _assignedDept = "assigned_dept";
   static const String _isHead = "is_head";
   static const String _folder_id = "folder_id";
+  static const String _userLocationAddress = "location_address";
 
   // Set methods
   static Future<void> setId(int id) async =>
@@ -64,8 +66,10 @@ class StorageHelper {
       await _preferences?.setString(_keyImage, image);
   static Future<void> setDepartmentId(int departmentId) async =>
       await _preferences?.setInt(_keyDepartmentId, departmentId);
-  static Future<void> setRole(int role) async =>
-      await _preferences?.setInt(_role, role);
+  static Future<void> setRole(String role) async =>
+      await _preferences?.setString(_role, role);
+  static Future<void> setRoleName(String roleName) async =>
+      await _preferences?.setString(_roleName, roleName);
   static Future<void> setType(int type) async =>
       await _preferences?.setInt(_type, type);
 
@@ -96,6 +100,8 @@ class StorageHelper {
       await _preferences?.setString(_keyIsPunchinDate, isPunchinDate);
   static Future<void> setAssignedDept(String asssignedDept) async =>
       await _preferences?.setString(_assignedDept, asssignedDept);
+  static Future<void> setUserLocation(String locationAddress) async =>
+      await _preferences?.setString(_userLocationAddress, locationAddress);
 
   // Get methods
   static dynamic getId() => _preferences?.getInt(_keyId);
@@ -114,7 +120,8 @@ class StorageHelper {
   static dynamic getDob() => _preferences?.getString(_keydob);
   static dynamic getImage() => _preferences?.getString(_keyImage);
   static dynamic getDepartmentId() => _preferences?.getInt(_keyDepartmentId);
-  static dynamic getRole() => _preferences?.getInt(_role);
+  static dynamic getRole() => _preferences?.getString(_role);
+  static dynamic getRoleName() => _preferences?.getString(_roleName);
   static dynamic getType() => _preferences?.getInt(_type);
   static dynamic getRecoveryPassword() =>
       _preferences?.getString(_recoveryPassword);
@@ -132,4 +139,6 @@ class StorageHelper {
   static dynamic getIsCurrentDate() =>
       _preferences?.getString(_keyIsCurrentdate);
   static dynamic getIsPunchin() => _preferences?.getString(_keyIsPunchin);
+  static dynamic getUserLocation() =>
+      _preferences?.getString(_userLocationAddress);
 }

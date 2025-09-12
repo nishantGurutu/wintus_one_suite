@@ -69,7 +69,7 @@ class _EditProjectState extends State<EditProject> {
     projectController.clientListApi();
     projectController.projectTimingApi();
     taskController.responsiblePersonListApi('', "");
-    priorityController.priorityApi();
+    priorityController.priorityApi(from: '');
     statusController.statusApi();
     projectController.teamLeaderApi();
     nameTextEditingControlelr.text =

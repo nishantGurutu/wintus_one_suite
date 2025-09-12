@@ -22,7 +22,7 @@ class _PriorityPageState extends State<PriorityPage> {
   final PriorityController priorityController = Get.put(PriorityController());
   @override
   void initState() {
-    priorityController.priorityApi();
+    priorityController.priorityApi(from: '');
     super.initState();
   }
 

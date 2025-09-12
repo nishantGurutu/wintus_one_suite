@@ -42,7 +42,7 @@ class _ToDoListState extends State<ToDoList> {
   void initState() {
     todoController.todoListApi('all');
     todoController.tagListApi();
-    priorityController.priorityApi();
+    priorityController.priorityApi(from: '');
     super.initState();
   }
 

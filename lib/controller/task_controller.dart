@@ -2,19 +2,21 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management/controller/home_controller.dart';
 import 'package:task_management/controller/profile_controller.dart';
-import 'package:task_management/custom_widget/custom_caches_manager.dart';
 import 'package:task_management/firebase_messaging/notification_service.dart';
 import 'package:task_management/helper/storage_helper.dart';
 import 'package:task_management/model/all_project_list_model.dart';
+import 'package:task_management/model/department_list_model.dart';
 import 'package:task_management/model/responsible_person_list_model.dart';
 import 'package:task_management/model/task_category_list_model.dart';
 import 'package:task_management/model/task_details_model.dart';
 import 'package:task_management/service/project_service.dart';
 import 'package:task_management/service/task_service.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class TaskController extends GetxController {
   final ProfileController profileController = Get.put(ProfileController());
@@ -26,28 +28,35 @@ class TaskController extends GetxController {
   RxBool? isCompleteStatus = false.obs;
   RxList<String> taskSelectedType =
       <String>['Assigned to me', 'Task created by me', "Task review by me"].obs;
-  RxString selectedAssignedTask = ''.obs;
-  RxList<String> taskType = <String>[
-    'All Task',
-    'New Task',
-    'Progress',
-    'Completed',
-    'Important',
-    'Past Due',
-    'Due Today',
-  ].obs;
+  RxString selectedAssignedTask = 'Assigned to me'.obs;
+  RxList<String> taskType =
+      <String>[
+        'All Task',
+        'New Task',
+        'Progress',
+        'Completed',
+        'Important',
+        'Past Due',
+        'Due Today',
+      ].obs;
   RxString selectedTaskType = 'All Task'.obs;
   Future<void> updateTaskType(String? value) async {
     selectedTaskType.value = value!;
     await taskListApi(
-        selectedTaskType.value, selectedAssignedTask.value, '', '', '');
+      selectedTaskType.value,
+      selectedAssignedTask.value,
+      '',
+      '',
+      '',
+      '',
+    );
   }
 
   var isAllProjectCalling = false.obs;
   var allProjectListModel = AllProjectListModel().obs;
   Rx<CreatedByMe?> selectedAllProjectListData = Rx<CreatedByMe?>(null);
   RxList<CreatedByMe> allProjectDataList = <CreatedByMe>[].obs;
-  Future<void> allProjectListApi() async {
+  Future<void> allProjectListApi({int? projectId}) async {
     isAllProjectCalling.value = true;
     final result = await ProjectService().allProjectListApi();
     if (result != null) {
@@ -87,22 +96,40 @@ class TaskController extends GetxController {
             status: 1,
           ),
         );
-        for (int i = 0;
-            i < (allProjectListModel.value.createdByMe?.length ?? 0);
-            i++) {
-          allProjectDataList.add(allProjectListModel.value.createdByMe![i]);
+        for (
+          int i = 0;
+          i < (allProjectListModel.value.createdByMe?.length ?? 0);
+          i++
+        ) {
+          allProjectDataList.add(
+            allProjectListModel.value.createdByMe?[i] ?? CreatedByMe(),
+          );
         }
-        for (int i = 0;
-            i < (allProjectListModel.value.assignedToMe?.length ?? 0);
-            i++) {
+        for (
+          int i = 0;
+          i < (allProjectListModel.value.assignedToMe?.length ?? 0);
+          i++
+        ) {
           allProjectDataList.add(allProjectListModel.value.assignedToMe![i]);
         }
       }
-      selectedAllProjectListData.value = allProjectDataList.first;
-      await profileController
-          .departmentList(selectedAllProjectListData.value!.id);
+
+      if (projectId != null) {
+        for (int i = 0; i < allProjectDataList.length; i++) {
+          if (projectId == allProjectDataList[i].id) {
+            selectedAllProjectListData.value = allProjectDataList[i];
+          }
+        }
+      } else {
+        selectedAllProjectListData.value = allProjectDataList.first;
+      }
       allProjectDataList.refresh();
       selectedAllProjectListData.refresh();
+      isAllProjectCalling.value = false;
+      isAllProjectCalling.refresh();
+      // await profileController.departmentList(
+      //   selectedAllProjectListData.value?.id ?? 0,
+      // );
     }
     isAllProjectCalling.value = false;
   }
@@ -110,7 +137,13 @@ class TaskController extends GetxController {
   Future<void> updateAssignedTask(String? value) async {
     selectedAssignedTask.value = value!;
     await taskListApi(
-        selectedTaskType.value, selectedAssignedTask.value, '', '', '');
+      selectedTaskType.value,
+      selectedAssignedTask.value,
+      '',
+      '',
+      '',
+      '',
+    );
   }
 
   final HomeController homeController = Get.put(HomeController());
@@ -144,8 +177,14 @@ class TaskController extends GetxController {
   RxInt pagevalue = 1.obs;
   RxInt prePageCount = 1.obs;
   var isScrolling = false.obs;
-  Future<void> taskListApi(String? selectedTaskValue, String assignValue,
-      String type, String date, String? userId) async {
+  Future<void> taskListApi(
+    String? selectedTaskValue,
+    String assignValue,
+    String type,
+    String date,
+    String? userId,
+    String selectAlarmTyle,
+  ) async {
     if (type == 'scroll') {
       isScrolling.value = true;
     } else {
@@ -153,34 +192,13 @@ class TaskController extends GetxController {
     }
 
     try {
-      // Generate a unique cache key based on input parameters
-      // final cacheKey =
-      //     'task_list_${selectedTaskValue}_${assignValue}_${date}_${userId}';
-
-      // // Try to get cached data first
-      // final cachedFile =
-      //     await CustomCacheManager.instance.getFileFromCache(cacheKey);
-
-      // Map<String, dynamic>? result;
-
-      // if (cachedFile != null && cachedFile.file.existsSync()) {
-      //   // Read cached data
-      //   final cachedData = await cachedFile.file.readAsString();
-      //   result = jsonDecode(cachedData);
-      // } else {
-      // Fetch from API if no cache or cache is stale
       var result = await TaskService().taskListApi(
-          selectedTaskValue, assignValue, pagevalue.value, date, userId ?? "");
-
-      // if (result != null) {
-      //   // Cache the new API response
-      //   await CustomCacheManager.instance.putFile(
-      //     cacheKey,
-      //     utf8.encode(jsonEncode(result)),
-      //     fileExtension: 'json',
-      //   );
-      // }
-      // }
+        selectedTaskValue,
+        assignValue,
+        pagevalue.value,
+        date,
+        userId ?? "",
+      );
 
       if (result != null) {
         checkAllTaskList.clear();
@@ -285,8 +303,10 @@ class TaskController extends GetxController {
 
               DateTime? dateTime;
               try {
-                DateFormat inputFormat =
-                    DateFormat("dd-MM-yyyy h:mm a", 'en_US');
+                DateFormat inputFormat = DateFormat(
+                  "dd-MM-yyyy h:mm a",
+                  'en_US',
+                );
                 dateTime = inputFormat.parse(dateInput.toLowerCase());
               } catch (e) {
                 print("Error parsing with lowercase AM/PM: $e");
@@ -294,17 +314,23 @@ class TaskController extends GetxController {
 
               if (dateTime == null) {
                 try {
-                  DateFormat inputFormat =
-                      DateFormat("dd-MM-yyyy h:mm a", 'en_US');
+                  DateFormat inputFormat = DateFormat(
+                    "dd-MM-yyyy h:mm a",
+                    'en_US',
+                  );
                   dateTime = inputFormat.parse(dateInput.toUpperCase());
                 } catch (e) {
                   print("Error parsing with uppercase AM/PM: $e");
                 }
               }
+              String reminderTimeType = "";
               if (dateTime != null) {
-                DateFormat outputFormat =
-                    DateFormat("dd-MM-yyyy HH:mm", 'en_US');
+                DateFormat outputFormat = DateFormat(
+                  "dd-MM-yyyy HH:mm",
+                  'en_US',
+                );
                 print('Formatted Date Input: 65ew54 $dateTime');
+                print('Formatted Date Input: 65ew54 2 $selectAlarmTyle');
                 String dateOutput = outputFormat.format(dateTime);
                 List<String> splitDt = dateOutput.split(" ");
                 List<String> splitDt2 = splitDt.first.split('-');
@@ -317,7 +343,7 @@ class TaskController extends GetxController {
                 if (strReminder != "null") {
                   List<String> splitReminder = strReminder.split(" ");
                   int reminderTime = int.parse(splitReminder.first);
-                  String reminderTimeType = splitReminder.last.toLowerCase();
+                  reminderTimeType = splitReminder.last.toLowerCase();
 
                   if (reminderTimeType == 'minutes') {
                     minute -= reminderTime;
@@ -337,14 +363,121 @@ class TaskController extends GetxController {
                 );
 
                 print("task alarm date in controller $targetDate");
+                // if (targetDate.isAfter(dtNow)) {
+                //   if (selectAlarmTyle == 'Not Repeated') {
+                //     LocalNotificationService().scheduleNotification(
+                //       targetDate,
+                //       dt['id'],
+                //       dt['title'],
+                //       'task',
+                //     );
+                //   }else if( selectAlarmTyle =='Repeated'){
+
+                //   }
+                // }
+
                 if (targetDate.isAfter(dtNow)) {
-                  final randomId = Random().nextInt(1000);
+                  // if (selectAlarmTyle == 'Not Repeated') {
+                  // 🔔 One-time alarm
                   LocalNotificationService().scheduleNotification(
                     targetDate,
                     dt['id'],
                     dt['title'],
                     'task',
+                    reminderTimeType,
+                    selectAlarmTyle,
                   );
+                  // }
+
+                  //  else if (selectAlarmTyle == 'Repeated') {
+                  //   if (reminderTimeType == 'minutes') {
+                  //     // 🔔 Repeats every minute
+                  //     await _notificationsPlugin.periodicallyShow(
+                  //       dt['id'],
+                  //       '${dt['title']} task reminder',
+                  //       'Task reminder every minute',
+                  //       RepeatInterval.everyMinute,
+                  //       NotificationDetails(
+                  //         android: AndroidNotificationDetails(
+                  //           'your_channel_id',
+                  //           'your_channel_name',
+                  //           channelDescription: 'your channel description',
+                  //           sound: RawResourceAndroidNotificationSound(
+                  //             "alarmtone",
+                  //           ),
+                  //           playSound: true,
+                  //           priority: Priority.max,
+                  //           enableVibration: true,
+                  //           fullScreenIntent: true,
+                  //         ),
+                  //       ),
+                  //       androidAllowWhileIdle: true,
+                  //       payload: jsonEncode({
+                  //         'page': 'task',
+                  //         'taskId': dt['id'],
+                  //       }),
+                  //     );
+                  //   } else if (reminderTimeType == 'hours') {
+                  //     // 🔔 Repeats every hour
+                  //     await _notificationsPlugin.periodicallyShow(
+                  //       dt['id'],
+                  //       '${dt['title']} task reminder',
+                  //       'Task reminder every hour',
+                  //       RepeatInterval.hourly,
+                  //       NotificationDetails(
+                  //         android: AndroidNotificationDetails(
+                  //           'your_channel_id',
+                  //           'your_channel_name',
+                  //           channelDescription: 'your channel description',
+                  //           sound: RawResourceAndroidNotificationSound(
+                  //             "alarmtone",
+                  //           ),
+                  //           playSound: true,
+                  //           priority: Priority.max,
+                  //           enableVibration: true,
+                  //           fullScreenIntent: true,
+                  //         ),
+                  //       ),
+                  //       androidAllowWhileIdle: true,
+                  //       payload: jsonEncode({
+                  //         'page': 'task',
+                  //         'taskId': dt['id'],
+                  //       }),
+                  //     );
+                  //   } else if (reminderTimeType == 'daily') {
+                  //     // 🔔 Repeats daily at target time
+                  //     await _notificationsPlugin.zonedSchedule(
+                  //       dt['id'],
+                  //       '${dt['title']} task reminder',
+                  //       'Daily task reminder',
+                  //       tz.TZDateTime.from(targetDate, tz.local),
+                  //       NotificationDetails(
+                  //         android: AndroidNotificationDetails(
+                  //           'your_channel_id',
+                  //           'your_channel_name',
+                  //           channelDescription: 'your channel description',
+                  //           sound: RawResourceAndroidNotificationSound(
+                  //             "alarmtone",
+                  //           ),
+                  //           playSound: true,
+                  //           priority: Priority.max,
+                  //           enableVibration: true,
+                  //           fullScreenIntent: true,
+                  //         ),
+                  //       ),
+                  //       androidScheduleMode:
+                  //           AndroidScheduleMode.exactAllowWhileIdle,
+                  //       matchDateTimeComponents:
+                  //           DateTimeComponents.time, // ⏰ repeats daily
+                  //       uiLocalNotificationDateInterpretation:
+                  //           UILocalNotificationDateInterpretation.absoluteTime,
+                  //       payload: jsonEncode({
+                  //         'page': 'task',
+                  //         'taskId': dt['id'],
+                  //       }),
+                  //     );
+                  //   }
+                  // }
                 }
               } else {
                 print("Failed to parse date for task: ${dt.taskName}");
@@ -396,32 +529,36 @@ class TaskController extends GetxController {
     if (result != null) {
       selectedResponsiblePersonData.value = null;
       responsiblePersonListModel.value = result;
-      isResponsiblePersonLoading.value = false;
+
       responsiblePersonList.clear();
       if (fromPage.toString() == "add_meeting") {
         responsiblePersonList.add(
-          ResponsiblePersonData(
-            id: 0,
-            name: "All user",
-            status: 1,
-          ),
+          ResponsiblePersonData(id: 0, name: "All user", status: 1),
         );
       }
       for (var person in responsiblePersonListModel.value.data!) {
         responsiblePersonList.add(person);
       }
-      selectedSharedListPerson
-          .addAll(List<bool>.filled(responsiblePersonList.length, false));
-      responsiblePersonSelectedCheckBox
-          .addAll(List<bool>.filled(responsiblePersonList.length, false));
-      selectedResponsiblePersonId
-          .addAll(List<int>.filled(responsiblePersonList.length, 0));
-      selectedResponsiblePersonId
-          .addAll(List<int>.filled(responsiblePersonList.length, 0));
-      selectedLongPress
-          .addAll(List<bool>.filled(responsiblePersonList.length, false));
-      reviewerCheckBox
-          .addAll(List<bool>.filled(responsiblePersonList.length, false));
+      responsiblePersonList.refresh();
+
+      selectedSharedListPerson.addAll(
+        List<bool>.filled(responsiblePersonList.length, false),
+      );
+      responsiblePersonSelectedCheckBox.addAll(
+        List<bool>.filled(responsiblePersonList.length, false),
+      );
+      selectedResponsiblePersonId.addAll(
+        List<int>.filled(responsiblePersonList.length, 0),
+      );
+      selectedResponsiblePersonId.addAll(
+        List<int>.filled(responsiblePersonList.length, 0),
+      );
+      selectedLongPress.addAll(
+        List<bool>.filled(responsiblePersonList.length, false),
+      );
+      reviewerCheckBox.addAll(
+        List<bool>.filled(responsiblePersonList.length, false),
+      );
       responsiblePersonSelectedCheckBox2.clear();
       toAssignedPersonCheckBox.clear();
       for (var person in responsiblePersonList) {
@@ -430,7 +567,28 @@ class TaskController extends GetxController {
       for (var person in responsiblePersonList) {
         responsiblePersonSelectedCheckBox2[person.id] = false;
       }
+      isResponsiblePersonLoading.value = false;
+      isResponsiblePersonLoading.refresh();
       await userLogActivity(responsiblePersonList.first.id);
+    }
+    Future.microtask(() {
+      isResponsiblePersonLoading.value = false;
+    });
+  }
+
+  Future<void> responsiblePersonListApi2(
+    RxList<DepartmentListData> selectedDepartMentListData2,
+  ) async {
+    Future.microtask(() {
+      isResponsiblePersonLoading.value = true;
+    });
+    final result = await TaskService().responsiblePersonListApi2(
+      selectedDepartMentListData2,
+    );
+    if (result != null) {
+      selectedResponsiblePersonData.value = null;
+      responsiblePersonListModel.value = result;
+      responsiblePersonList.assignAll(result.data!);
     }
     Future.microtask(() {
       isResponsiblePersonLoading.value = false;
@@ -475,17 +633,18 @@ class TaskController extends GetxController {
   Rx<File> pickedFile = File('').obs;
   var isTaskAdding = false.obs;
   Future<void> addTask(
-    String taskName,
-    String remark,
-    int selectedProjectId,
-    int? departmentId,
-    String startDate,
-    String dueDate,
-    String dueTime,
-    int? priorityId,
-    String s,
-    String timeTextString,
-    String timeType,
+    dynamic taskName,
+    dynamic remark,
+    dynamic selectedProjectId,
+    dynamic startDate,
+    dynamic dueDate,
+    dynamic dueTime,
+    dynamic  priorityId,
+    dynamic s,
+    dynamic timeTextString,
+    dynamic timeType,
+    RxList<DepartmentListData> selectedDepartMentListData2,
+    String selectAlarmTyle,
   ) async {
     isTaskAdding.value = true;
     try {
@@ -493,7 +652,6 @@ class TaskController extends GetxController {
         taskName,
         remark,
         selectedProjectId,
-        departmentId,
         pickedFile,
         assignedUserId,
         reviewerUserId,
@@ -504,19 +662,30 @@ class TaskController extends GetxController {
         timeTextString,
         timeType,
         addTaskContactList,
+        
+        selectedDepartMentListData2,
+        selectAlarmTyle,
       );
       if (result) {
         Get.back();
-        responsiblePersonSelectedCheckBox
-            .addAll(List<bool>.filled(responsiblePersonList.length, false));
-        reviewerCheckBox
-            .addAll(List<bool>.filled(responsiblePersonList.length, false));
+        responsiblePersonSelectedCheckBox.addAll(
+          List<bool>.filled(responsiblePersonList.length, false),
+        );
+        reviewerCheckBox.addAll(
+          List<bool>.filled(responsiblePersonList.length, false),
+        );
         assignedUserId.clear();
         reviewerUserId.clear();
 
         // Refresh task list
         await taskListApi(
-            selectedTaskType.value, selectedAssignedTask.value, '', '', '');
+          selectedTaskType.value,
+          selectedAssignedTask.value,
+          '',
+          '',
+          '',
+          selectAlarmTyle,
+        );
 
         // Invalidate home data cache
         String cacheKey = 'home_data_cache';
@@ -534,70 +703,48 @@ class TaskController extends GetxController {
       isTaskAdding.value = false;
     }
   }
-  // Future<void> addTask(
-  //     String taskName,
-  //     String remark,
-  //     int selectedProjectId,
-  //     int? departmentId,
-  //     String startDate,
-  //     String dueDate,
-  //     String dueTime,
-  //     int? priorityId,
-  //     String s,
-  //     String timeTextString,
-  //     String timeType) async {
-  //   isTaskAdding.value = true;
-  //   final result = await TaskService().addTaskApi(
-  //     taskName,
-  //     remark,
-  //     selectedProjectId,
-  //     departmentId,
-  //     pickedFile,
-  //     assignedUserId,
-  //     reviewerUserId,
-  //     startDate,
-  //     dueDate,
-  //     dueTime,
-  //     priorityId,
-  //     timeTextString,
-  //     timeType,
-  //     addTaskContactList,
-  //   );
-  //   if (result) {
-  //     Get.back();
-  //     responsiblePersonSelectedCheckBox
-  //         .addAll(List<bool>.filled(responsiblePersonList.length, false));
-  //     reviewerCheckBox
-  //         .addAll(List<bool>.filled(responsiblePersonList.length, false));
-  //     assignedUserId.clear();
-  //     reviewerUserId.clear();
-  //     await taskListApi(
-  //         selectedTaskType.value, selectedAssignedTask.value, '', '', '');
-
-  //     if (s == 'bottom') {
-  //       Get.back();
-  //     }
-  //   }
-  //   isTaskAdding.value = false;
-  // }
 
   var isSubTaskAdding = false.obs;
-  Future<void> addSubTask(String taskName, String startDate, String dueDate,
-      String dueTime, int? priorityId, id) async {
+  Future<void> addSubTask(
+    String taskName,
+    String startDate,
+    String dueDate,
+    String dueTime,
+    int? priorityId,
+    id,
+  ) async {
     isSubTaskAdding.value = true;
-    final result = await TaskService()
-        .addSubTaskApi(taskName, startDate, dueDate, dueTime, priorityId, id);
+    final result = await TaskService().addSubTaskApi(
+      taskName,
+      startDate,
+      dueDate,
+      dueTime,
+      priorityId,
+      id,
+    );
     Get.back();
     taskDetailsApi(id);
     isSubTaskAdding.value = false;
   }
 
   var isSubTaskEditing = false.obs;
-  Future<void> editSubTask(String taskName, String startDate, String dueDate,
-      String dueTime, int? priorityId, id) async {
+  Future<void> editSubTask(
+    String taskName,
+    String startDate,
+    String dueDate,
+    String dueTime,
+    int? priorityId,
+    id,
+  ) async {
     isSubTaskEditing.value = true;
-    final result = await TaskService()
-        .editSubTaskApi(taskName, startDate, dueDate, dueTime, priorityId, id);
+    final result = await TaskService().editSubTaskApi(
+      taskName,
+      startDate,
+      dueDate,
+      dueTime,
+      priorityId,
+      id,
+    );
     if (result) {
       Get.back();
       taskDetailsApi(id);
@@ -607,38 +754,47 @@ class TaskController extends GetxController {
 
   var isTaskEditing = false.obs;
   Future<void> editTask(
-      String taskName,
-      String remark,
-      int? projectId,
-      int? deptId,
-      RxList<String> assignedUserId,
-      RxList<String> reviewerUserId,
-      String startDate,
-      String dueDate,
-      String dueTime,
-      int? priorityId,
-      newTaskListId,
-      String timeTextEditingController,
-      String timeType) async {
+    String taskName,
+    String remark,
+    int? projectId,
+    int? deptId,
+    RxList<String> assignedUserId,
+    RxList<String> reviewerUserId,
+    String startDate,
+    String dueDate,
+    String dueTime,
+    int? priorityId,
+    newTaskListId,
+    String timeTextEditingController,
+    String timeType,
+    String? selectedAlarmTypeTime,
+  ) async {
     isTaskEditing.value = true;
     final result = await TaskService().editTaskApi(
-        taskName,
-        remark,
-        projectId,
-        deptId,
-        assignedUserId,
-        reviewerUserId,
-        startDate,
-        dueDate,
-        dueTime,
-        priorityId,
-        newTaskListId,
-        pickedFile,
-        timeTextEditingController,
-        timeType);
+      taskName,
+      remark,
+      projectId,
+      deptId,
+      assignedUserId,
+      reviewerUserId,
+      startDate,
+      dueDate,
+      dueTime,
+      priorityId,
+      newTaskListId,
+      pickedFile,
+      timeTextEditingController,
+      timeType,
+    );
     if (result) {
       await taskListApi(
-          selectedTaskType.value, selectedAssignedTask.value, '', '', '');
+        selectedTaskType.value,
+        selectedAssignedTask.value,
+        '',
+        '',
+        '',
+        selectedAlarmTypeTime ?? '',
+      );
       Get.back();
     }
     isTaskEditing.value = false;
@@ -650,7 +806,13 @@ class TaskController extends GetxController {
     final result = await TaskService().deleteTask(id);
     if (result) {
       await taskListApi(
-          selectedTaskType.value, selectedAssignedTask.value, '', '', '');
+        selectedTaskType.value,
+        selectedAssignedTask.value,
+        '',
+        '',
+        '',
+        '',
+      );
     }
     isTaskDeleting.value = false;
   }
@@ -670,21 +832,41 @@ class TaskController extends GetxController {
   Rx<File> pickedFile2 = File('').obs;
   int taskIdFromDetails = 0;
   var isProgressUpdating = false.obs;
-  Future<void> updateProgressTask(int? id, String statusRemark, int i,
-      {required String from}) async {
+  Future<void> updateProgressTask(
+    int? id,
+    String statusRemark,
+    int i, {
+    required String from,
+  }) async {
     isProgressUpdating.value = true;
-    final result = await TaskService()
-        .updateProgressTask(id, statusRemark, i, pickedFile2);
+    final result = await TaskService().updateProgressTask(
+      id,
+      statusRemark,
+      i,
+      pickedFile2,
+    );
     if (result) {
       isProgressStatus?.value = false;
       Get.back();
       if (from == "details") {
         await taskListApi(
-            selectedTaskType.value, selectedAssignedTask.value, '', '', '');
+          selectedTaskType.value,
+          selectedAssignedTask.value,
+          '',
+          '',
+          '',
+          '',
+        );
         await taskDetailsApi(taskIdFromDetails);
       } else {
         await taskListApi(
-            selectedTaskType.value, selectedAssignedTask.value, '', '', '');
+          selectedTaskType.value,
+          selectedAssignedTask.value,
+          '',
+          '',
+          '',
+          '',
+        );
         await taskDetailsApi(taskIdFromDetails);
       }
     }

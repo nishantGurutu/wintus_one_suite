@@ -70,7 +70,7 @@ class _AddProjectState extends State<AddProject> {
     projectController.projectTimingApi();
     projectController.responsiblePersonListApi(
         StorageHelper.getDepartmentId(), "");
-    priorityController.priorityApi();
+    priorityController.priorityApi(from: '');
     statusController.statusApi();
     projectController.teamLeaderApi();
     profileController.departmentList('');

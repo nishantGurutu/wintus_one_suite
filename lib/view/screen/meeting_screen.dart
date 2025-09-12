@@ -34,7 +34,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
   void callApi() async {
     await meetingController.meetingList();
     await meetingController.responsiblePersonListApi('', '');
-    await priorityController.priorityApi();
+    await priorityController.priorityApi(from: '');
     await taskController.allProjectListApi();
   }
 

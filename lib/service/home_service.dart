@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:task_management/api/api_constant.dart';
 import 'package:task_management/helper/storage_helper.dart';
+import 'package:task_management/model/department_list_model.dart' show DepartmentListData;
 import 'package:task_management/model/home_secreen_data_model.dart';
 import 'package:task_management/model/responsible_person_list_model.dart';
 
@@ -11,12 +13,8 @@ class HomeService {
       var token = StorageHelper.getToken();
 
       var url = "${ApiConstant.baseUrl + ApiConstant.homeData}?user_id=$id";
-      print('user id in home $id');
-      print('user id in home 2 $url');
       _dio.options.headers["Authorization"] = "Bearer $token";
-      final response = await _dio.get(
-        url,
-      );
+      final response = await _dio.get(url);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HomeScreenHomeScreenDataModel.fromJson(response.data);
@@ -28,40 +26,14 @@ class HomeService {
       return null;
     }
   }
-  // Future<dynamic> homeDataApi(id) async {
-  //   try {
-  //     var token = StorageHelper.getToken();
-
-  //     var url = "${ApiConstant.baseUrl + ApiConstant.homeData}?user_id=$id";
-  //     print('user id in home $id');
-  //     print('user id in home 2 $url');
-  //     _dio.options.headers["Authorization"] = "Bearer $token";
-  //     final response = await _dio.get(
-  //       url,
-  //     );
-
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       return response.data;
-  //     } else {
-  //       throw Exception('Failed notes list');
-  //     }
-  //   } catch (e) {
-  //     print('Error in NotesService: $e');
-  //     return null;
-  //   }
-  // }
 
   Future<HomeScreenHomeScreenDataModel?> userhomeDataApi(id) async {
     try {
       var token = StorageHelper.getToken();
 
       var url = "${ApiConstant.baseUrl + ApiConstant.homeData}?user_id=$id";
-      print('user id in home $id');
-      print('user id in home 2 $url');
       _dio.options.headers["Authorization"] = "Bearer $token";
-      final response = await _dio.get(
-        url,
-      );
+      final response = await _dio.get(url);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HomeScreenHomeScreenDataModel.fromJson(response.data);
@@ -113,14 +85,40 @@ class HomeService {
   }
 
   Future<ResponsiblePersonListModel?> responsiblePersonListApi(
-      dynamic id) async {
+    dynamic id,
+  ) async {
     try {
       var token = StorageHelper.getToken();
-      var url =
-          "${ApiConstant.baseUrl + ApiConstant.responsiblePersonList}?dept_id=$id";
+      var url = "${ApiConstant.baseUrl + ApiConstant.responsiblePersonList}";
+      _dio.options.headers["Authorization"] = "Bearer $token";
 
-      print('Responsible person API URL: $url');
+      final response = await _dio.get(url);
 
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return ResponsiblePersonListModel.fromJson(response.data);
+      } else {
+        throw Exception('Failed to fetch responsible person list');
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<ResponsiblePersonListModel?> responsiblePersonListApi2(
+    RxList<DepartmentListData> selectedDepartMentListData2,
+  ) async {
+    try {
+      var token = StorageHelper.getToken();
+      var url = "${ApiConstant.baseUrl}${ApiConstant.responsiblePersonList}";
+      print('trf36e e36fe673 e763t87 ${selectedDepartMentListData2.length}');
+      if (selectedDepartMentListData2.isNotEmpty) {
+        final departmentIds = selectedDepartMentListData2
+            .map((dept) => dept.id.toString())
+            .where((id) => id.isNotEmpty)
+            .join(',');
+        url += "?department_id=$departmentIds";
+      }
       _dio.options.headers["Authorization"] = "Bearer $token";
 
       final response = await _dio.get(url);

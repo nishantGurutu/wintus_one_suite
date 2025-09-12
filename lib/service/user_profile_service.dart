@@ -21,7 +21,7 @@ class ProfileService {
     String name,
     String email,
     String mobile,
-    int? departmentId,
+    String? departmentId,
     int? id,
     String? value,
     Rx<File> pickedFile,
@@ -39,7 +39,6 @@ class ProfileService {
         'email': email,
         'position': id,
         'mobile': mobile,
-        'department_id': departmentId,
         'dob': dob,
         "anniversary_type":
             annivresaryDate.isNotEmpty ? 'Marriage Anniversary' : "",
@@ -66,7 +65,7 @@ class ProfileService {
         data: formData,
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201 || response.statusMessage =="Profile updated successfully!") {
         CustomToast().showCustomToast(
             "Your profie has been updated successfully! Time to shine and show the world your true self!");
         return true;
@@ -564,7 +563,7 @@ class ProfileService {
       _dio.options.headers["Authorization"] = "Bearer $token";
 
       final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/download-employee-report/$userId?date=$date",
+        "${ApiConstant.baseUrl}${ApiConstant.download_employee_report}/$userId?date=$date",
         options: Options(
           responseType: ResponseType.bytes,
         ),
