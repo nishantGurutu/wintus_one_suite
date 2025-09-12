@@ -976,7 +976,9 @@ class _LeadListState extends State<LeadList> {
                                                             height: 17.h,
                                                           ),
                                                           SizedBox(width: 3.w),
-                                                          Text(followups),
+                                                          Text(followups, style: TextStyle(
+                                                            fontSize: 13.sp
+                                                          ),),
                                                         ],
                                                       ),
                                                     ),
@@ -1010,7 +1012,9 @@ class _LeadListState extends State<LeadList> {
                                                             height: 17.sp,
                                                           ),
                                                           SizedBox(width: 3.w),
-                                                          Text(visit),
+                                                          Text(visit, style: TextStyle(
+                                                            fontSize: 13.sp
+                                                          ),),
                                                         ],
                                                       ),
                                                     ),
@@ -1049,7 +1053,9 @@ class _LeadListState extends State<LeadList> {
                                                             height: 17.sp,
                                                           ),
                                                           SizedBox(width: 3.w),
-                                                          Text('Quotation'),
+                                                          Text('Quotation', style: TextStyle(
+                                                            fontSize: 13.sp
+                                                          ),),
                                                         ],
                                                       ),
                                                     ),
@@ -1090,7 +1096,9 @@ class _LeadListState extends State<LeadList> {
                                                             ),
                                                             SizedBox(
                                                                 width: 3.w),
-                                                            Text('Update'),
+                                                            Text('Update', style: TextStyle(
+                                                            fontSize: 13.sp
+                                                          ),),
                                                           ],
                                                         ),
                                                       ),
