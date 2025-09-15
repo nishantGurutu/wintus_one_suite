@@ -200,7 +200,7 @@ class _NotificationPageState extends State<NotificationPage> {
                             .entries
                             .where((entry) => entry.value)
                             .map((entry) => notificationController
-                                .readNotificationList[entry.key]['id']
+                                .readNotificationList[entry.key].id
                                 .toString()),
                       ];
                       final selectedTypes = <String>[
@@ -210,7 +210,7 @@ class _NotificationPageState extends State<NotificationPage> {
                             .entries
                             .where((entry) => entry.value)
                             .map((entry) => notificationController
-                                .readNotificationList[entry.key]['type']
+                                .readNotificationList[entry.key].type
                                 .toString()),
                       ];
                       notificationController.deleteNotificationListApi(
@@ -250,13 +250,13 @@ class _NotificationPageState extends State<NotificationPage> {
                           notificationController.notificationSelectidList
                               .assignAll(
                             notificationController.notificationList
-                                .map((e) => e['id'].toString())
+                                .map((e) => e.id.toString())
                                 .toList(),
                           );
                           notificationController.notificationSelectTypeList
                               .assignAll(
                             notificationController.notificationList
-                                .map((e) => e['type'].toString())
+                                .map((e) => e.type.toString())
                                 .toList(),
                           );
                         } else {
@@ -278,13 +278,13 @@ class _NotificationPageState extends State<NotificationPage> {
                           notificationController.notificationSelectidList
                               .assignAll(
                             notificationController.readNotificationList
-                                .map((e) => e['id'].toString())
+                                .map((e) => e.id.toString())
                                 .toList(),
                           );
                           notificationController.notificationSelectTypeList
                               .assignAll(
                             notificationController.readNotificationList
-                                .map((e) => e['type'].toString())
+                                .map((e) => e.type.toString())
                                 .toList(),
                           );
                         } else {
@@ -489,23 +489,22 @@ class _NotificationPageState extends State<NotificationPage> {
                                                 .readNotification(
                                                     notificationController
                                                             .notificationList[
-                                                        index]["id"]);
+                                                        index].id);
                                             if (notificationController
                                                 .notificationList[index]
-                                                    ['title']
+                                                    .title
                                                 .toString()
                                                 .toLowerCase()
                                                 .contains('task')) {
                                               Get.to(() => TaskDetails(
                                                     taskId: notificationController
                                                             .notificationList[
-                                                        index]['product_id'],
+                                                        index].productId,
                                                     assignedStatus: "",
                                                     initialIndex: 0,
                                                   ));
                                             } else if (notificationController
-                                                .notificationList[index]
-                                                    ['title']
+                                                .notificationList[index].title
                                                 .toString()
                                                 .toLowerCase()
                                                 .contains('note')) {
@@ -515,8 +514,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                     from: '',
                                                   ));
                                             } else if (notificationController
-                                                .notificationList[index]
-                                                    ['title']
+                                                .notificationList[index].title
                                                 .toString()
                                                 .toLowerCase()
                                                 .contains('emi')) {
@@ -524,7 +522,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                     vehicleId:
                                                         notificationController
                                                                 .notificationList[
-                                                            index]['product_id'],
+                                                            index].productId,
                                                   ));
                                             }
                                           },
@@ -584,7 +582,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                             SizedBox(
                                                               width: 240.w,
                                                               child: Text(
-                                                                "${notificationController.notificationList[index]['title'] ?? ""}",
+                                                                "${notificationController.notificationList[index].title ?? ""}",
                                                                 style:
                                                                     rubikBold,
                                                               ),
@@ -609,14 +607,14 @@ class _NotificationPageState extends State<NotificationPage> {
                                                                           .notificationSelectidList
                                                                           .add(
                                                                         notificationController
-                                                                            .notificationList[index]['id']
+                                                                            .notificationList[index].id
                                                                             .toString(),
                                                                       );
                                                                       notificationController
                                                                           .notificationSelectTypeList
                                                                           .add(
                                                                         notificationController
-                                                                            .notificationList[index]['type']
+                                                                            .notificationList[index].type
                                                                             .toString(),
                                                                       );
                                                                     } else {
@@ -624,14 +622,14 @@ class _NotificationPageState extends State<NotificationPage> {
                                                                           .notificationSelectidList
                                                                           .remove(
                                                                         notificationController
-                                                                            .notificationList[index]['id']
+                                                                            .notificationList[index].id
                                                                             .toString(),
                                                                       );
                                                                       notificationController
                                                                           .notificationSelectTypeList
                                                                           .remove(
                                                                         notificationController
-                                                                            .notificationList[index]['type']
+                                                                            .notificationList[index].type
                                                                             .toString(),
                                                                       );
                                                                     }
@@ -651,7 +649,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                         ),
                                                         SizedBox(height: 6.h),
                                                         Text(
-                                                          "${notificationController.notificationList[index]['description'] ?? ""}",
+                                                          "${notificationController.notificationList[index].description ?? ""}",
                                                           style:
                                                               changeTextColor(
                                                                   rubikRegular,
@@ -659,7 +657,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                         ),
                                                         SizedBox(height: 6.h),
                                                         Text(
-                                                          "${notificationController.notificationList[index]['created_at'] ?? ""}",
+                                                          "${notificationController.notificationList[index].createdAt ?? ""}",
                                                           style:
                                                               changeTextColor(
                                                                   rubikMedium,
@@ -772,7 +770,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                             SizedBox(
                                                               width: 240.w,
                                                               child: Text(
-                                                                "${notificationController.readNotificationList[index]['title'] ?? ""}",
+                                                                "${notificationController.readNotificationList[index].title ?? ""}",
                                                                 style:
                                                                     rubikBold,
                                                               ),
@@ -797,14 +795,14 @@ class _NotificationPageState extends State<NotificationPage> {
                                                                           .notificationSelectidList
                                                                           .add(
                                                                         notificationController
-                                                                            .readNotificationList[index]['id']
+                                                                            .readNotificationList[index].id
                                                                             .toString(),
                                                                       );
                                                                       notificationController
                                                                           .notificationSelectTypeList
                                                                           .add(
                                                                         notificationController
-                                                                            .readNotificationList[index]['type']
+                                                                            .readNotificationList[index].type
                                                                             .toString(),
                                                                       );
                                                                     } else {
@@ -812,14 +810,14 @@ class _NotificationPageState extends State<NotificationPage> {
                                                                           .notificationSelectidList
                                                                           .remove(
                                                                         notificationController
-                                                                            .readNotificationList[index]['id']
+                                                                            .readNotificationList[index].id
                                                                             .toString(),
                                                                       );
                                                                       notificationController
                                                                           .notificationSelectTypeList
                                                                           .remove(
                                                                         notificationController
-                                                                            .readNotificationList[index]['type']
+                                                                            .readNotificationList[index].type
                                                                             .toString(),
                                                                       );
                                                                     }
@@ -839,7 +837,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                         ),
                                                         SizedBox(height: 6.h),
                                                         Text(
-                                                          "${notificationController.readNotificationList[index]['description'] ?? ""}",
+                                                          "${notificationController.readNotificationList[index].description ?? ""}",
                                                           style:
                                                               changeTextColor(
                                                                   rubikRegular,
@@ -847,7 +845,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                         ),
                                                         SizedBox(height: 6.h),
                                                         Text(
-                                                          "${notificationController.readNotificationList[index]['created_at'] ?? ""}",
+                                                          "${notificationController.readNotificationList[index].createdAt ?? ""}",
                                                           style:
                                                               changeTextColor(
                                                                   rubikMedium,

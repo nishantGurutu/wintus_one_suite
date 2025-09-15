@@ -93,8 +93,8 @@ class LeadService {
 
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-        'https://onesuite.winntus.in/public/api/store-leads',
+      final response = await _dio.post(ApiConstant.baseUrl + ApiConstant.store_leads,
+        // 'https://onesuite.winntus.in/public/api/store-leads',
         data: formData,
         options: Options(
           validateStatus: (s) => s != null && s < 500,
@@ -167,8 +167,8 @@ class LeadService {
 
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-        'https://onesuite.winntus.in/public/api/update-leads',
+      final response = await _dio.post(ApiConstant.baseUrl + ApiConstant.update_leads,
+        // 'https://onesuite.winntus.in/public/api/update-leads',
         data: formData,
         options: Options(
           validateStatus: (s) => s != null && s < 500,
@@ -202,11 +202,12 @@ class LeadService {
         requestHeader: true,
         error: true,
       ));
-      var url =
-          "https://onesuite.winntus.in/public/api/leads-list?user_id=$userId";
+      var url ="${ApiConstant.baseUrl + ApiConstant.leads_list}?user_id=$userId";
+          // "https://onesuite.winntus.in/public/api/leads-list?user_id=$userId";
       final response = await _dio.get(
         id == null || id == "null"
-            ? 'https://onesuite.winntus.in/public/api/leads-list?user_id=$userId'
+            ? "${ApiConstant.baseUrl + ApiConstant.leads_list}?user_id=$userId"
+            // 'https://onesuite.winntus.in/public/api/leads-list?user_id=$userId'
             : "$url&status=$id",
       );
 
@@ -238,8 +239,8 @@ class LeadService {
         error: true,
       ));
 
-      final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/source-list",
+      final response = await _dio.get(ApiConstant.baseUrl + ApiConstant.sourceList
+        // "https://onesuite.winntus.in/public/api/source-list",
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -270,8 +271,7 @@ class LeadService {
         error: true,
       ));
 
-      final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/lead-status-list",
+      final response = await _dio.get(ApiConstant.baseUrl + ApiConstant.lead_status_list
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -307,8 +307,8 @@ class LeadService {
       };
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-          "https://onesuite.winntus.in/public/api/lead-details",
+      final response = await _dio.post(ApiConstant.baseUrl + ApiConstant.lead_details,
+          // "https://onesuite.winntus.in/public/api/lead-details",
           data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -345,8 +345,8 @@ class LeadService {
       };
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-          "https://onesuite.winntus.in/public/api/home-lead",
+      final response = await _dio.post(ApiConstant.baseUrl + ApiConstant.home_lead,
+          // "https://onesuite.winntus.in/public/api/home-lead",
           data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -383,8 +383,8 @@ class LeadService {
       };
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-          "https://onesuite.winntus.in/public/api/home-lead",
+      final response = await _dio.post(ApiConstant.baseUrl + ApiConstant.home_lead,
+          // "https://onesuite.winntus.in/public/api/home-lead",
           data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -421,8 +421,8 @@ class LeadService {
       };
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-          "https://onesuite.winntus.in/public/api/get-user-report",
+      final response = await _dio.post(ApiConstant.baseUrl + ApiConstant.get_user_report,
+          // "https://onesuite.winntus.in/public/api/get-user-report",
           data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -453,8 +453,8 @@ class LeadService {
         error: true,
       ));
 
-      final response = await _dio.delete(
-        "https://onesuite.winntus.in/public/api/delete-lead",
+      final response = await _dio.delete(ApiConstant.baseUrl + ApiConstant.delete_lead,
+        // "https://onesuite.winntus.in/public/api/delete-lead",
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -491,8 +491,8 @@ class LeadService {
       }
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-        "https://onesuite.winntus.in/public/api/lead-followup-list",
+      final response = await _dio.post(ApiConstant.baseUrl + ApiConstant.lead_followup_list,
+        // "https://onesuite.winntus.in/public/api/lead-followup-list",
         data: formData,
       );
 
@@ -525,8 +525,8 @@ class LeadService {
         error: true,
       ));
 
-      final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/followup-type-list?lead_id=$leadId",
+      final response = await _dio.get("${ApiConstant.baseUrl + ApiConstant.followup_type_list}?lead_id=$leadId",
+        // "https://onesuite.winntus.in/public/api/followup-type-list?lead_id=$leadId",
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -557,8 +557,8 @@ class LeadService {
         error: true,
       ));
 
-      final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/visit-list",
+      final response = await _dio.get(ApiConstant.baseUrl + ApiConstant.visit_list,
+        // "https://onesuite.winntus.in/public/api/visit-list",
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -589,8 +589,8 @@ class LeadService {
         error: true,
       ));
 
-      final response = await _dio.get(
-        "https://onesuite.winntus.in/public/api/visit-type-list",
+      final response = await _dio.get(ApiConstant.baseUrl + ApiConstant.visit_type_list,
+        // "https://onesuite.winntus.in/public/api/visit-type-list",
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -636,8 +636,8 @@ class LeadService {
 
       final formData = FormData.fromMap(formDataMap);
 
-      final response = await _dio.post(
-        'https://onesuite.winntus.in/public/api/store-follow-ups',
+      final response = await _dio.post(ApiConstant.baseUrl + ApiConstant.store_follow_ups,
+        // 'https://onesuite.winntus.in/public/api/store-follow-ups',
         data: formData,
       );
 

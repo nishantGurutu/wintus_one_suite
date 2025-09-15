@@ -7,9 +7,7 @@ class LeadStatusListModel {
 
   LeadStatusListModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    if (json['message'] != null) {
-      message = json['message'];
-    }
+    message = json['message'];
     if (json['data'] != null) {
       data = <LeadStatusData>[];
       json['data'].forEach((v) {
@@ -30,19 +28,13 @@ class LeadStatusListModel {
 }
 
 class LeadStatusData {
-  dynamic id;
+  int? id;
   dynamic name;
   dynamic status;
   dynamic createdAt;
   dynamic updatedAt;
 
-  LeadStatusData({
-    this.id,
-    this.name,
-    this.status,
-    this.createdAt,
-    this.updatedAt,
-  });
+  LeadStatusData({this.id, this.name, this.status, this.createdAt, this.updatedAt});
 
   LeadStatusData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -53,22 +45,12 @@ class LeadStatusData {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'status': status,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-    };
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['status'] = this.status;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is LeadStatusData &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
 }

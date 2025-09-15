@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:task_management/constant/custom_toast.dart';
+import 'package:task_management/model/anyversary_birthday_model.dart';
+import 'package:task_management/model/notification_list_model.dart';
 import 'package:task_management/service/notification_service.dart';
 
 class NotificationController extends GetxController {
@@ -9,8 +11,8 @@ class NotificationController extends GetxController {
   var isAllSelect = false.obs;
   var isCheckBoxSelect = false.obs;
   var isScrolling = false.obs;
-  var notificationList = [].obs;
-  var readNotificationList = [].obs;
+  RxList<Readfeeds> notificationList = <Readfeeds>[].obs;
+  RxList<Readfeeds> readNotificationList = <Readfeeds>[].obs;
   RxList<bool> notificationSelectList = <bool>[].obs;
   RxList<bool> readNotificationSelectList = <bool>[].obs;
   RxList<String> notificationSelectidList = <String>[].obs;
@@ -31,22 +33,22 @@ class NotificationController extends GetxController {
         await NotificationService().notificationListApi(pageValue.value);
 
     if (result != null) {
-      print("notification kj98u99n ${result['totalnotification']}");
+      print("notification kj98u99n ${result.totalnotification}");
       unreadNotificationCount.value = 0;
-      unreadNotificationCount.value = result['unreadcount'] ?? 0;
+      unreadNotificationCount.value = result.unreadcount ?? 0;
 
       if (type.toString() == '') {
         isAllSelect.value = false;
         notificationList.clear();
         notificationSelectList.clear();
       }
-      if (result['unreadfeeds'].length > 0) {
-        notificationList.addAll(result['unreadfeeds']);
+      if ((result.unreadfeeds?.length??0) > 0) {
+        notificationList.addAll(result.unreadfeeds!);
       }
       if (pageValue.value == 1) {
-        readNotificationList.addAll(result['readfeeds']);
-      } else if (pageValue.value > 1 && result['readfeeds'].length > 0) {
-        readNotificationList.addAll(result['readfeeds']);
+        readNotificationList.addAll(result.readfeeds!);
+      } else if (pageValue.value > 1 && (result.readfeeds?.length??0) > 0) {
+        readNotificationList.addAll(result.readfeeds??[]);
       }
       readNotificationSelectList.assignAll(
         List<bool>.filled(readNotificationList.length, isAllSelect.value),

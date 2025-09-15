@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:task_management/api/api_constant.dart';
 import 'package:task_management/helper/storage_helper.dart';
+import 'package:task_management/model/notification_list_model.dart';
 
 class NotificationService {
   final Dio _dio = Dio();
 
-  Future<dynamic> notificationListApi(int value) async {
+  Future<NotificationListModel?> notificationListApi(int value) async {
     try {
       var token = StorageHelper.getToken();
       _dio.options.headers["Authorization"] = "Bearer $token";
@@ -15,7 +16,7 @@ class NotificationService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data;
+        return NotificationListModel.fromJson(response.data);
       } else {
         throw Exception('Failed to register user');
       }

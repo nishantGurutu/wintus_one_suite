@@ -1,5 +1,6 @@
 class ApiConstant {
-  static const String baseUrl = "https://onesuite.winntus.in/public/api/";
+  static const String baseUrl = 
+  "https://taskmaster.electionmaster.in/public/api/";
   // "https://onesuite.winntus.in/public/api/";
   static const String register = "auth/register";
   static const String login = "auth/login";
@@ -223,4 +224,20 @@ class ApiConstant {
   static const String change_lead_followup_status =
       "change-lead-followup-status";
         static const String visit_type_list = "visit-type-list";
+        static const String visit_list = "visit-list";
+        static const String lead_followup_list = "lead-followup-list";
+    static const String branchhead_approve_lead_document =
+      "branchhead-approve-lead-document";
+   
+  static const String mark_seen = "mark-seen";
+  static const String chat_typing = "chat-typing";
+  static const String manager_approve_lead_document =
+      "manager-approve-lead-document";
+       static const String lead_status_list = "lead-status-list";
+       static const String update_leads = "update-leads";
+       static const String home_lead = "home-lead";
+       static const String get_user_report = "get-user-report";
+       static const String delete_lead = "delete-lead";
+       static const String followup_type_list = "followup-type-list";
+       static const String lead_details = "lead-details";
 }

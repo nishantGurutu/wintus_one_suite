@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:task_management/api/api_constant.dart';
 import 'package:task_management/helper/storage_helper.dart';
+import 'package:task_management/model/anyversary_birthday_model.dart';
 import 'package:task_management/model/department_list_model.dart' show DepartmentListData;
 import 'package:task_management/model/home_secreen_data_model.dart';
 import 'package:task_management/model/responsible_person_list_model.dart';
@@ -65,7 +66,7 @@ class HomeService {
     }
   }
 
-  Future<dynamic> anniversarylist() async {
+  Future<AnyversaryBirthdayModel?> anniversarylist() async {
     try {
       var token = StorageHelper.getToken();
       _dio.options.headers["Authorization"] = "Bearer $token";
@@ -74,7 +75,7 @@ class HomeService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data;
+        return AnyversaryBirthdayModel.fromJson(response.data);
       } else {
         throw Exception('Failed notes list');
       }

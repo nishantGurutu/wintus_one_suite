@@ -34,7 +34,6 @@ import 'package:task_management/model/lead_contact_list_model.dart';
 import 'package:task_management/model/responsible_person_list_model.dart';
 import 'package:task_management/view/screen/add_lead.dart';
 import 'package:task_management/view/screen/all_followups.dart';
-import 'package:task_management/view/screen/attendence/checkin_screen.dart';
 import 'package:task_management/view/screen/bootom_bar.dart';
 import 'package:task_management/view/screen/follow_ups.dart';
 import 'package:task_management/view/screen/leads_list.dart';

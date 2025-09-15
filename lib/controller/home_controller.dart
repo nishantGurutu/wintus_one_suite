@@ -1,6 +1,7 @@
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:task_management/helper/storage_helper.dart';
+import 'package:task_management/model/anyversary_birthday_model.dart';
 import 'package:task_management/model/department_list_model.dart';
 import 'package:task_management/model/home_lead_model.dart';
 import 'package:task_management/model/home_secreen_data_model.dart';
@@ -138,13 +139,12 @@ class HomeController extends GetxController {
   }
 
   var isAnniversaryLoading = false.obs;
-  var anniversaryListData = [].obs;
+  RxList<AnyversaryData> anniversaryListData = <AnyversaryData>[].obs;
   Future<void> anniversarylist(BuildContext context) async {
     isAnniversaryLoading.value = true;
     final result = await HomeService().anniversarylist();
-    if (result != null) {
-      anniversaryListData.clear();
-      anniversaryListData.assignAll(result['data']);
+    if (result != null) { 
+      anniversaryListData.assignAll(result.data!);
       if (anniversaryListData.isNotEmpty) {
         if (StorageHelper.getAnniversaryVisible() == false) {}
       }
