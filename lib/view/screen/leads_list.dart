@@ -19,6 +19,7 @@ import 'package:task_management/model/lead_status_lead.dart';
 import 'package:task_management/model/responsible_person_list_model.dart'
     show ResponsiblePersonData;
 import 'package:task_management/view/screen/add_lead.dart';
+import 'package:task_management/view/screen/create_quotation.dart';
 import 'package:task_management/view/screen/lead_detail_update.dart';
 import 'package:task_management/view/screen/lead_overview.dart';
 
@@ -956,10 +957,18 @@ class _LeadListState extends State<LeadList> {
                                                     : null,
                                                 onChanged:
                                                     (LeadStatusData? value) {
-                                                  changeStatusDialog(
-                                                      context,
-                                                      rxFilteredList[index].id,
-                                                      value);
+                                                      print('iwuyiu wetyyu ${value?.name}');
+                                                      if(value?.name.toString().toLowerCase() == 'quotation'){
+                                                        Get.to(() => CreateQuotationScreen(
+                                                          leadId:  rxFilteredList[index].id,
+                                                          leadNumber:  rxFilteredList[index].leadNumber,
+                                                        ));
+                                                      }else{
+                                                        changeStatusDialog(
+                                                            context,
+                                                            rxFilteredList[index].id,
+                                                            value);
+                                                    }
                                                 },
                                                 buttonStyleData:
                                                     ButtonStyleData(
