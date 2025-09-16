@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:task_management/constant/color_constant.dart';
+import 'package:task_management/model/anyversary-List_model.dart';
 import 'package:task_management/view/screen/message.dart';
-
 class AutoScrollList extends StatefulWidget {
-  final RxList anniversaryListData;
+  final RxList<AnyversaryData> anniversaryListData;
 
   AutoScrollList(this.anniversaryListData);
 
@@ -73,25 +73,25 @@ class _AutoScrollListState extends State<AutoScrollList> {
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   final eventType = widget.anniversaryListData[index]
-                              ['event_type']
+                              .eventType
                           ?.toString()
                           .toLowerCase() ??
                       '';
                   final name =
-                      widget.anniversaryListData[index]['name']?.toString() ??
+                      widget.anniversaryListData[index].name?.toString() ??
                           'Unknown';
                   final roleName = widget.anniversaryListData[index]
-                              ['role_name']
+                             .roleName
                           ?.toString() ??
                       'No Role';
                   final imageUrl =
-                      widget.anniversaryListData[index]['image']?.toString() ??
+                      widget.anniversaryListData[index].image?.toString() ??
                           '';
-                  final chatId = widget.anniversaryListData[index]['chat_id']
+                  final chatId = widget.anniversaryListData[index].chatId
                           ?.toString() ??
                       '';
                   final id =
-                      widget.anniversaryListData[index]['id']?.toString() ?? '';
+                      widget.anniversaryListData[index].id?.toString() ?? '';
 
                   final imagePath = eventType == 'birthday'
                       ? 'assets/images/png/birthday_creative_image.png'
@@ -211,3 +211,4 @@ class _AutoScrollListState extends State<AutoScrollList> {
     );
   }
 }
+
