@@ -269,7 +269,7 @@ class _BottomNavigationBarExampleState
                         width: 8.w,
                       ),
                       GradientText(
-                        taskMaster,
+                        'Winntus',
                         style: heading2,
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,

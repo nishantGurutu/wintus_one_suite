@@ -812,7 +812,7 @@ class _LeadOverviewDocumentListBotomsheet
                         ],
                       ),
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                        "pa")
+                        "cmo")
                       Column(
                         children: [
                           Row(

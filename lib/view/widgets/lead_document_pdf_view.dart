@@ -86,7 +86,7 @@ class _WorkOrderPdfDocumentApproveState
                 height: 10.h,
               ),
               if ((StorageHelper.getRoleName().toString().toLowerCase() ==
-                          "pa" &&
+                          "cmo" &&
                       widget.legalStatus.toString().toLowerCase() !=
                           'approveed' &&
                       widget.from == "branch head") ||
@@ -310,7 +310,7 @@ class _WorkOrderPdfDocumentApproveState
                         ],
                       ),
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                        "pa")
+                        "cmo")
                       Column(
                         children: [
                           Row(

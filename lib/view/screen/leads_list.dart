@@ -97,7 +97,7 @@ class _LeadListState extends State<LeadList> {
     if (StorageHelper.getRoleName().toString().toLowerCase() ==
             "marketing manager" ||
         StorageHelper.getRoleName().toString().toLowerCase() == "branch head" ||
-        StorageHelper.getRoleName().toString().toLowerCase() == "pa" ||
+        StorageHelper.getRoleName().toString().toLowerCase() == "cmo" ||
         StorageHelper.getRoleName().toString().toLowerCase() == "chairman") {
       await leadController.addedDocumentLeadList();
     }
@@ -195,7 +195,7 @@ class _LeadListState extends State<LeadList> {
                         StorageHelper.getRoleName().toString().toLowerCase() ==
                             "branch head" ||
                         StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "pa" ||
+                            "cmo" ||
                         StorageHelper.getRoleName().toString().toLowerCase() ==
                             "chairman")
                       Column(

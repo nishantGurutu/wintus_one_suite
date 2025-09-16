@@ -57,7 +57,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                   StorageHelper.getRoleName().toString().toLowerCase() ==
                       "branch head") ||
               (widget.legalStatus.toString().toLowerCase() == '1' &&
-                  StorageHelper.getRoleName().toString().toLowerCase() == "pa"))
+                  StorageHelper.getRoleName().toString().toLowerCase() == "cmo"))
             GestureDetector(
               onTap: () {
                 documentApprovedDialog(context, "edit", "");
@@ -95,7 +95,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                 height: 10.h,
               ),
               if ((StorageHelper.getRoleName().toString().toLowerCase() ==
-                          "pa" &&
+                          "cmo" &&
                       widget.from != "legal") ||
                   (StorageHelper.getRoleName().toString().toLowerCase() ==
                           "chairman" &&
@@ -320,7 +320,7 @@ class _WorkOrderDocumentApproveState extends State<WorkOrderDocumentApprove> {
                         ],
                       ),
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
-                        "pa")
+                        "cmo")
                       Column(
                         children: [
                           Row(

@@ -1994,7 +1994,7 @@ class LeadService {
         'lead_id': leadId,
       };
 
-      if (StorageHelper.getRoleName().toString().toLowerCase() == "pa") {
+      if (StorageHelper.getRoleName().toString().toLowerCase() == "cmo") {
         formDataMap['legalstatus'] = legalStatus;
       }
       if (StorageHelper.getRoleName().toString().toLowerCase() ==

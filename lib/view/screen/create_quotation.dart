@@ -596,7 +596,7 @@ class _CreateQuotationScreenState extends State<CreateQuotationScreen> {
   void incrementQuantity(int index) {
     if (index >= 0 && index < leadController.items.length) {
       leadController.items[index].quantity =
-          (leadController.items[index].quantity ?? 0) + 1;
+          int.parse(leadController.items[index].quantity.toString()) + 1;
       leadController.items.refresh();
     }
   }
