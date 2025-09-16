@@ -600,7 +600,6 @@ class LeadController extends GetxController {
     if (result != null) {
       leadDetails.value = result.data;
       await sourceList(source: leadDetails.value?.source);
-      await offLineStatusdata(status: leadDetails.value?.status.toString());
       selectedGender.value = leadDetails.value?.gender ?? "";
     }
     isLeadDetailsLoading.value = false;
