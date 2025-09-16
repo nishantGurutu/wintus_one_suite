@@ -1,6 +1,7 @@
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:task_management/helper/storage_helper.dart';
+import 'package:task_management/model/anyversary-List_model.dart';
 import 'package:task_management/model/home_lead_model.dart';
 import 'package:task_management/model/home_secreen_data_model.dart';
 import 'package:task_management/model/responsible_person_list_model.dart';
@@ -135,22 +136,19 @@ class HomeController extends GetxController {
     } else {}
     isOneTimeMsgLoading.value = false;
   }
-
-  var isAnniversaryLoading = false.obs;
-  var anniversaryListData = [].obs;
+ var isAnniversaryLoading = false.obs;
+  RxList<AnyversaryData> anniversaryListData = <AnyversaryData>[].obs;
   Future<void> anniversarylist(BuildContext context) async {
     isAnniversaryLoading.value = true;
     final result = await HomeService().anniversarylist();
-    if (result != null) {
-      anniversaryListData.clear();
-      anniversaryListData.assignAll(result['data']);
+    if (result != null) { 
+      anniversaryListData.assignAll(result.data!);
       if (anniversaryListData.isNotEmpty) {
         if (StorageHelper.getAnniversaryVisible() == false) {}
       }
     } else {}
     isAnniversaryLoading.value = false;
   }
-
   RxMap<int, bool> responsiblePersonSelectedCheckBox2 = <int, bool>{}.obs;
   RxMap<int, bool> toAssignedPersonCheckBox = <int, bool>{}.obs;
   RxMap<int, bool> reviewerCheckBox2 = <int, bool>{}.obs;

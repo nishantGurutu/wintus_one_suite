@@ -31,7 +31,8 @@ class NotificationController extends GetxController {
         await NotificationService().notificationListApi(pageValue.value);
 
     if (result != null) {
-      print("notification kj98u99n ${result['totalnotification']}");
+      // print("notification kj98u99n ${result['totalnotification']}");
+      if("eiuhe" ==type){
       unreadNotificationCount.value = 0;
       unreadNotificationCount.value = result['unreadcount'] ?? 0;
       if (type == 'delete') {
@@ -61,7 +62,7 @@ class NotificationController extends GetxController {
 
       isNotificationLoading.value = false;
       isScrolling.value = false;
-
+      }
       refresh();
     } else {
       if (type.toString() != 'scrolling') {

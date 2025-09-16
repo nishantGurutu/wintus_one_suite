@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart' show ShareParams, XFile, SharePlus;
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:task_management/constant/color_constant.dart';
 
@@ -15,7 +16,18 @@ class PDFScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: whiteColor,
       appBar:
-          AppBar(backgroundColor: whiteColor, title: const Text('PDF Viewer')),
+          AppBar(backgroundColor: whiteColor, title: const Text('PDF Viewer'), actions: [IconButton(onPressed: ()async{ if (file is File) {
+                final params = ShareParams(
+                  files: [
+                    XFile('${file.path}'),
+                  ],
+                );
+
+                final result = await SharePlus.instance.share(params);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Cannot share a folder!")));
+              }}, icon: Icon(Icons.share))],),
       body: SfPdfViewer.file(
         file,
         key: _pdfViewerKey,
