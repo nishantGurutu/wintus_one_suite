@@ -291,6 +291,24 @@ class LocalNotificationService {
               index: 2,
               leadNumber: '',
             ));
+      } else if (payloadData['type'] == "bhApproved_leadDocs") {
+        Get.to(() => LeadOverviewScreen(
+              leadId: payloadData['productid'].toString(),
+              index: 0,
+              leadNumber: '',
+            ));
+      } else if (payloadData['type'] == "cmoApproved_leadDocs") {
+        Get.to(() => LeadOverviewScreen(
+              leadId: payloadData['productid'].toString(),
+              index: 0,
+              leadNumber: '',
+            ));
+      } else if (payloadData['type'] == "ceoApproved_leadDocs") {
+        Get.to(() => LeadOverviewScreen(
+              leadId: payloadData['productid'].toString(),
+              index: 0,
+              leadNumber: '',
+            ));
       } else if (payloadData['type'] == "leadchat") {
         Get.to(() => LeadOverviewScreen(
               leadId: payloadData['productid'].toString(),
