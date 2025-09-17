@@ -35,12 +35,13 @@ class FollowUpsListData {
   int? followUpType;
   String? note;
   String? remarks;
-  dynamic reminder;
+  String? reminder;
   int? status;
   String? addedBy;
   String? followuTypeName;
   String? leadsName;
   String? leadNumber;
+  String? leadCompany;
   String? leadsPhoneNumber;
   String? statusText;
 
@@ -58,6 +59,7 @@ class FollowUpsListData {
       this.followuTypeName,
       this.leadsName,
       this.leadNumber,
+      this.leadCompany,
       this.leadsPhoneNumber,
       this.statusText});
 
@@ -75,6 +77,7 @@ class FollowUpsListData {
     followuTypeName = json['followu_type_name'];
     leadsName = json['leads_name'];
     leadNumber = json['lead_number'];
+    leadCompany = json['lead_company'];
     leadsPhoneNumber = json['leads_phone_number'];
     statusText = json['status_text'];
   }
@@ -94,6 +97,7 @@ class FollowUpsListData {
     data['followu_type_name'] = this.followuTypeName;
     data['leads_name'] = this.leadsName;
     data['lead_number'] = this.leadNumber;
+    data['lead_company'] = this.leadCompany;
     data['leads_phone_number'] = this.leadsPhoneNumber;
     data['status_text'] = this.statusText;
     return data;

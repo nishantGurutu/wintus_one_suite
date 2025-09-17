@@ -166,6 +166,18 @@ class _AllFollowupsListState extends State<AllFollowupsList> {
                             SizedBox(height: 6.h),
                             Row(
                               children: [
+                                Icon(Icons.business,
+                                    size: 18.sp, color: Colors.blue),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  item.leadCompany ?? '',
+                                  style: TextStyle(fontSize: 13.sp),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 6.h),
+                            Row(
+                              children: [
                                 Expanded(
                                   child: Row(
                                     children: [
