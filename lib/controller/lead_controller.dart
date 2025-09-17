@@ -421,14 +421,6 @@ class LeadController extends GetxController {
             }
           }
         }
-        for (int i = 0; i < leadsListData.length; i++) {
-          for (int j = 0; j < leadStatusData.length; j++) {
-            if (leadsListData[i].status == leadStatusData[j].id) {
-              selectedStatusPerLead[i] = leadStatusData[j];
-              break;
-            }
-          }
-        }
       }
     } catch (e) {
       debugPrint("Error fetching leads: $e");
@@ -456,8 +448,18 @@ class LeadController extends GetxController {
         isAddedDocumentLeadLoading.value = false;
         isAddedDocumentLeadLoading.refresh();
         addedDocumentLeadDataList.assignAll(result.data!);
+        selectedStatusPerLeadforDocumentLead.clear();
         selectedStatusPerLeadforDocumentLead.addAll(List<LeadStatusData>.filled(
             addedDocumentLeadDataList.length, LeadStatusData()));
+
+        for (int i = 0; i < addedDocumentLeadDataList.length; i++) {
+          for (int j = 0; j < leadStatusData.length; j++) {
+            if (addedDocumentLeadDataList[i].status == leadStatusData[j].id) {
+              selectedStatusPerLeadforDocumentLead[i] = leadStatusData[j];
+              break;
+            }
+          }
+        }
       }
     } catch (e) {
       debugPrint("Error fetching leads: $e");
@@ -1033,6 +1035,7 @@ class LeadController extends GetxController {
             .addAll(List.filled(leadDocumentListData.length, false));
         documentIdList.addAll(List.filled(leadDocumentListData.length, 0));
         for (int i = 0; i < leadDocumentListData.length; i++) {
+          print("weui3je 3e3r3 $i ${leadDocumentListData[i].status}");
           if (leadDocumentListData[i].status == 1) {
             isDocumentCheckBoxSelected[i] = true;
           } else {

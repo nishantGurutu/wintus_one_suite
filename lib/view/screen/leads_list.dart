@@ -1496,6 +1496,8 @@ class _LeadListState extends State<LeadList> {
               : ListView.builder(
                   itemCount: rxFilteredList2.length,
                   itemBuilder: (context, index) {
+                    print(
+                        'ytr656 yd6567 76tr76 $index ${rxFilteredList2[index].leadNumber} ${rxFilteredList2[index].documentUploadStatus}');
                     return Padding(
                       padding: EdgeInsets.symmetric(vertical: 5.h),
                       child: GestureDetector(
@@ -1768,162 +1770,136 @@ class _LeadListState extends State<LeadList> {
                                 SizedBox(
                                   height: 5.h,
                                 ),
-                                if (rxFilteredList2[index]
-                                        .documentUploadStatus
-                                        .toString() ==
-                                    "1")
-                                  SizedBox(
-                                    height: 5.h,
-                                  ),
-                                if (rxFilteredList2[index]
-                                        .documentUploadStatus
-                                        .toString() ==
-                                    "1")
-                                  SizedBox(
-                                    height: 5.h,
-                                  ),
-                                if (rxFilteredList2[index]
-                                        .documentUploadStatus
-                                        .toString() ==
-                                    "1")
-                                  Column(
-                                    children: [
-                                      if (rxFilteredList2[index]
-                                              .approvalData
-                                              ?.first
-                                              .managerStatus
-                                              .toString()
-                                              .toLowerCase() ==
-                                          "pending")
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffE5FFF9),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.r))),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(8.sp),
-                                            child: Text(
-                                              '✅ Document successfully uploaded & wating for marketing manager approval.',
-                                              style: TextStyle(
-                                                  fontSize: 11.sp,
-                                                  color: Color(0xff434343)),
-                                            ),
+                                Obx(() => rxFilteredList2[index]
+                                            .approvalData
+                                            ?.first
+                                            .managerStatus
+                                            .toString()
+                                            .toLowerCase() ==
+                                        "pending"
+                                    ? Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            color: Color(0xffE5FFF9),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8.r))),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(8.sp),
+                                          child: Text(
+                                            "✅ Document successfully uploaded by ${rxFilteredList2[index].ownerName ?? ""}, waiting for your manager approval.",
+                                            style: TextStyle(
+                                                fontSize: 11.sp,
+                                                color: Color(0xff434343)),
                                           ),
                                         ),
-                                      if (rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .managerStatus
-                                                  .toString()
-                                                  .toLowerCase() !=
-                                              "pending" &&
-                                          rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .branchheadStatus
-                                                  .toString()
-                                                  .toLowerCase() ==
-                                              "pending")
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffE5FFF9),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.r))),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(8.sp),
-                                            child: Text(
-                                              '✅ Document approved by marketing manager and waiting for branch head.',
-                                              style: TextStyle(
-                                                  fontSize: 11.sp,
-                                                  color: Color(0xff434343)),
+                                      )
+                                    : rxFilteredList2[index]
+                                                .approvalData
+                                                ?.first
+                                                .branchheadStatus
+                                                .toString()
+                                                .toLowerCase() ==
+                                            "pending"
+                                        ? Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xffE5FFF9),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8.r))),
+                                            child: Padding(
+                                              padding: EdgeInsets.all(8.sp),
+                                              child: Text(
+                                                "Branch head status is pending.",
+                                                style: TextStyle(
+                                                    fontSize: 11.sp,
+                                                    color: Color(0xff434343)),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      if (rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .managerStatus
-                                                  .toString()
-                                                  .toLowerCase() !=
-                                              "pending" &&
-                                          rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .branchheadStatus
-                                                  .toString()
-                                                  .toLowerCase() !=
-                                              "pending" &&
-                                          rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .legalStatus
-                                                  .toString()
-                                                  .toLowerCase() ==
-                                              "pending")
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffE5FFF9),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.r))),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(8.sp),
-                                            child: Text(
-                                              '✅ Document approved by marketing manager and branch head and waiting for CMO approval.',
-                                              style: TextStyle(
-                                                  fontSize: 11.sp,
-                                                  color: Color(0xff434343)),
-                                            ),
-                                          ),
-                                        ),
-                                      if (rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .managerStatus
-                                                  .toString()
-                                                  .toLowerCase() !=
-                                              "pending" &&
-                                          rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .branchheadStatus
-                                                  .toString()
-                                                  .toLowerCase() !=
-                                              "pending" &&
-                                          rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .legalStatus
-                                                  .toString()
-                                                  .toLowerCase() !=
-                                              "pending" &&
-                                          rxFilteredList2[index]
-                                                  .approvalData
-                                                  ?.first
-                                                  .ceoStatus
-                                                  .toString()
-                                                  .toLowerCase() ==
-                                              "pending")
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffE5FFF9),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.r))),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(8.sp),
-                                            child: Text(
-                                              '✅ Document successfully approved.',
-                                              style: TextStyle(
-                                                  fontSize: 11.sp,
-                                                  color: Color(0xff434343)),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
+                                          )
+                                        : rxFilteredList2[index]
+                                                    .approvalData
+                                                    ?.first
+                                                    .legalStatus
+                                                    .toString()
+                                                    .toLowerCase() ==
+                                                "0"
+                                            ? Container(
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xffE5FFF9),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8.r))),
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(8.sp),
+                                                  child: Text(
+                                                    "✅ Document approvel pending from CMO.",
+                                                    style: TextStyle(
+                                                        fontSize: 11.sp,
+                                                        color:
+                                                            Color(0xff434343)),
+                                                  ),
+                                                ),
+                                              )
+                                            : rxFilteredList2[index]
+                                                        .approvalData
+                                                        ?.first
+                                                        .ceoStatus
+                                                        .toString()
+                                                        .toLowerCase() ==
+                                                    "null"
+                                                ? Container(
+                                                    width: double.infinity,
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xffE5FFF9),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8.r))),
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.all(8.sp),
+                                                      child: Text(
+                                                        "✅ Document successfully approved by CEO.",
+                                                        style: TextStyle(
+                                                            fontSize: 11.sp,
+                                                            color: Color(
+                                                                0xff434343)),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : rxFilteredList2[index]
+                                                            .approvalData
+                                                            ?.first
+                                                            .ceoStatus
+                                                            .toString()
+                                                            .toLowerCase() ==
+                                                        "1"
+                                                    ? Container(
+                                                        width: double.infinity,
+                                                        decoration: BoxDecoration(
+                                                            color: Color(
+                                                                0xffE5FFF9),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        8.r))),
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  8.sp),
+                                                          child: Text(
+                                                            "✅ Document successfully approved by CEO.",
+                                                            style: TextStyle(
+                                                                fontSize: 11.sp,
+                                                                color: Color(
+                                                                    0xff434343)),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : Text('')),
                                 SizedBox(
                                   height: 5.h,
                                 ),
@@ -2278,6 +2254,23 @@ class _LeadListState extends State<LeadList> {
                     );
                   },
                 ),
+        ),
+      ),
+    );
+  }
+
+  Widget _statusContainer(String text) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Color(0xffE5FFF9),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 11, color: Color(0xff434343)),
         ),
       ),
     );
