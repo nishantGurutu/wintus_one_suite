@@ -22,6 +22,7 @@ import 'package:task_management/view/screen/add_lead.dart';
 import 'package:task_management/view/screen/create_quotation.dart';
 import 'package:task_management/view/screen/lead_detail_update.dart';
 import 'package:task_management/view/screen/lead_overview.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LeadList extends StatefulWidget {
   final String? status;
@@ -43,6 +44,18 @@ class _LeadListState extends State<LeadList> {
     Future.microtask(() {
       apiCalling();
     });
+  }
+
+  Future<void> openMapDirections(double lat, double lng) async {
+    print("wet6673 365r36e e365 ${lat}");
+    print("wet6673 365r36e e365 ${lng}");
+    final Uri mapUri = Uri.parse(
+        "https://www.google.com/maps/dir/?api=1&destination=$lat,$lng");
+    if (await canLaunchUrl(mapUri)) {
+      await launchUrl(mapUri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch Maps';
+    }
   }
 
   String _formatDate(String rawDate) {
@@ -824,6 +837,27 @@ class _LeadListState extends State<LeadList> {
                                                 fontWeight: FontWeight.w400),
                                           ),
                                           Spacer(),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              await openMapDirections(
+                                                  double.parse(
+                                                      rxFilteredList[index]
+                                                          .latitude
+                                                          .toString()),
+                                                  double.parse(
+                                                      rxFilteredList[index]
+                                                          .longitude
+                                                          .toString()));
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  right: 8.w, bottom: 3.h),
+                                              child: Image.asset(
+                                                'assets/images/png/map.png',
+                                                height: 20.h,
+                                              ),
+                                            ),
+                                          ),
                                           if ((rxFilteredList[index]
                                                       .leadNumber ??
                                                   "")
@@ -885,9 +919,6 @@ class _LeadListState extends State<LeadList> {
                                         ],
                                       ),
                                     ),
-                                    Row(children: [
-                                      // deru
-                                    ],),
                                     Expanded(
                                       child: Row(
                                         children: [
@@ -911,6 +942,162 @@ class _LeadListState extends State<LeadList> {
                                     ),
                                   ],
                                 ),
+                                if (rxFilteredList[index]
+                                        .documentUploadStatus
+                                        .toString() ==
+                                    "1")
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                if (rxFilteredList[index]
+                                        .documentUploadStatus
+                                        .toString() ==
+                                    "1")
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                if (rxFilteredList[index]
+                                        .documentUploadStatus
+                                        .toString() ==
+                                    "1")
+                                  Column(
+                                    children: [
+                                      if (rxFilteredList[index]
+                                              .approvalData
+                                              ?.first
+                                              .managerStatus
+                                              .toString()
+                                              .toLowerCase() ==
+                                          "pending")
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xffE5FFF9),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8.r))),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(8.sp),
+                                            child: Text(
+                                              '✅ Document successfully uploaded & wating for marketing manager approval.',
+                                              style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: Color(0xff434343)),
+                                            ),
+                                          ),
+                                        ),
+                                      if (rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .managerStatus
+                                                  .toString()
+                                                  .toLowerCase() !=
+                                              "pending" &&
+                                          rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .branchheadStatus
+                                                  .toString()
+                                                  .toLowerCase() ==
+                                              "pending")
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xffE5FFF9),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8.r))),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(8.sp),
+                                            child: Text(
+                                              '✅ Document approved by marketing manager and waiting for branch head.',
+                                              style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: Color(0xff434343)),
+                                            ),
+                                          ),
+                                        ),
+                                      if (rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .managerStatus
+                                                  .toString()
+                                                  .toLowerCase() !=
+                                              "pending" &&
+                                          rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .branchheadStatus
+                                                  .toString()
+                                                  .toLowerCase() !=
+                                              "pending" &&
+                                          rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .legalStatus
+                                                  .toString()
+                                                  .toLowerCase() ==
+                                              "pending")
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xffE5FFF9),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8.r))),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(8.sp),
+                                            child: Text(
+                                              '✅ Document approved by marketing manager and branch head and waiting for CMO approval.',
+                                              style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: Color(0xff434343)),
+                                            ),
+                                          ),
+                                        ),
+                                      if (rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .managerStatus
+                                                  .toString()
+                                                  .toLowerCase() !=
+                                              "pending" &&
+                                          rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .branchheadStatus
+                                                  .toString()
+                                                  .toLowerCase() !=
+                                              "pending" &&
+                                          rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .legalStatus
+                                                  .toString()
+                                                  .toLowerCase() !=
+                                              "pending" &&
+                                          rxFilteredList[index]
+                                                  .approvalData
+                                                  ?.first
+                                                  .ceoStatus
+                                                  .toString()
+                                                  .toLowerCase() ==
+                                              "pending")
+                                        Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xffE5FFF9),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8.r))),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(8.sp),
+                                            child: Text(
+                                              '✅ Document successfully approved.',
+                                              style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: Color(0xff434343)),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 SizedBox(
                                   height: 5.h,
                                 ),
@@ -960,18 +1147,30 @@ class _LeadListState extends State<LeadList> {
                                                     : null,
                                                 onChanged:
                                                     (LeadStatusData? value) {
-                                                      print('iwuyiu wetyyu ${value?.name}');
-                                                      if(value?.name.toString().toLowerCase() == 'quotation'){
-                                                        Get.to(() => CreateQuotationScreen(
-                                                          leadId:  rxFilteredList[index].id,
-                                                          leadNumber:  rxFilteredList[index].leadNumber,
+                                                  print(
+                                                      'iwuyiu wetyyu ${value?.name}');
+                                                  if (value?.name
+                                                          .toString()
+                                                          .toLowerCase() ==
+                                                      'quotation') {
+                                                    Get.to(() =>
+                                                        CreateQuotationScreen(
+                                                          leadId:
+                                                              rxFilteredList[
+                                                                      index]
+                                                                  .id,
+                                                          leadNumber:
+                                                              rxFilteredList[
+                                                                      index]
+                                                                  .leadNumber,
                                                         ));
-                                                      }else{
-                                                        changeStatusDialog(
-                                                            context,
-                                                            rxFilteredList[index].id,
-                                                            value);
-                                                    }
+                                                  } else {
+                                                    changeStatusDialog(
+                                                        context,
+                                                        rxFilteredList[index]
+                                                            .id,
+                                                        value);
+                                                  }
                                                 },
                                                 buttonStyleData:
                                                     ButtonStyleData(
