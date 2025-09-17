@@ -324,9 +324,9 @@ class _FollowUpsScreenState extends State<FollowUpsScreen> {
                                     WidgetStateProperty.all<bool>(true),
                               ),
                             ),
-                            menuItemStyleData: const MenuItemStyleData(
-                              height: 40,
-                              padding: EdgeInsets.only(left: 14, right: 14),
+                            menuItemStyleData: MenuItemStyleData(
+                              height: 37.h,
+                              padding: EdgeInsets.only(left: 13.w, right: 13.w),
                             ),
                           ),
                         ),

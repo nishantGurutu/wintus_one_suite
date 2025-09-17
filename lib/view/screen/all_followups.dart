@@ -230,11 +230,12 @@ class _AllFollowupsListState extends State<AllFollowupsList> {
                                         }).toList(),
                                         value: safeValue,
                                         hint: Text(
-                                          'Status type',
+                                          disabled ? "Done" : 'Status type',
                                           style: TextStyle(
                                               color: disabled
                                                   ? Colors.grey
-                                                  : darkGreyColor),
+                                                  : darkGreyColor,
+                                              fontSize: 13.sp),
                                         ),
                                         onChanged: disabled
                                             ? null
