@@ -28,7 +28,7 @@ class AddedDocumentLeadModel {
 }
 
 class AddedDocumentLeadData {
-  dynamic id;
+  int? id;
   dynamic leadNumber;
   dynamic userId;
   dynamic leadName;
@@ -66,6 +66,8 @@ class AddedDocumentLeadData {
   dynamic sourceName;
   dynamic statusName;
   dynamic ownerName;
+  dynamic documentUploadStatus;
+  List<ApprovalData>? approvalData;
 
   AddedDocumentLeadData(
       {this.id,
@@ -105,7 +107,9 @@ class AddedDocumentLeadData {
       this.updatedAt,
       this.sourceName,
       this.statusName,
-      this.ownerName});
+      this.ownerName,
+      this.documentUploadStatus,
+      this.approvalData});
 
   AddedDocumentLeadData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -146,6 +150,13 @@ class AddedDocumentLeadData {
     sourceName = json['source_name'];
     statusName = json['status_name'];
     ownerName = json['owner_name'];
+    documentUploadStatus = json['document_upload_status'];
+    if (json['approval_data'] != null) {
+      approvalData = <ApprovalData>[];
+      json['approval_data'].forEach((v) {
+        approvalData!.add(new ApprovalData.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -188,6 +199,108 @@ class AddedDocumentLeadData {
     data['source_name'] = this.sourceName;
     data['status_name'] = this.statusName;
     data['owner_name'] = this.ownerName;
+    data['document_upload_status'] = this.documentUploadStatus;
+    if (this.approvalData != null) {
+      data['approval_data'] =
+          this.approvalData!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class ApprovalData {
+  int? id;
+  dynamic quotationId;
+  dynamic managerStatus;
+  dynamic isManagerStatus;
+  dynamic isBranchheadStatus;
+  dynamic managerRemarks;
+  dynamic managerName;
+  dynamic managerTime;
+  dynamic branchheadStatus;
+  dynamic branchheadRemarks;
+  dynamic brancheadTime;
+  dynamic branchheadName;
+  dynamic legalName;
+  dynamic ceoName;
+  dynamic legalStatus;
+  dynamic legalRemarks;
+  dynamic ceoRemarks;
+  dynamic ceoRemarksTime;
+  dynamic ceoStatus;
+  dynamic legalTime;
+  dynamic submittedAt;
+
+  ApprovalData(
+      {this.id,
+      this.quotationId,
+      this.managerStatus,
+      this.isManagerStatus,
+      this.isBranchheadStatus,
+      this.managerRemarks,
+      this.managerName,
+      this.managerTime,
+      this.branchheadStatus,
+      this.branchheadRemarks,
+      this.brancheadTime,
+      this.branchheadName,
+      this.legalName,
+      this.ceoName,
+      this.legalStatus,
+      this.legalRemarks,
+      this.ceoRemarks,
+      this.ceoRemarksTime,
+      this.ceoStatus,
+      this.legalTime,
+      this.submittedAt});
+
+  ApprovalData.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    quotationId = json['quotation_id'];
+    managerStatus = json['manager_status'];
+    isManagerStatus = json['is_manager_status'];
+    isBranchheadStatus = json['is_branchhead_status'];
+    managerRemarks = json['manager_remarks'];
+    managerName = json['manager_name'];
+    managerTime = json['manager_time'];
+    branchheadStatus = json['branchhead_status'];
+    branchheadRemarks = json['branchhead_remarks'];
+    brancheadTime = json['branchead_time'];
+    branchheadName = json['branchhead_name'];
+    legalName = json['legal_name'];
+    ceoName = json['ceo_name'];
+    legalStatus = json['legal_status'];
+    legalRemarks = json['legal_remarks'];
+    ceoRemarks = json['ceo_remarks'];
+    ceoRemarksTime = json['ceo_remarks_time'];
+    ceoStatus = json['ceo_status'];
+    legalTime = json['legal_time'];
+    submittedAt = json['submitted_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['quotation_id'] = this.quotationId;
+    data['manager_status'] = this.managerStatus;
+    data['is_manager_status'] = this.isManagerStatus;
+    data['is_branchhead_status'] = this.isBranchheadStatus;
+    data['manager_remarks'] = this.managerRemarks;
+    data['manager_name'] = this.managerName;
+    data['manager_time'] = this.managerTime;
+    data['branchhead_status'] = this.branchheadStatus;
+    data['branchhead_remarks'] = this.branchheadRemarks;
+    data['branchead_time'] = this.brancheadTime;
+    data['branchhead_name'] = this.branchheadName;
+    data['legal_name'] = this.legalName;
+    data['ceo_name'] = this.ceoName;
+    data['legal_status'] = this.legalStatus;
+    data['legal_remarks'] = this.legalRemarks;
+    data['ceo_remarks'] = this.ceoRemarks;
+    data['ceo_remarks_time'] = this.ceoRemarksTime;
+    data['ceo_status'] = this.ceoStatus;
+    data['legal_time'] = this.legalTime;
+    data['submitted_at'] = this.submittedAt;
     return data;
   }
 }
