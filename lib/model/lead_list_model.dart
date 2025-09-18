@@ -2,8 +2,9 @@ class LeedListModel {
   bool? status;
   String? message;
   List<LeadListData>? data;
+  Pagination? pagination;
 
-  LeedListModel({this.status, this.message, this.data});
+  LeedListModel({this.status, this.message, this.data, this.pagination});
 
   LeedListModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -14,6 +15,9 @@ class LeedListModel {
         data!.add(new LeadListData.fromJson(v));
       });
     }
+    pagination = json['pagination'] != null
+        ? new Pagination.fromJson(json['pagination'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -23,12 +27,15 @@ class LeedListModel {
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
+    if (this.pagination != null) {
+      data['pagination'] = this.pagination!.toJson();
+    }
     return data;
   }
 }
 
 class LeadListData {
-  dynamic id;
+  int? id;
   dynamic leadNumber;
   dynamic userId;
   dynamic leadName;
@@ -209,7 +216,7 @@ class LeadListData {
 }
 
 class ApprovalData {
-  dynamic id;
+  int? id;
   dynamic quotationId;
   dynamic managerStatus;
   dynamic isManagerStatus;
@@ -217,7 +224,7 @@ class ApprovalData {
   dynamic managerRemarks;
   dynamic managerName;
   dynamic managerTime;
-  String? branchheadStatus;
+  dynamic branchheadStatus;
   dynamic branchheadRemarks;
   dynamic brancheadTime;
   dynamic branchheadName;
@@ -301,6 +308,31 @@ class ApprovalData {
     data['ceo_status'] = this.ceoStatus;
     data['legal_time'] = this.legalTime;
     data['submitted_at'] = this.submittedAt;
+    return data;
+  }
+}
+
+class Pagination {
+  int? total;
+  int? currentPage;
+  int? perPage;
+  int? lastPage;
+
+  Pagination({this.total, this.currentPage, this.perPage, this.lastPage});
+
+  Pagination.fromJson(Map<String, dynamic> json) {
+    total = json['total'];
+    currentPage = json['current_page'];
+    perPage = json['per_page'];
+    lastPage = json['last_page'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total'] = this.total;
+    data['current_page'] = this.currentPage;
+    data['per_page'] = this.perPage;
+    data['last_page'] = this.lastPage;
     return data;
   }
 }
