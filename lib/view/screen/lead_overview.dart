@@ -391,6 +391,32 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                         height: 5.h,
                       ),
                       Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.description,
+                                  size: 16.sp,
+                                ),
+                                SizedBox(
+                                  width: 2.w,
+                                ),
+                                Text(
+                                  '${leadDatavalue?.description ?? ""}',
+                                  style: TextStyle(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
@@ -1223,7 +1249,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
                                   children: [
                                     RichText(
                                       text: TextSpan(
-                                        text: "IT Administrator",
+                                        text: "CMO",
                                         style: TextStyle(
                                             color: textColor,
                                             fontSize: 14.sp,
