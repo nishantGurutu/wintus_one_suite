@@ -41,7 +41,7 @@ class SosPusherConfig {
                 dt,
                 eventData["title"],
               );
-            } else {
+            } else if(eventData["action"] == "sos"){
               await StorageHelper.setSosMessage(true);
               await ShowDialogFunction()
                   .sosMsg(context, eventData["message"], dt);

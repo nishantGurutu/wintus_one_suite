@@ -28,7 +28,7 @@ class ApiConstant {
   static const String editLostReason = "edit-lostreason";
   static const String editContactStage = "edit-contactstage";
   static const String deleteSource = "delete-source";
-  static const String deleteIndustry = "delete-industry";
+  static const String deleteIndustry = "delete-industry";                                  
   static const String deleteCallReason = "delete-callreason";
   static const String deleteLostReason = "delete-lostreason";
   static const String deleteContactStage = "delete-contactstage";

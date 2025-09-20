@@ -38,3 +38,4 @@ import flutter_local_notifications
     super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
   }
 }
+
