@@ -68,7 +68,10 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
     super.initState();
   }
 
+
+var isLoading = false.obs;
   void callingApi() async {
+    isLoading.value = true;
     print('leadoverview lead id ${widget.leadId}');
     print('leadoverview lead id ${widget.leadNumber}');
     await leadController.leadContactList(
@@ -77,7 +80,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
         leadId: int.parse(widget.leadId.toString()));
     await leadController.followUpsListApi(
         leadId: int.parse(widget.leadId.toString()));
-
+isLoading.value = true;
     await SosPusherConfig()
         .initPusher(_onPusherEvent, channelName: "lead", context: context);
   }
@@ -121,7 +124,7 @@ class _LeadOverviewScreenState extends State<LeadOverviewScreen>
       ),
       body: SafeArea(
         child: Obx(
-          () => leadController.isLeadDetailsLoading.value == true &&
+          () => isLoading.value== true && leadController.isLeadDetailsLoading.value == true &&
                   leadController.isFollowupsListLoading.value == true &&
                   leadController.isListVisitLoading.value == true
               ? Center(child: CircularProgressIndicator())
