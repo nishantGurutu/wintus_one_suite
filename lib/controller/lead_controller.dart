@@ -353,7 +353,6 @@ class LeadController extends GetxController {
         from,
       );
       if (result!.data != null) {
-        List<LeadListData> leadData = result.data!.toList();
         final offlineLeads = await DatabaseHelper.instance.getLeads();
         final db = await DatabaseHelper.instance.database;
 
@@ -404,8 +403,12 @@ class LeadController extends GetxController {
         leadsListData.addAll(
           updatedOfflineLeads.map((e) => LeadListData.fromJson(e)).toList(),
         );
+
+        print("kjsdw25 w2tdw5 w2dt6 ${leadsListData.length}");
         if (result != null && result.data != null) {
-          leadsListData.addAll(result.data!.reversed.toList());
+          // leadsListData.addAll(result.data!);
+          leadsListData.insertAll(0, result.data!);
+          // chatHistoryList.insertAll(0, newMessages);
         }
         leadsListData.refresh();
         selectedStatusPerLead.clear();
