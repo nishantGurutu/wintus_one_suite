@@ -79,6 +79,16 @@ class _SideDrawerState extends State<SideDrawer> {
   }
 
   @override
+  void didChangeDependencies() { 
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(covariant SideDrawer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: Drawer(

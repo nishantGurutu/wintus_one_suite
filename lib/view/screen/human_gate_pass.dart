@@ -33,6 +33,11 @@ class _HumanGatePassState extends State<HumanGatePass>
     super.initState();
   }
 
+  dispose () {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

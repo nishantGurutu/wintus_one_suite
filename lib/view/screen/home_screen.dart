@@ -135,6 +135,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+  dispose() {
+    _tabController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
   Future<void> openOneTimeMsg(String value, String urlValue) async {
     return await showDialog(
       barrierDismissible: false,

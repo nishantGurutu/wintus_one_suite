@@ -43,6 +43,14 @@ class _AddContactIntaskState extends State<AddContactIntask> {
     }
   }
 
+  dispose() {
+    nameControlelr.dispose();
+    emailControlelr.dispose();
+    mobileControlelr.dispose();
+    focusedIndexNotifier.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

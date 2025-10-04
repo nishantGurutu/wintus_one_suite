@@ -101,6 +101,10 @@ class _LeadDetailUpdateState extends State<LeadDetailUpdate> {
   void dispose() {
     leadController.selectedFollowUpsTypeListData.value = null;
     leadController.selectedSourceListData.value = null;
+    leadController.selectedLeadStatusData.value = null;
+    leadController.leadDetails.value = null;
+    leadController.isLeadDetailsLoading.value = false;
+    focusedIndexNotifier.dispose(); 
     super.dispose();
   }
 

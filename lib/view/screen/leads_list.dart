@@ -111,7 +111,7 @@ class _LeadListState extends State<LeadList> {
             "marketing manager" ||
         StorageHelper.getRoleName().toString().toLowerCase() == "branch head" ||
         StorageHelper.getRoleName().toString().toLowerCase() == "cmo" ||
-        StorageHelper.getRoleName().toString().toLowerCase() == "chairman") {
+        StorageHelper.getRoleName().toString().toLowerCase() == "chairman" || StorageHelper.getRoleName().toString().toLowerCase() == "ceo") {
       await leadController.addedDocumentLeadList();
     }
     isLoading.value = false;
@@ -121,6 +121,9 @@ class _LeadListState extends State<LeadList> {
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    _searchController.dispose();
+    _searchController2.dispose();
     Future.microtask(() {
       leadController.selectedLeadStatusData.value = null;
       leadController.selectedLeadStatusUpdateData.value = null;
@@ -210,7 +213,8 @@ class _LeadListState extends State<LeadList> {
                         StorageHelper.getRoleName().toString().toLowerCase() ==
                             "cmo" ||
                         StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "chairman")
+                            "chairman" ||  StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "ceo")
                       Column(
                         children: [
                           SizedBox(

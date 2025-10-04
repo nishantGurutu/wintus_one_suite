@@ -56,6 +56,7 @@ class _NotificationPageState extends State<NotificationPage> {
     notificationController.isReadSelected = false.obs;
     notificationController.notificationSelectidList.clear();
     notificationController.notificationSelectTypeList.clear();
+    _scrollController.dispose();
     super.dispose();
   }
 

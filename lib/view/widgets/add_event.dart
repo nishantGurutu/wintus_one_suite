@@ -48,6 +48,19 @@ class _AddEventState extends State<AddEvent> {
   RxString? selectedEventType = "".obs;
   ValueNotifier<int?> focusedIndexNotifier = ValueNotifier<int?>(null);
 
+  dispose() {
+    titleTextController.dispose();
+    descriptionTextController.dispose();
+    urlTextController.dispose();
+    dueDateController.dispose();
+    dueTimeController.dispose();
+    guestController.dispose();
+    reminderController.dispose();
+    eventVenueController.dispose();
+    focusedIndexNotifier.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

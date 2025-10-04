@@ -94,6 +94,10 @@ class _WorkOrderPdfDocumentApproveState
                           "chairman" &&
                       widget.legalStatus.toString().toLowerCase() !=
                           'approveed' &&
+                      widget.from == 'legal') || (StorageHelper.getRoleName().toString().toLowerCase() ==
+                          "ceo" &&
+                      widget.legalStatus.toString().toLowerCase() !=
+                          'approveed' &&
                       widget.from == 'legal'))
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,7 +219,9 @@ class _WorkOrderPdfDocumentApproveState
                     if (StorageHelper.getRoleName().toString().toLowerCase() ==
                             "branch head" ||
                         StorageHelper.getRoleName().toString().toLowerCase() ==
-                            "chairman")
+                            "chairman" ||
+                        StorageHelper.getRoleName().toString().toLowerCase() ==
+                            "ceo")
                       Column(
                         children: [
                           SizedBox(

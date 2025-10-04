@@ -14,7 +14,6 @@ import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/dialog_class.dart';
 import 'package:task_management/constant/image_constant.dart';
 import 'package:task_management/constant/style_constant.dart';
-import 'package:task_management/constant/text_constant.dart';
 import 'package:task_management/controller/bottom_bar_navigation_controller.dart';
 import 'package:task_management/controller/chat_controller.dart';
 import 'package:task_management/controller/document_controller.dart';
@@ -104,7 +103,9 @@ class _BottomNavigationBarExampleState
   @override
   void initState() {
     super.initState();
-    checkForUpdate();
+    if (Platform.isAndroid) {
+      checkForUpdate();
+    }
     callApi();
   }
 
@@ -174,6 +175,7 @@ class _BottomNavigationBarExampleState
     taskController.reviewerUserId.clear();
     taskController.responsiblePersonSelectedCheckBox.clear();
     taskController.assignedUserId.clear();
+    SosPusherConfig().disconnect();
     super.dispose();
   }
 

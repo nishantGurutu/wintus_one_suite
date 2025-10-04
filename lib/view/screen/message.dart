@@ -86,8 +86,11 @@ class _MessageScreenState extends State<MessageScreen> {
     chatController.selectedMessageId.value = "";
     chatController.selectedParentMessageSender.value = '';
     _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    messageTextEditingController.dispose();
     chatController.chatHistoryList.clear();
     PusherConfig().disconnect();
+    PusherConfigSeen().disconnect();
     chatController.pageCountValue.value = 1;
     chatController.isChatOptionOpenAppbar.value = false;
     chatController.chatIdvalue.value = '';
@@ -175,6 +178,7 @@ class _MessageScreenState extends State<MessageScreen> {
   final imojiscrollController = ScrollController();
   bool _isEmojiPickerVisible = false;
 
+
   RxList<Color> colorList = <Color>[
     Color(0xff075e54),
     Color(0xff7f6000),
@@ -189,6 +193,8 @@ class _MessageScreenState extends State<MessageScreen> {
     Color(0xff6a329f),
     Color(0xff744700),
   ].obs;
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -31,6 +31,10 @@ class _AddGroupMemberState extends State<AddGroupMember> {
   @override
   void dispose() {
     chatController.selectedMemberId.clear();
+      taskController.selectedLongPress.clear();
+      taskController.responsiblePersonList.clear();
+      taskController.isResponsiblePersonLoading.value = false;
+      chatController.isGroupUserAdding.value = false;
     super.dispose();
   }
 

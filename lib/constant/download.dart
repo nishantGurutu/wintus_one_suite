@@ -93,16 +93,13 @@ class DownloadFile {
       final appFilePath = '$appSavePath/$fileName';
       final downloadFilePath = '${downloadsDir.path}/$fileName';
 
-      File? savedFile;
 
       if (isNetwork) {
         Dio dio = Dio();
         await dio.download(filePath, appFilePath);
         await dio.download(filePath, downloadFilePath);
-        savedFile = File(appFilePath);
       } else {
         File file = File(filePath);
-        savedFile = await file.copy(appFilePath);
         await file.copy(downloadFilePath);
       }
 

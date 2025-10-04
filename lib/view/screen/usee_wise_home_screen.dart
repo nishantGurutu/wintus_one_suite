@@ -141,6 +141,12 @@ class _UserWiseHomeScreenState extends State<UserWiseHomeScreen>
     }
   }
 
+  dispose() {
+    _animationController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> openOneTimeMsg(String value, String urlValue) async {
     return await showDialog(
       barrierDismissible: false,

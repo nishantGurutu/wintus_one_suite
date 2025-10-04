@@ -92,6 +92,13 @@ isLoading.value = true;
   @override
   void dispose() {
     leadController.leadDetails.value?.approvalData?.clear();
+    _tabController.dispose();
+    leadController.leadDetails.value = null;
+    leadController.followUpsListData.clear();
+    leadController.leadContactData.clear();
+    leadController.isLeadDetailsLoading.value = false;
+    leadController.isFollowupsListLoading.value = false;
+    leadController.isListVisitLoading.value = false;  
     SosPusherConfig().disconnect();
     super.dispose();
   }

@@ -47,6 +47,14 @@ class _AddAssetsState extends State<AddAssets> {
     // await profileController.assetsListApi();
   }
 
+  dispose() {
+    assetsNameTextController.dispose();
+    assetsSrnoTextController.dispose();
+    quantityTextController.dispose();
+    focusedIndexNotifier.dispose();
+    super.dispose();
+  }
+
   final TextEditingController assetsTypeController = TextEditingController();
   final TextEditingController assetsController = TextEditingController();
   final TextEditingController selectUserController = TextEditingController();

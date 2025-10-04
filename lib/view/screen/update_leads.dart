@@ -3,6 +3,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/list_notifier.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_management/constant/color_constant.dart';
 import 'package:task_management/constant/custom_toast.dart';
@@ -42,7 +43,7 @@ class _UpdateLeadsState extends State<UpdateLeads> {
     super.initState();
     apiDataCalling();
   }
-
+  
   var isLoading = false.obs;
   void apiDataCalling() async {
     isLoading.value = true;
@@ -58,6 +59,7 @@ class _UpdateLeadsState extends State<UpdateLeads> {
 
   @override
   void dispose() {
+     focusedIndexNotifier.dispose();
     leadController.selectedSourceListData.value = null;
     leadController.selectedLeadStatusData.value = null;
     super.dispose();

@@ -55,6 +55,12 @@ class _ProjectState extends State<Project> with SingleTickerProviderStateMixin {
   }
 
   @override
+  void dispose() {
+   _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _key,

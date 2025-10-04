@@ -33,6 +33,8 @@ class _AddItemShetState extends State<AddItemShet> {
   void dispose() {
     super.dispose();
     leadController.selectedProductData.value = null;
+    leadController.rateControlelr.clear();
+    focusedIndexNotifier.dispose();
     leadController.qtyControlelr.clear();
   }
 

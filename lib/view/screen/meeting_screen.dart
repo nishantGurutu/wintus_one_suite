@@ -38,6 +38,13 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
     await taskController.allProjectListApi();
   }
 
+  dispose() {
+    meetingController.isUpcomingSelected.value = true;
+    meetingController.isOngoingSelected.value = false;
+    meetingController.isDoneSelected.value = false;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

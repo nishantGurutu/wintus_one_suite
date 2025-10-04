@@ -30,6 +30,16 @@ class _AddLeadContactShetState extends State<AddLeadContactShet> {
   }
 
   @override
+  dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    designationController.dispose();
+    focusedIndexNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
